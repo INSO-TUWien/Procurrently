@@ -42,6 +42,10 @@ function dirUp(path: string) {
     return '';
 }
 
+/**
+ * finds the parent folder of the .git directory
+ * @param startpath path to start the search
+ */
 export async function findGitDirectory(startpath: string): Promise<string> {
     let currpath = path.dirname(startpath).toString();
     if (repositories.has(startpath)) {
@@ -59,15 +63,28 @@ export async function findGitDirectory(startpath: string): Promise<string> {
     throw new Error('Not a git directory');
 }
 
+/**
+ * returns the current Branch of the repository
+ * @param path the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
 export async function getCurrentBranch(path) {
     const gitDir: String = await findGitDirectory(path);
     return (await readFile(gitDir + '/.git/HEAD')).toString().match(/ref: (.*)/)[1];
 }
 
+/**
+ * reads a git file (equivalent to git cat-file -p)
+ * @param hash the git hash of the object
+ * @param repositoryPath the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
 function readGitObject(hash: string, repositoryPath: string): Promise<string> {
     return promiseSpawn('git', ['cat-file', '-p', hash], { cwd: repositoryPath })
 }
 
+/**
+ * returns the relative path to a file in regards to a git repo
+ * @param filename the full path to a file including the filename
+ */
 async function getFilePathRelativeToRepo(filename: string): Promise<string> {
     const dir: string = await findGitDirectory(filename);
     return filename.substr(dir.length);
@@ -79,6 +96,10 @@ enum gitObjectType {
     content
 }
 
+/**
+ * Parses git cat-file contents into tree and blob objects
+ * @param content git cli response
+ */
 function parseGitObject(content: string) {
     const lines = content.split(/\n/g);
 
@@ -108,6 +129,10 @@ function parseGitObject(content: string) {
     return parsedContent;
 }
 
+/**
+ * returns the current version committed in git of a specified file
+ * @param filename the full path to the file including the filename
+ */
 export async function getCurrentFileVersion(filename: string): Promise<string> {
     const gitDir = await findGitDirectory(filename);
     let commit = await getCurrentBranch(filename);
@@ -135,6 +160,11 @@ export async function getCurrentFileVersion(filename: string): Promise<string> {
     }
 }
 
+/**
+ * computes the git hash of content
+ * this is intended for checking if a file has been modified
+ * @param content content to hash
+ */
 export async function getGitHash(content: string) {
     return new Promise(async (resolve, reject) => {
         const proc = spawn('git', ['hash-object', '--stdin']);
@@ -150,6 +180,11 @@ export async function getGitHash(content: string) {
     });
 }
 
+/**
+ * Adds content as a git object (equivalent to git hash object -w)
+ * @param content content to put into a git object
+ * @param repo path to the git repository or a subfolder of the repository (will automatically find the .git folder)
+ */
 async function addGitObject(content: string, repo): Promise<string> {
     return new Promise(async (resolve, reject) => {
         const proc = spawn('git', ['hash-object', '--stdin', '-w'], { cwd: repo });
@@ -165,6 +200,11 @@ async function addGitObject(content: string, repo): Promise<string> {
     });
 }
 
+/**
+ * stage file content
+ * @param filename the full file path and name
+ * @param content the content to stage into this file
+ */
 export async function stageGitObject(filename: string, content: string) {
     const path = (await getFilePathRelativeToRepo(filename)).substr(1);
     const repositoryPath = await findGitDirectory(filename);
