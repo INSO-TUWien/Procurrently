@@ -39,6 +39,7 @@ function dirUp(path: string) {
         }
         return parts.slice(0, i).join('/');
     }
+    return '';
 }
 
 export async function findGitDirectory(startpath: string): Promise<string> {
@@ -167,9 +168,7 @@ async function addGitObject(content: string, repo): Promise<string> {
 export async function stageGitObject(filename: string, content: string) {
     const path = (await getFilePathRelativeToRepo(filename)).substr(1);
     const repositoryPath = await findGitDirectory(filename);
-    console.log(repositoryPath);
     const hash = await addGitObject(content, repositoryPath);
-    console.log(hash);
     await promiseSpawn('git', ['update-index', '--add', '--cacheinfo', '100644', hash, path], { cwd: repositoryPath });
     //git update-index --add --cacheinfo 100644 93821e8182534e2d95df1acc85fa589556dd61dc contributors.txt 
 }

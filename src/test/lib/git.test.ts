@@ -19,9 +19,10 @@ function promiseSpawn(process, args, options = {}): Promise<string> {
 
 const testDir = __dirname+'/test_git';
 beforeAll(async () => {
-    fs.mkdirSync(testDir);
+    fs.mkdirSync(testDir+'/a_directory', {recursive:true});
     console.log(await promiseSpawn('git', ['init'],{cwd:testDir}));
     fs.writeFileSync(testDir+'/test.txt','das ist ein test');
+    fs.writeFileSync(testDir+'/a_directory/test.txt','das ist ein test in einem Unterverzeichnis');
 });
 
 afterAll(done=>{
@@ -35,13 +36,21 @@ test('getHash', async () => {
 });
 
 test('findGitDirectory', async ()=>{
-    const dir = await git.findGitDirectory(testDir+'/test.txt');
+    const dir = await git.findGitDirectory(testDir+'/a_directory/test.txt');
     expect(dir).toMatch(testDir);
+});
+
+test('findGitDirectory_just_dir', async ()=>{
+    const dir = await git.findGitDirectory(testDir+'/a_directory/');
+    expect(dir).toMatch(testDir);
+});
+
+test('findGitDirectory not a git dir', async ()=>{
+    await expect(git.findGitDirectory('/')).rejects.toThrow('Not a git directory');
 });
 
 test('stage object',async ()=>{
     await git.stageGitObject(testDir+'/test.txt','Stefan Gussner');
-    console.log('staged');
     const staged = await promiseSpawn('git',['ls-files', '--stage'],{cwd:testDir});
     const line = staged.split('/\n/g').filter(e=>e.indexOf('test.txt')>-1)[0];
     expect(line).toMatch('93821e8182534e2d95df1acc85fa589556dd61dc');
