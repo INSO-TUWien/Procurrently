@@ -170,6 +170,5 @@ export async function stageGitObject(filename: string, content: string) {
     const repositoryPath = await findGitDirectory(filename);
     const hash = await addGitObject(content, repositoryPath);
     await promiseSpawn('git', ['update-index', '--add', '--cacheinfo', '100644', hash, path], { cwd: repositoryPath });
-    //git update-index --add --cacheinfo 100644 93821e8182534e2d95df1acc85fa589556dd61dc contributors.txt 
 }
 
