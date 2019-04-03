@@ -38,3 +38,11 @@ test('findGitDirectory', async ()=>{
     const dir = await git.findGitDirectory(testDir+'/test.txt');
     expect(dir).toMatch(testDir);
 });
+
+test('stage object',async ()=>{
+    await git.stageGitObject(testDir+'/test.txt','Stefan Gussner');
+    console.log('staged');
+    const staged = await promiseSpawn('git',['ls-files', '--stage'],{cwd:testDir});
+    const line = staged.split('/\n/g').filter(e=>e.indexOf('test.txt')>-1)[0];
+    expect(line).toMatch('93821e8182534e2d95df1acc85fa589556dd61dc');
+});

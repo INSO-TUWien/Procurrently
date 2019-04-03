@@ -150,15 +150,27 @@ export async function getGitHash(content: string) {
 }
 
 async function addGitObject(content: string, repo): Promise<string> {
-    return await promiseSpawn('git', ['hash-object', '--stdin', content], { cwd: repo });
-    //git hash-file --stdin <content>
+    return new Promise(async (resolve, reject) => {
+        const proc = spawn('git', ['hash-object', '--stdin', '-w'], { cwd: repo });
+        let output = '';
+        proc.stdout.on('data', data => {
+            output += data.toString();
+        });
+        proc.stderr.on('data', d => console.error(d.toString()));
+        proc.on('exit', code => code != 0 ? reject('unexpected error') : resolve(output));
+
+        proc.stdin.write(content);
+        proc.stdin.end();
+    });
 }
 
 export async function stageGitObject(filename: string, content: string) {
-    const path = await getFilePathRelativeToRepo(filename);
+    const path = (await getFilePathRelativeToRepo(filename)).substr(1);
     const repositoryPath = await findGitDirectory(filename);
+    console.log(repositoryPath);
     const hash = await addGitObject(content, repositoryPath);
-    await promiseSpawn('git', ['udpate-index', '--add', '--cacheinfo', '100644', hash, path], { cwd: repositoryPath });
+    console.log(hash);
+    await promiseSpawn('git', ['update-index', '--add', '--cacheinfo', '100644', hash, path], { cwd: repositoryPath });
     //git update-index --add --cacheinfo 100644 93821e8182534e2d95df1acc85fa589556dd61dc contributors.txt 
 }
 
