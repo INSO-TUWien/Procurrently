@@ -22,6 +22,8 @@ beforeAll(async () => {
     fs.mkdirSync(testDir+'/a_directory', {recursive:true});
     console.log(await promiseSpawn('git', ['init'],{cwd:testDir}));
     fs.writeFileSync(testDir+'/test.txt','das ist ein test');
+    await promiseSpawn('git',['add', 'test.txt'],{cwd:testDir});
+    await promiseSpawn('git', ['commit', '-m', 'first'], {cwd:testDir});
     fs.writeFileSync(testDir+'/a_directory/test.txt','das ist ein test in einem Unterverzeichnis');
 });
 
@@ -54,4 +56,14 @@ test('stage object',async ()=>{
     const staged = await promiseSpawn('git',['ls-files', '--stage'],{cwd:testDir});
     const line = staged.split('/\n/g').filter(e=>e.indexOf('test.txt')>-1)[0];
     expect(line).toMatch('93821e8182534e2d95df1acc85fa589556dd61dc');
+});
+
+test('get current version',async ()=>{
+    expect.assertions(1);
+    expect(await git.getCurrentFileVersion(testDir+'/test.txt')).toMatch('das ist ein test');
+});
+
+test('get current version no file',async ()=>{
+    expect.assertions(1);
+    await expect(git.getCurrentFileVersion(testDir)).rejects.toThrow('file not found');
 });
