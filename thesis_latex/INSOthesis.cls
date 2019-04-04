@@ -332,7 +332,7 @@
   \ifthesis@english
     \selectlanguage{english}
   \else
-    \selectlanguage{ngerman}
+    \selectlanguage{english}
   \fi
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%   GLOSSARIES                        %
