@@ -1,0 +1,73 @@
+\documentclass [bachelor,english,a4paper,11pt,oneside,webreferences,glossary,indextop,listoflistings,listofalgorithms,acronyms]{INSOthesis}
+% change encoding in the document
+%\inputencoding{utf8} % default
+%\inputencoding{latin1} % for windows
+
+\thesistitle{Interactive Computer Generated Architecture}
+%\thesisshorttitle{Shorttitle of the Thesis}
+%\thesissubtitle{Optional Subtitle} % optional
+\thesisdate{\today}
+
+% all titles and designations have to be gender-related!
+%\thesistype{Diplomarbeit}{Master's Thesis}
+%\thesisdegree{Diplom-Ingenieurin}{Diplom-Ingenieurin}
+\thesiscurriculum{Software Engineering and Internet Computing}{Software Engineering and Internet Computing} % your study
+\thesisauthor{Martina Musterfrau} % your name
+\thesisauthoraddress{Musterplatz 1, 1111 Wien} % your address
+\thesismatrikelno{0123456} % your registration number
+
+% advisor
+%\thesisauthorpreamble {Verfasser}
+%\thesisadvisorpreamble {Betreuung}
+%\thesisadvisorone {Thomas Grechenig}
+\thesisadvisortwo {Vorname Nachname}
+%\thesisadvisorthree {Vorname Nachname}
+
+% Bibliographie file
+\bibliography{bibliography/references}
+
+\hypersetup{
+  %colorlinks=false % enable and disable frames arround links
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Can be used to add additional informations
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \AfterTitlePages{}
+% \AfterDeclaration{}
+% \AfterAcknowledgements{}
+% \AfterAbstract{}
+% \AfterListOfFigures{}
+% \AfterListOfTables{}
+% \AfterAbbreviations{}
+% \AfterBibliography{}
+
+\renewcommand\afterchapternum{\hspace{1em}}
+\begin{document}
+
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   CONTENTS    %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{chapters/introduction}
+\input{chapters/fundamentals}
+\input{chapters/problemdescription}
+\input{chapters/bibliographic}
+\input{chapters/listings}
+\input{chapters/results}
+\input{chapters/discussion}
+\input{chapters/conclusion}
+
+% insert bibliography and such stuff
+\BackMatter
+
+\cleardoublepage
+\appendix
+
+\input{chapters/appendix}
+
+\end{document}
