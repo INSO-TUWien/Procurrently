@@ -1,91 +1,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Einleitung}
+\chapter{Introduction}
 \label{sec:introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\makeatletter
-\ifthesis@masterthesis
-Das hier zur Verfügung gestellte Template ist als Hilfestellung gedacht, sie stellt keine verbindliche Richtlinie dar. Der Aufbau einer Diplomarbeit hängt sehr von der bearbeiteten Thematik ab. Diese Vorlage ist für eine Arbeit erstellt, die einen experimentellen Teil enthält (Fallbeispiel). Bei theoretischen Arbeiten oder Programmierungen sind entsprechende Anpassungen vorzunehmen, bitte Rücksprache mit Ihrem Betreuer halten. Bei der Gliederung der Arbeit ist darauf zu achten, dass das Inhaltsverzeichnis einen ersten Eindruck von der thematischen Vollständigkeit sowie der Ausgewogenheit der Behandlung des Themas bietet. Die Gliederung und somit auch der Wahl der Kapitelüberschriften vermitteln einen Eindruck über die angewendete Systematik, die Vollständigkeit der Behandlung des Themas und deren \enquote{Wissenschaftlichkeit}.
-\fi
-\makeatother
-
-In der Einleitung soll die Zielsetzung der Arbeit beschrieben, ihre Einordnung in einen übergeordneten Kontext hergestellt und die Bedeutung des Themas erörtert werden. Zu diesem Zweck ist die Einleitung in folgende Unterkapitel unterteilt:
-\begin{itemize}
-	\item Problemstellung
-	\item Motivation
-	\item Zielsetzung
-	\item Aufbau der Arbeit
-\end{itemize}
-
-\makeatletter
-\ifthesis@masterthesis
-Durch die Einleitung sollen folgende Punkte in den jeweiligen Unterkapiteln klargestellt werden:
-\begin{itemize}
-	\item Etwaige thematische Einschränkungen bzw. Auswahl und Begründung der Bearbeitungsziele
-	\item Betrachtung verschiedener methodischer Alternativen zur Aufgabenlösung und Erklärung der Entscheidung
-	\item Gewählter Lösungsansatz, z.B. theoretische Untersuchung, Literaturauswertung und -vergleich oder eine empirische, auf eigenen Erhebungen basierende Untersuchung
-\end{itemize}
-\fi
-\makeatother
-
-\paragraph{Organisatorisches}
-\makeatletter\ifthesis@masterthesis
-Bitte einen Zeitplan für die Verfassung Ihrer Diplomarbeit erarbeiten und mit Ihrem Betreuer abstimmen. Es gibt sehr \enquote{kurzlebige} Themenstellungen, die rasch an Aktualität verlieren, da ist der Zeitplan unbedingt einzuhalten, ansonsten wird das Thema neu vergeben. Bei Themen, die länger aktuell bleiben, kann der Zeitrahmen auch länger erstreckt werden, dies aber bitte im Vorfeld abklären! Üblicherweise sollte die Verfassung einer Diplomarbeit ein halbes Jahr bis ein Jahr dauern, Ausnahmen bitte zumindest durch regelmäßigen email-Kontakt abstimmen.
-\fi\makeatother
-
-Der Umfang einer Diplomarbeit beträgt üblicherweise 90 bis ca. 120 Seiten und bei Bachelorarbeiten 40 bis ca. 60 Seiten. Beurteilungskriterien für eine Diplomarbeit ist nicht nur die Qualität der praktischen Arbeit, sondern auch Aufbau, Inhalt und Formulierung der schriftlichen Arbeit. Insbesondere sind die Grundregeln wissenschaftlichen Arbeitens (z.B. richtiges Zitieren) zu beachten.
-
-\paragraph{Allgemeines}
-Achtung beim Setzen von Absätze.
-
-Fußzeilen: Bei technischen Arbeiten eher unüblich. \\
-In den Sozialwissenschaften (z.B. BWL) ist es üblich, die Referenz in eine Fußnote zu setzen.
-\\
-In den technischen Wissenschaften ist es üblich, im Text ein Kürzel (Dorn et al. 1999) oder eine Zahl [1] zu verwenden, um dann im Anhang der Arbeit alle Referenzen detailliert aufzuführen, wobei jede Referenz mit dem Kürzel beginnt.
-
-Bei einer wissenschaftlichen Arbeit wird Wert auf die Einhaltung formaler Aspekte des guten Schreibens gelegt. Es ist hilfreich, wenn man seinen eigenen Schreibstil kritisch in Bezug auf folgende Punkte überprüft:
-\begin{itemize}
-	\item Einfachheit (das \ac{KISS}-Prinzip gilt nicht nur für die Softwareentwicklung, sondern auch für wissenschaftliche Arbeiten: Mach es schlicht und wesentlich/\acl{KISS})
-	\item Gliederung/ logische Ordnung (vom Allgemeinen zum Konkreten, nachvollziehbare Kette von einer Fragestellung/ einem Problem über die Bearbeitung und Zerlegung in Detailprobleme zur Lösung und der Ableitung von Erkenntnissen)
-	\item Kürze/Prägnanz (keine Schachtelsätz, Wiederholungen vermeiden – \enquote{Don't repeat yourself})
-	\item Anregende Zusätze (erläuternde/ interessante/ spannende Praxisbeispiele etc.)
-	\item Sprache/Stil (kein Erzählstil, möglichst keine \enquote{ich}-Form, objektiv)
-	\item Korrekte Formeln und Abbildungen
-	\item Korrekte Zitierweise (siehe Kapitel Literaturverzeichnis)
-	\item Einhaltung definierter Rahmenbedingungen (z.B. diese Vorlage)
-	\item Vermeiden von Anglizismen. Grundsätzlich sollte in einer in Deutsch verfassten Diplomarbeit immer das deutsche Wort verwendet werden, wenn es unmissverständlich und akzeptiert ist. Ein Eindeutschen um jeden Preis ist allerdings zu vermeiden, da dies zu schwer lesbaren Texten führt. Beispiele: Der Begriff \enquote{Unterbrechung des Programmflusses} ist angebrachter als \enquote{Interrupt des Programmflusses}, und \enquote{verdeckte Kanäle} ist als akzeptierter deutscher Begriff für \enquote{Covert Channels} zu verwenden. Umgekehrt ist aber \enquote{Cursor} das bessere Wort als \enquote{Lichtmarke}. Anglizismen können als Stilmittel genutzt werden, etwa wenn man von einer \enquote{Quick and Dirty} Implementierung spricht.
-\end{itemize}
-
-\paragraph{Typographie}
-Grundsätzlich sollten nicht mehr als drei unterschiedliche Schriftarten verwendet werden. Grundsätzlich sollte die Typographie sowie die Anordnung von Bildern, Tabellen, etc. \LaTeX überlassen werden. Allerdings können Silbentrennungen durch \verb|\-| gesteuert werden.
-
-Abweichungen nach persönlichem Geschmack und in Rücksprache mit Ihrem Betreuer sind zulässig. Als Stilmittel werden üblicherweise nur die Fettschrift und Kursivschrift verwendet - Unterstreichungen, Schattenschriften etc. sind zu vermeiden. Blocksatz bitte mit automatischer Silbentrennung verwenden, Rechtschreibprüfung aktivieren.
-
-Generell kann bei der Einleitung eine modifizierte Version des Exposés als Basis verwendet werden.
-
 %=======================================================================
-\section{Problemstellung}
+\section{Problem Description}
 %=======================================================================
 
-Formulierung der Problemstellung, Einbettung in das Forschungsumfeld und Theorie, auf die sich die Arbeit beziehen. Tendenziell kurz, allgemeiner und sehr gut verständlich -- detaillierter im Kapitel \enquote{Grundlagen}.
+When multiple people are working on solving a Problem it is not clear who is implementing which part. Current vcs systems conflict resolutions require manual conflict resolution if multiple people have modified the same file.
+In order for a group to discuss a problem all the code has to be commited and pulled by everyone first. This introduces friction. In order to solve these and other problems real time collaborative editors have been created.
+But current implementations of real time collaboration editors / editor plugins are unaware of the underlying version control system and therefore are based on the idea of just sharing files of a host mashine or a single source of truth file on a server instead of basing edit histories on versions of files known to the version control system anyway.
 
-Die formulierte Fragestellung soll das Interesse an der Lösung wecken (eine langweilige oder triviale Problemstellung lässt meistens auch eine eher weniger interessante wissenschaftliche Arbeit erwarten).
+In state of the art collaborative code editors it is not possible for a user to easily see who made specific changes. Usually all the changes are bundled in one commit and the accountability is lost. In order to convert this concurrent model to a commit understood by Git it should be possible to stage changes by author. This approach might require more sophisticated logic than just interpreting changes as strings given that a command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic.
 
-\makeatletter\ifthesis@masterthesis
-Nach dem Lesen dieses Kapitels sollten folgende Punkte klar dargestellt sein:
-\begin{itemize}
-	\item Welche konkrete Fragestellung/Arbeitshypothese/welches Problem liegt dem Thema zugrunde?
-	\item Klare Definition des Untersuchungsgegenstands (z.B. effiziente Internationalisierung/ Mehrsprachigkeit von Computerprogrammen im Java Umfeld).
-	\item Darlegung und Begründung thematischer Abgrenzungen.
-	\item Klare Darstellung eines ggf. übergeordneten fachlichen Kontexts/Zusammenhangs (z.B. des medizinisch/ organisatorischen Rahmens, der bei einer Arbeit über Usability einen Einfluss auf die Usability einer auf Tablets/Touchscreens basieren Pflegedokumentation im klinischen Bereich hat).
-\end{itemize}
+\section{Expected Results}
 
-In diesem Kapitel wird das Problem und sein Kontext beschrieben (\enquote{die Sache/die Frage}) – nicht aber, warum es gerade zum Zeitpunkt der Diplomarbeit notwendig ist, für dieses Problem eine Lösung zu erarbeiten. Das \enquote{Warum} (die Motivation) wird im nächsten Unterkapitel beschrieben.
-\fi\makeatother
+Enable real time collaboration on source code based on a Git\footnote{\href{https://git-scm.com/}{https://git-scm.com/}} project by
+continuous tracking of code changes synchronizing over peer to peer connection.
+Lowering overhead of splitting tasks by enabling everyone see what other people are working on. Allowing discussions about source code that has not yet been commited.
+Changes should be commitable by author. In order to be able to compile sourcecode, changes of other people can be toggled off.
+Using Git as a base enables opportunistic real time collaboration. In other words if a connection is possible changes will be propagated  to other people working on the same branch. If not the changes will be sent when a connection is available. \cite{AlwisSillito:2009:centralToDecentralVCS} Therefore it should be analog to the benefits of moving to a decentralized vcs.
 
 %=======================================================================
 \section{Motivation}
 %=======================================================================
+
+Current implementations of real time collaboration tools are not designed with version control systems in mind.
+
+Transforming real time collaborative edits into regular Git commits by author will reduce a lot of friction in the adoption for real time collaboration software. Using a peer to peer solution with the ability to deal with disconnect events using information already known to the version control system will drasticly increase the ease of use. Ideally a user won't even have to think about using the extension.
 
 In diesem Kapitel wird der Forschungsbedarf aufgezeigt. Nach dem Lesen dieses Kapitels sollten folgende Punkte klar dargestellt sein:
 \begin{itemize}
