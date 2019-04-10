@@ -1,0 +1,4 @@
+10.04.2019: Data consistency for P2P collaborative editing
+    2009 29th IEEE International Conference on Distributed Computing Systems
+        A Commutative Replicated Data Type for Cooperative Editing
+
