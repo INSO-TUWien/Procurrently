@@ -2,3 +2,6 @@
     2009 29th IEEE International Conference on Distributed Computing Systems
         A Commutative Replicated Data Type for Cooperative Editing
 
+10.04.2019: branching version control
+    ACM New York, NY, USA ©2011
+        Branching and merging: an investigation into current version control practices

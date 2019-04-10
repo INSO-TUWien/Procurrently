@@ -1,0 +1,16 @@
+\chapter{Requirements}
+
+\section{Share the entire project structure}
+
+Every user should be able to see all changes to the project.
+Based on this Issue and the discussion "Current implementation only shares current project. It would be more useful if I could share the whole project so two persons can work on different files."\footnote{\href{https://github.com/atom/teletype/issues/211}{https://github.com/atom/teletype/issues/211}} being able to edit the entire project structure is a very important feature.
+
+\section{Only display changes in the same Git branch}
+
+Given that a lot of developers are using prototype branches and a significant number are usign feature branches Git branches are a good indication that a specific problem is being worked on.\cite{PhillipsSillitoWalker:2011:Branching_and_merging} Therefore only displaying cuncurrent edits on the same edit removes noise of unrelated edits.
+
+\section{Stage changes by author}
+
+Synchronizing changes to all developers introduces a problem:
+"[\dots]This means that git only becomes a way to have a backup as all the work is done using P2P! [\dots]"\footnote{\href{https://github.com/atom/teletype/issues/211\#issuecomment-478306010}{https://github.com/atom/teletype/issues/211\#issuecomment-478306010}}
+Possibly unrelated modicications would be bundled into huge commits. In order to mitigate this, changes should be stageable by author.
