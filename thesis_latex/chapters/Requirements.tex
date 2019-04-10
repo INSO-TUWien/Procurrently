@@ -15,6 +15,10 @@ Synchronizing changes to all developers introduces a problem:
 "[\dots]This means that git only becomes a way to have a backup as all the work is done using P2P! [\dots]"\footnote{\href{https://github.com/atom/teletype/issues/211\#issuecomment-478306010}{https://github.com/atom/teletype/issues/211\#issuecomment-478306010}}
 Possibly unrelated modicications would be bundled into huge commits. In order to mitigate this, changes should be stageable by author.
 
+\section{Respect .gitignore}
+
+Files explicitly excluded from the version control system via the .gitignore file\footnote{\href{https://git-scm.com/docs/gitignore}{https://git-scm.com/docs/gitignore}} should not be synchronized with other client as these files might contain automatically generated files that depend on the local system configuration or contain sensitive information.
+
 \section{Performance}
 
 Although "VS Code aims to deliver a stable and performant editor to end users, and misbehaving extensions should not impact the user experience. The Extension Host in VS Code prevents extensions from:
