@@ -7,6 +7,10 @@ export default class Network {
     private socket: any;
     private _onremoteEdit: Function;
 
+    get siteId(){
+        return userID;
+    }
+
 
     constructor() {
         this.others = [];
@@ -57,7 +61,7 @@ export default class Network {
 
     private handleDataPacket(data) {
         console.info('recieved '+data);
-        this._onremoteEdit(data);
+        this._onremoteEdit(JSON.parse(data));
     }
 
     onRemoteEdit(cb:Function){

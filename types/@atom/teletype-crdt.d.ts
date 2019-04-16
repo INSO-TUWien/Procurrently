@@ -63,7 +63,7 @@ export class Document {
     resolveLogicalPosition(spliceId: any, offset: any, preferStart: any): any;
     resolveLogicalRange(logicalRange: any, exclusive: any): any;
     revertToCheckpoint(checkpointId: any, options: any): any;
-    setTextInRange(start: any, end: any, text: any, options: any): any;
+    setTextInRange(start: any, end: any, text: any, options?: any): any;
     snapshotFromMarkers(layersById: any): any;
     splitSegment(splitTree: any, segment: any, offset: any): any;
     textUpdatesForOperations(operations: any, oldUndoCounts: any): any;

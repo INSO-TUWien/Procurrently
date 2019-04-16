@@ -72,6 +72,11 @@ export async function getCurrentBranch(path) {
     return (await readFile(gitDir + '/.git/HEAD')).toString().match(/ref: (.*)/)[1];
 }
 
+export async function getRepoUrl(path) {
+    const gitDir: String = await findGitDirectory(path);
+    return promiseSpawn('git', ['config', '--get', 'remote.origin.url'], { cwd: gitDir });
+}
+
 /**
  * reads a git file (equivalent to git cat-file -p)
  * @param hash the git hash of the object
@@ -85,7 +90,7 @@ function readGitObject(hash: string, repositoryPath: string): Promise<string> {
  * returns the relative path to a file in regards to a git repo
  * @param filename the full path to a file including the filename
  */
-async function getFilePathRelativeToRepo(filename: string): Promise<string> {
+export async function getFilePathRelativeToRepo(filename: string): Promise<string> {
     const dir: string = await findGitDirectory(filename);
     return filename.substr(dir.length);
 }
