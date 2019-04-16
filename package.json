@@ -40,10 +40,11 @@
 		"vscode": "^1.1.22"
 	},
 	"dependencies": {
+		"@atom/teletype-crdt": "^0.9.0",
 		"rimraf": "^2.6.3"
 	},
 	"jest": {
 		"collectCoverage": true,
-		"runInBand":true
-	  }
+		"runInBand": true
+	}
 }
