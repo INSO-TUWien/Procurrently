@@ -47,7 +47,7 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
 
 export async function onRemteChange({metaData, operations}) {
     const filepath = `${vscode.workspace.rootPath}${metaData.file}`;
-    const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file:///${filepath}`));
+    const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
     //todo check meta file and branch
     if (!documents.has(filepath)) {
         const metaData = Object.freeze({
