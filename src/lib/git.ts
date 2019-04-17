@@ -19,8 +19,11 @@ function promiseSpawn(process, args, options = {}): Promise<string> {
         proc.stdout.on('data', data => {
             output += data.toString();
         });
+        proc.stdout.on('end', () => {
+            resolve(output);
+        });
         proc.stderr.on('data', d => console.error(d.toString()));
-        proc.on('exit', code => code != 0 ? reject('unexpected error') : resolve(output));
+        proc.on('exit', code => code != 0 ? reject('unexpected error') : null);
     });
 }
 
@@ -151,7 +154,7 @@ export async function getCurrentFileVersion(filename: string): Promise<string> {
         }
         const ref = currentObject.filter(o => o.name == dir)[0];
         if (!ref) {
-            throw new Error('file not found in repo');
+            throw new Error(filename+' not found in repo');
         }
         if (ref.type == gitObjectType.tree) {
             currentObject = parseGitObject(await readGitObject(ref.hash, gitDir));

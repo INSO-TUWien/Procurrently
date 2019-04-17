@@ -17,28 +17,17 @@ const documents = new Map<string, {document:Document, metaData:{branch:string, r
 
 export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
     if (!documents.has(e.document.fileName)) {
-        const metaData = Object.freeze({
-            branch: (await Git.getCurrentBranch(e.document.fileName)),
-            repo: (await Git.getRepoUrl(e.document.fileName)),
-            file: (await Git.getFilePathRelativeToRepo(e.document.fileName))
-        });
-
-        const document = new Document({ siteId: net.siteId, text: (await Git.getCurrentFileVersion(e.document.fileName)) });
-        
-        //check for local modifications already present
-        //this solution is just a placeholder
-        const docText = e.document.getText();
-        document.setTextInRange(0,document.getText().length,docText);
-
-        documents.set(e.document.fileName, {
-            document,
-            metaData
-        });
+        console.log('Oh no... this is not good...');
+        await registerFile(e.document);
     }else{
         const doc = documents.get(e.document.fileName);
+        if(e.document.getText()==doc.document.getText()){
+            //we know about this change
+            return;
+        }
         const operations = [];
         for(let change of e.contentChanges){
-            operations.push(...doc.document.setTextInRange(change.range.start, change.range.end, change.text));
+            operations.push(...doc.document.setTextInRange({row:change.range.start.line, column:change.range.start.character},{row:change.range.end.line, column:change.range.end.line}, change.text));
         }
         net.sendUpdate({metaData:doc.metaData,operations});
     }
@@ -50,13 +39,14 @@ export async function onRemteChange({metaData, operations}) {
     const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
     //todo check meta file and branch
     if (!documents.has(filepath)) {
+        console.log('unknown remote file discovered');
         const metaData = Object.freeze({
             branch: (await Git.getCurrentBranch(filepath)),
             repo: (await Git.getRepoUrl(filepath)),
             file: (await Git.getFilePathRelativeToRepo(filepath))
         });
 
-        const document = new Document({ siteId: net.siteId, text: (await Git.getCurrentFileVersion(filepath)) });
+        const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(filepath)) }).replicate(net.siteId);
         
         //check for local modifications already present
         //this solution is just a placeholder
@@ -71,4 +61,39 @@ export async function onRemteChange({metaData, operations}) {
 
     const textOperations = documents.get(filepath).document.integrateOperations(operations);
     console.log(textOperations);
+    for(let o of textOperations.textUpdates){
+        const edit = new vscode.WorkspaceEdit();
+        edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column) , new vscode.Position(o.oldEnd.row, o.oldEnd.column)),o.newText);
+        console.log(`${o.oldStart.row},${o.oldStart.column}:'${o.newText}'`)
+        vscode.workspace.applyEdit(edit);
+    }
+}
+
+export async function registerFile(file:vscode.TextDocument){
+    if (!documents.has(file.fileName)) {
+        try{
+            const metaData = Object.freeze({
+                branch: (await Git.getCurrentBranch(file.fileName)),
+                repo: (await Git.getRepoUrl(file.fileName)),
+                file: (await Git.getFilePathRelativeToRepo(file.fileName))
+            });
+    
+            //pretend the initial doc came from the same source
+            const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(file.fileName)) }).replicate(net.siteId);
+            
+            //check for local modifications already present
+            //this solution is just a placeholder
+            // const docText = file.getText();
+            // document.setTextInRange(0,document.getText().length,docText);
+    
+            documents.set(file.fileName, {
+                document,
+                metaData
+            });
+            console.log('registered '+metaData.file);
+        }catch(e){
+            //some files opened might not be in a git repo...
+            console.warn(e);
+        }
+    }
 }

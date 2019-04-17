@@ -65,5 +65,5 @@ test('get current version',async ()=>{
 
 test('get current version no file',async ()=>{
     expect.assertions(1);
-    await expect(git.getCurrentFileVersion(testDir)).rejects.toThrow('file not found');
+    await expect(git.getCurrentFileVersion(testDir)).rejects.toThrow('not found');
 });
