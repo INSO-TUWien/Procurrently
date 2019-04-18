@@ -15,19 +15,28 @@ net.onRemoteEdit(onRemteChange);
 
 const documents = new Map<string, {document:Document, metaData:{branch:string, repo:string, file:string}}>();
 
+//remote changes that have not fired a localchangeevent yet
+const currentChanges = [];
+
 export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
     if (!documents.has(e.document.fileName)) {
         console.log('Oh no... this is not good...');
         await registerFile(e.document);
     }else{
         const doc = documents.get(e.document.fileName);
-        if(e.document.getText()==doc.document.getText()){
-            //we know about this change
-            return;
-        }
         const operations = [];
         for(let change of e.contentChanges){
-            operations.push(...doc.document.setTextInRange({row:change.range.start.line, column:change.range.start.character},{row:change.range.end.line, column:change.range.end.character}, change.text));
+            const objects = ['start','end'];
+            const props = ['line', 'character'];
+            
+            //check if this change has just been added by remote
+            const knownChanges = currentChanges.filter(c=>objects.map(o=> props.map(p=> c[o][p] == change.range[o][p])) && c.text==change.text);
+            if(knownChanges.length>0){
+                //remove from known changes
+                currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
+            }else{
+                operations.push(...doc.document.setTextInRange({row:change.range.start.line, column:change.range.start.character},{row:change.range.end.line, column:change.range.end.character}, change.text));
+            }
         }
         net.sendUpdate({metaData:doc.metaData,operations});
     }
@@ -64,6 +73,7 @@ export async function onRemteChange({metaData, operations}) {
     const edit = new vscode.WorkspaceEdit();
     for(let o of textOperations.textUpdates){
         edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column) , new vscode.Position(o.oldEnd.row, o.oldEnd.column)),o.newText);
+        currentChanges.push({start:{line:o.oldStart.row, character:o.oldStart.column}, end:{line:o.oldEnd.row, character:o.oldEnd.column}, text:o.newText});
         console.log(`${o.oldStart.row},${o.oldStart.column}:'${o.newText}'`)
     }
     vscode.workspace.applyEdit(edit);
