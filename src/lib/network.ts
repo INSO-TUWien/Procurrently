@@ -19,7 +19,7 @@ export default class Network {
 
         this.socket.listen(() => {
             const port = this.socket.address().port;
-            const host = 'localhost';
+            let host = 'localhost';
             console.log('listening on port', port);
             const s = new net.Socket();
             s.connect({
@@ -27,6 +27,7 @@ export default class Network {
                 port: 3000
             });
             s.on('connect', () => {
+                host = s.localAddress;
                 s.write(JSON.stringify({ port, host, userID }));
             })
             s.on('data', data => {
