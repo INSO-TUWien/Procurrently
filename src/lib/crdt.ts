@@ -61,12 +61,24 @@ export async function onRemteChange({metaData, operations}) {
 
     const textOperations = documents.get(filepath).document.integrateOperations(operations);
     console.log(textOperations);
+    const edit = new vscode.WorkspaceEdit();
     for(let o of textOperations.textUpdates){
-        const edit = new vscode.WorkspaceEdit();
         edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column) , new vscode.Position(o.oldEnd.row, o.oldEnd.column)),o.newText);
         console.log(`${o.oldStart.row},${o.oldStart.column}:'${o.newText}'`)
-        vscode.workspace.applyEdit(edit);
     }
+    vscode.workspace.applyEdit(edit);
+    if(metaData.cursorPosition){
+        console.log(metaData.cursorPosition);
+    }
+}
+
+export async function cursorPositionChanged(e:vscode.TextEditorSelectionChangeEvent){
+    if(e.selections.length==1){
+        registerFile(e.textEditor.document);
+        const metaData = {cursorPosition: {line:e.selections[0].active.line, character:e.selections[0].active.character},...documents.get(e.textEditor.document.fileName).metaData};
+        net.sendUpdate({operations:[], metaData});
+    }
+
 }
 
 export async function registerFile(file:vscode.TextDocument){
