@@ -60,9 +60,27 @@ export default class Network {
         });
     }
 
-    private handleDataPacket(data) {
+    private handleDataPacket(data:string) {
         console.info('recieved '+data);
-        this._onremoteEdit(JSON.parse(data));
+        //handle recieve multiple json objects at once
+        let currentObject = '';
+        let stackLevel = 0;
+        for(let i = 0; i < data.length;i++){
+            if(data[i]=='{'){
+                stackLevel++;
+            }
+            else if(data[i]=='}'){
+                stackLevel--;
+            }
+            currentObject+=data[i];
+            if(stackLevel==0){
+                this.onRemoteEdit(JSON.parse(currentObject));
+                currentObject='';
+            }
+        }
+        if(stackLevel!=0){
+            throw new Error('invalid packet recieved!');
+        }
     }
 
     onRemoteEdit(cb:Function){
