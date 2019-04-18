@@ -74,7 +74,7 @@ export default class Network {
             }
             currentObject+=data[i];
             if(stackLevel==0){
-                this.onRemoteEdit(JSON.parse(currentObject));
+                this._onremoteEdit(JSON.parse(currentObject));
                 currentObject='';
             }
         }
