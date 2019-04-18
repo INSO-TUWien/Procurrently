@@ -4,7 +4,7 @@ var others = [];
 
 var socket = net.createServer();
 
-socket.listen(3000,'localhost');
+socket.listen(3000);
 
 socket.on('connection', socket=>{
     socket.on('data',data=>{
