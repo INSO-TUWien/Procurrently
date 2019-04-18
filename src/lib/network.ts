@@ -6,6 +6,8 @@ export default class Network {
     private others: net.Socket[];
     private socket: any;
     private _onremoteEdit: Function;
+    currentObject: string;
+    stackLevel: number;
 
     get siteId(){
         return userID;
@@ -14,7 +16,8 @@ export default class Network {
 
     constructor() {
         this.others = [];
-
+        this.currentObject = '';
+        this.stackLevel = 0;
         this.socket = net.createServer();
 
         this.socket.listen(() => {
@@ -23,7 +26,7 @@ export default class Network {
             console.log('listening on port', port);
             const s = new net.Socket();
             s.connect({
-                host: 'localhost',
+                host: '192.168.1.18',
                 port: 3000
             });
             s.on('connect', () => {
@@ -63,23 +66,21 @@ export default class Network {
     private handleDataPacket(data:string) {
         console.info('recieved '+data);
         //handle recieve multiple json objects at once
-        let currentObject = '';
-        let stackLevel = 0;
+        
         for(let i = 0; i < data.length;i++){
             if(data[i]=='{'){
-                stackLevel++;
+                this.stackLevel++;
             }
             else if(data[i]=='}'){
-                stackLevel--;
+                this.stackLevel--;
             }
-            currentObject+=data[i];
-            if(stackLevel==0){
-                this._onremoteEdit(JSON.parse(currentObject));
-                currentObject='';
+            this.currentObject+=data[i];
+            if(this.stackLevel==0){
+                if(this.currentObject.length>0){
+                    this._onremoteEdit(JSON.parse(this.currentObject));
+                }
+                this.currentObject='';
             }
-        }
-        if(stackLevel!=0){
-            throw new Error('invalid packet recieved!');
         }
     }
 
