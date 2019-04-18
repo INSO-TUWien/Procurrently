@@ -27,7 +27,7 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
         }
         const operations = [];
         for(let change of e.contentChanges){
-            operations.push(...doc.document.setTextInRange({row:change.range.start.line, column:change.range.start.character},{row:change.range.end.line, column:change.range.end.line}, change.text));
+            operations.push(...doc.document.setTextInRange({row:change.range.start.line, column:change.range.start.character},{row:change.range.end.line, column:change.range.end.character}, change.text));
         }
         net.sendUpdate({metaData:doc.metaData,operations});
     }
