@@ -8,6 +8,7 @@ export default class Network {
     private _onremoteEdit: Function;
     currentObject: string;
     stackLevel: number;
+    inString: boolean;
 
     get siteId(){
         return userID;
@@ -18,6 +19,7 @@ export default class Network {
         this.others = [];
         this.currentObject = '';
         this.stackLevel = 0;
+        this.inString=false;
         this.socket = net.createServer();
 
         this.socket.listen(() => {
@@ -68,13 +70,19 @@ export default class Network {
         //handle recieve multiple json objects at once
         
         for(let i = 0; i < data.length;i++){
+            this.currentObject+=data[i];
+            if(data[i]=='"'){
+                this.inString=!this.inString;
+            }
+            if(this.inString){
+                continue;
+            }
             if(data[i]=='{'){
                 this.stackLevel++;
             }
             else if(data[i]=='}'){
                 this.stackLevel--;
             }
-            this.currentObject+=data[i];
             if(this.stackLevel==0){
                 if(this.currentObject.length>0){
                     this._onremoteEdit(JSON.parse(this.currentObject));
