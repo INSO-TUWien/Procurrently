@@ -38,7 +38,9 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
                 operations.push(...doc.document.setTextInRange({ row: change.range.start.line, column: change.range.start.character }, { row: change.range.end.line, column: change.range.end.character }, change.text));
             }
         }
-        net.sendUpdate({ metaData: doc.metaData, operations });
+        if(operations.length>0){
+            net.sendUpdate({ metaData: doc.metaData, operations });
+        }
     }
 
 }
