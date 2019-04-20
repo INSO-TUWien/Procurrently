@@ -72,15 +72,12 @@ export async function onRemteChange({ metaData, operations }) {
 
     const textOperations = documents.get(filepath).document.integrateOperations(operations);
     console.log(textOperations);
-    const edit = new vscode.WorkspaceEdit();
     for (let o of textOperations.textUpdates) {
+        const edit = new vscode.WorkspaceEdit();
         edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
         currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
-        console.log(`${o.oldStart.row},${o.oldStart.column}:'${o.newText}'`)
-    }
-    vscode.workspace.applyEdit(edit);
-    if (metaData.cursorPosition) {
-        console.log(metaData.cursorPosition);
+        console.log(`${o.oldStart.row},${o.oldStart.column} to ${o.oldEnd.row},${o.oldEnd.column}:'${o.newText}'`)
+        await vscode.workspace.applyEdit(edit);
     }
 }
 

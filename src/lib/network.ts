@@ -9,6 +9,7 @@ export default class Network {
     currentObject: string;
     stackLevel: number;
     inString: boolean;
+    _currentEdit: Promise<any> = Promise.resolve();
 
     get siteId(){
         return userID;
@@ -85,7 +86,15 @@ export default class Network {
             }
             if(this.stackLevel==0){
                 if(this.currentObject.length>0){
-                    this._onremoteEdit(JSON.parse(this.currentObject));
+                    const toParse = this.currentObject;
+                    this._currentEdit = this._currentEdit.then(()=>{
+                        try{
+                             return this._onremoteEdit(JSON.parse(toParse));
+                        }catch(e){
+                            console.error(e);
+                            throw e;
+                        }
+                    })
                 }
                 this.currentObject='';
             }

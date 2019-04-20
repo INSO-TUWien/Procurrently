@@ -26,7 +26,7 @@ export class Document {
     collectOperationsSinceCheckpoint(checkpointId: any, deleteOperations: any, deleteCheckpoint: any): any;
     collectSegments(spliceIdString: any, segments: any, segmentIndices: any, segmentStartPositions: any): void;
     computeChangesForSegments(segmentIndices: any, segmentStartPositions: any, oldUndoCounts: any, newOperations: any): any;
-    createCheckpoint(options: any): any;
+    createCheckpoint(options?: any): any;
     deferMarkerUpdate(siteId: any, layerId: any, markerId: any, markerUpdate: any): void;
     deferOperation(op: any): void;
     findLocalSegmentBoundary(position: any): any;
