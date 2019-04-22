@@ -38,7 +38,7 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
                 operations.push(...doc.document.setTextInRange({ row: change.range.start.line, column: change.range.start.character }, { row: change.range.end.line, column: change.range.end.character }, change.text));
             }
         }
-        if(operations.length>0){
+        if (operations.length > 0) {
             net.sendUpdate({ metaData: doc.metaData, operations });
         }
     }
@@ -72,7 +72,7 @@ export async function onRemteChange({ metaData, operations }) {
 
     const textOperations = documents.get(filepath).document.integrateOperations(operations);
     console.log(textOperations);
-    for (let o of textOperations.textUpdates) {
+    for (let o of textOperations.textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)) {
         const edit = new vscode.WorkspaceEdit();
         edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
         currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
