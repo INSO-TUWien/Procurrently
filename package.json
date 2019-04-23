@@ -16,12 +16,23 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
-			{
-				"command": "extension.helloWorld",
-				"title": "Hello World"
-			}
-		]
+		"viewsContainers": {
+			"activitybar": [
+			  {
+				"id": "change-explorer",
+				"title": "Change Explorer",
+				"icon": "media/icon.svg"
+			  }
+			]
+		  },
+		  "views": {
+            "change-explorer": [
+                {
+                    "id": "contributors",
+                    "name": "Contributors"
+                }
+            ]
+        }
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

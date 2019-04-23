@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as crdt from './lib/crdt';
+import { ContributorsTreeView } from './ContributorsTreeView';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -13,6 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.workspace.applyEdit(edit); */
 	//vscode.window.onDidChangeTextEditorSelection(crdt.cursorPositionChanged);
 	vscode.workspace.onDidChangeTextDocument(crdt.onLocalChange);
+
+	vscode.window.registerTreeDataProvider('contributors', new ContributorsTreeView(crdt));
+
+	vscode.commands.registerCommand('stageChanges',(args)=>{
+		console.log(args)
+	})
 }
 
 // this method is called when your extension is deactivated
