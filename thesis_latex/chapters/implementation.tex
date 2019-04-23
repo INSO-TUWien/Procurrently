@@ -1,0 +1,21 @@
+\chapter{Implementation}
+
+\section{VS Code Extension API}
+
+VS Code runs extension in a seperate process and provides an async Javascript API.
+The examples provided in the VS Code examples\footnote{https://github.com/Microsoft/vscode-extension-samples} are mostly written in Typescript\footnote{https://www.typescriptlang.org/} and all the Interfaces have type definitions for Typescript.
+Therefore the Extension will use Typescript as well.
+
+\subsection{Used API functions}
+
+\begin{lstlisting}
+vscode.workspace.onDidChangeTextDocument()
+\end{lstlisting}
+
+"An event that is emitted when a text document is changed. This usually happens when the contents changes but also when other things like the dirty-state changes."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
+
+\begin{lstlisting}
+vscode.workspace.onDidOpenTextDocument()
+\end{lstlisting}
+
+"An event that is emitted when a text document is opened or when the language id of a text document has been changed."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
