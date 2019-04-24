@@ -1,6 +1,6 @@
 import * as net from "net";
 
-const userID = Math.floor(Math.random() * Math.pow(2, 64));
+const userID = Math.floor(Math.random() * Math.pow(2, 52))+2;
 
 export default class Network {
     private others: net.Socket[];
