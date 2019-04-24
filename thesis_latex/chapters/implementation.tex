@@ -1,5 +1,13 @@
 \chapter{Implementation}
 
+\section{teletype-crdt}
+
+"The string-wise sequence CRDT powering peer-to-peer collaborative editing in Teletype for Atom."\footnote{https://github.com/atom/teletype-crdt}
+This library will be used for tracking changes. It is written in Javascript and currently doesn't include an API documentation.
+
+\subsection{Git and teletype-crdt}
+As a basis for the edit history  the current Git commit in the current branch will be used. teletype-crdt uses numeric siteIds to identify changes. The current Git commit is imported as edited by siteId 1 upon discovering the file.
+
 \section{VS Code Extension API}
 
 VS Code runs extension in a seperate process and provides an async Javascript API.
@@ -19,3 +27,17 @@ vscode.workspace.onDidOpenTextDocument()
 \end{lstlisting}
 
 "An event that is emitted when a text document is opened or when the language id of a text document has been changed."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
+
+\begin{lstlisting}
+vscode.workspace.applyEdit(edit)
+\end{lstlisting}
+"Make changes to one or many resources or create, delete, and rename resources as defined by the given workspace edit."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
+
+This function returns a promise which resolves when the change has been added to the text document.
+An edit is given by a document, the line and column of start and end of the edit in that document and the new text to be inserted there.
+If text is added or removed within a line, the columns of the text change after the edit has been applied (when the promise resolves). If another edit is applied before the promise resolved, the indices of the text might have not been changed yet and therefore at a different position than expected. VS Codes WorkspaceEdit supports grouping change operations together. But change operations are not treated as happening all at a time so if for example the text "123" was typed the teletype-crdt library would essentially output Line 1 Char 1 to Line 1 Char 1 changed to "1", Line 1 Char 2 to Line 2 Char 2 changed to "2" and so on. This is kind of expected behaviour so far but VS Code's WorkspaceEdit treats this as independent operations and if there was text after the insertion the changes would not be inserted as 1 block but interlaced with the previous text. 
+
+In order to avoid this race condition all changes to a file have to be carried out sequentially. This is not noticable when changes by regular typing are integrated into the local document. But when the multiple cursors\footnote{https://code.visualstudio.com/docs/getstarted/tips-and-tricks\#\_editing-hacks} are used the change integration can slow down noticably. In order to support multiple cursors the changes are sorted by column in decending order to prevent shifting indices. 
+\begin{lstlisting}
+textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)
+\end{lstlisting}
