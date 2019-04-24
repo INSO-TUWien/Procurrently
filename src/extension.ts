@@ -15,7 +15,9 @@ export function activate(context: vscode.ExtensionContext) {
 	//vscode.window.onDidChangeTextEditorSelection(crdt.cursorPositionChanged);
 	vscode.workspace.onDidChangeTextDocument(crdt.onLocalChange);
 
-	vscode.window.registerTreeDataProvider('contributors', new ContributorsTreeView(crdt));
+	const treeview = new ContributorsTreeView(crdt.getUsers);
+	vscode.window.registerTreeDataProvider('contributors', treeview);
+	crdt.setUserUpdatedCallback(treeview.refresh);
 
 	vscode.commands.registerCommand('stageChanges',(args)=>{
 		console.log(args)

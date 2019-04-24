@@ -220,3 +220,11 @@ export async function stageGitObject(filename: string, content: string) {
     await promiseSpawn('git', ['update-index', '--add', '--cacheinfo', '100644', hash, path], { cwd: repositoryPath });
 }
 
+/**
+ * returns the configured git user for a given repository
+ * @param path the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
+export async function getUserName(repo:string):Promise<string>{
+    const gitDir: String = await findGitDirectory(repo);
+    return (await promiseSpawn('git', ['config', 'user.name'],{cwd:gitDir})).split(/\n/)[0];
+}

@@ -6,12 +6,13 @@ export default class Network {
     private others: net.Socket[];
     private socket: any;
     private _onremoteEdit: Function;
-    currentObject: string;
-    stackLevel: number;
-    inString: boolean;
-    _currentEdit: Promise<any> = Promise.resolve();
+    private currentObject: string;
+    private stackLevel: number;
+    private inString: boolean;
+    private _currentEdit: Promise<any> = Promise.resolve();
+    private _dataProvider: Function;
 
-    get siteId(){
+    get siteId() {
         return userID;
     }
 
@@ -20,7 +21,7 @@ export default class Network {
         this.others = [];
         this.currentObject = '';
         this.stackLevel = 0;
-        this.inString=false;
+        this.inString = false;
         this.socket = net.createServer();
 
         this.socket.listen(() => {
@@ -29,7 +30,7 @@ export default class Network {
             console.log('listening on port', port);
             const s = new net.Socket();
             s.connect({
-                host: '192.168.1.18',
+                host: process.env.bootstrap || 'localhost',
                 port: 3000
             });
             s.on('connect', () => {
@@ -60,48 +61,54 @@ export default class Network {
 
         this.socket.on('connection', s => {
             this.others.push(s);
+            //when a new client connects we send him all the changes we know of
+            if (this._dataProvider) {
+                for (let entry of this._dataProvider()) {
+                    s.write(JSON.stringify(entry));
+                }
+            }
             s.on('close', () => this.others.splice(this.others.indexOf(s), 1));
             s.on('data', d => this.handleDataPacket(d.toString()));
             s.on('error', console.error);
         });
     }
 
-    private handleDataPacket(data:string) {
-        console.info('recieved '+data);
+    private handleDataPacket(data: string) {
+        console.info('recieved ' + data);
         //handle recieve multiple json objects at once
-        
-        for(let i = 0; i < data.length;i++){
-            this.currentObject+=data[i];
-            if(data[i]=='"'){
-                this.inString=!this.inString;
+
+        for (let i = 0; i < data.length; i++) {
+            this.currentObject += data[i];
+            if (data[i] == '"') {
+                this.inString = !this.inString;
             }
-            if(this.inString){
+            if (this.inString) {
                 continue;
             }
-            if(data[i]=='{'){
+            if (data[i] == '{') {
                 this.stackLevel++;
             }
-            else if(data[i]=='}'){
+            else if (data[i] == '}') {
                 this.stackLevel--;
             }
-            if(this.stackLevel==0){
-                if(this.currentObject.length>0){
+            if (this.stackLevel == 0) {
+                if (this.currentObject.length > 0) {
                     const toParse = this.currentObject;
-                    this._currentEdit = this._currentEdit.then(()=>{
-                        try{
-                             return this._onremoteEdit(JSON.parse(toParse));
-                        }catch(e){
+                    this._currentEdit = this._currentEdit.then(() => {
+                        try {
+                            return this._onremoteEdit(JSON.parse(toParse));
+                        } catch (e) {
                             console.error(e);
                             throw e;
                         }
                     })
                 }
-                this.currentObject='';
+                this.currentObject = '';
             }
         }
     }
 
-    onRemoteEdit(cb:Function){
+    onRemoteEdit(cb: Function) {
         this._onremoteEdit = cb;
     }
 
@@ -109,5 +116,9 @@ export default class Network {
         this.others.forEach(socket => {
             socket.write(JSON.stringify(update));
         });
+    }
+
+    setDataProviderCallback(cb: Function) {
+        this._dataProvider = cb;
     }
 }
