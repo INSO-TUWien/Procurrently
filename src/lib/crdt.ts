@@ -50,24 +50,7 @@ export async function onRemteChange({ metaData, operations }) {
     //todo check meta file and branch
     if (!documents.has(filepath)) {
         const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
-        console.log('unknown remote file discovered');
-        const metaData = Object.freeze({
-            branch: (await Git.getCurrentBranch(filepath)),
-            repo: (await Git.getRepoUrl(filepath)),
-            file: (await Git.getFilePathRelativeToRepo(filepath))
-        });
-
-        const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(filepath)) }).replicate(net.siteId);
-
-        //check for local modifications already present
-        //this solution is just a placeholder
-        const docText = localdoc.getText();
-        document.setTextInRange(0, document.getText().length, docText);
-
-        documents.set(filepath, {
-            document,
-            metaData
-        });
+        await registerFile(localdoc);
     }
 
     const textOperations = documents.get(filepath).document.integrateOperations(operations);
