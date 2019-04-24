@@ -59,7 +59,7 @@ export class Document {
     markersFromSnapshot(snapshot: any): any;
     populateHistory({ baseText, nextCheckpointId, undoStack, redoStack }: any): void;
     redo(): any;
-    replicate(siteId: any): any;
+    replicate(siteId: any): Document;
     resolveLogicalPosition(spliceId: any, offset: any, preferStart: any): any;
     resolveLogicalRange(logicalRange: any, exclusive: any): any;
     revertToCheckpoint(checkpointId: any, options: any): any;

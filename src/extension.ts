@@ -19,10 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider('contributors', treeview);
 	crdt.setUserUpdatedCallback(treeview.refresh);
 
-	vscode.commands.registerCommand('stageChanges',(args)=>{
-		console.log(args)
+	vscode.commands.registerCommand('stageChanges', siteId => {
+		crdt.stageChangesBySiteIDs([siteId]);
 	})
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

@@ -59,7 +59,7 @@ export async function onRemteChange({ metaData, operations, authors }) {
     for (let [siteId, name] of new Map<Number, string>(authors)) {
         if (!localMetaData.users.has(siteId)) {
             localMetaData.users.set(siteId, name);
-            if(usersChanged){
+            if (usersChanged) {
                 usersChanged();
             }
         }
@@ -127,10 +127,18 @@ export function setUserUpdatedCallback(cb: Function) {
 
 export function getUsers() {
     const users = [];
-    for(let [key,doc] of documents){
+    for (let [key, doc] of documents) {
         for (let [siteId, name] of doc.metaData.users) {
             users.push(new User(name, siteId));
         }
     }
     return users;
+}
+
+export async function stageChangesBySiteIDs(siteIDs: [Number]) {
+    for (let [_, document] of documents) {
+        const newDoc = document.document.replicate(net.siteId);
+        newDoc.undoOrRedoOperations(newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1));
+        Git.stageGitObject(`${vscode.workspace.rootPath}${document.metaData.file}`, newDoc.getText());
+    }
 }
