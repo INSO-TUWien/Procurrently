@@ -116,7 +116,7 @@ export async function registerFile(file: vscode.TextDocument) {
 export function getAllChanges() {
     const changes = [];
     for (let [key, data] of documents) {
-        changes.push({ metaData: data.metaData, operations: data.document.getOperations() });
+        changes.push({ metaData: data.metaData, operations: data.document.getOperations(), authors: Array.from(data.metaData.users) });
     }
     return changes;
 }
@@ -129,16 +129,38 @@ export function getUsers() {
     const users = [];
     for (let [key, doc] of documents) {
         for (let [siteId, name] of doc.metaData.users) {
-            users.push(new User(name, siteId));
+            if(stagedSiteIds.indexOf(siteId)>-1){
+                users.push(new User(name+' (staged)', siteId));
+            }else{
+                users.push(new User(name, siteId));
+            }
         }
     }
     return users;
 }
 
-export async function stageChangesBySiteIDs(siteIDs: [Number]) {
+let staging = Promise.resolve();
+const stagedSiteIds:Number[] = [];
+export async function toggleStageChangesBySiteId(siteId) {
+    if (stagedSiteIds.indexOf(siteId) > -1) {
+        stagedSiteIds.splice(stagedSiteIds.indexOf(siteId),1);
+    }
+    else{
+        stagedSiteIds.push(siteId);
+    }
+    await staging;
+    staging = stageChangesBySiteIDs(stagedSiteIds);
+    if (usersChanged) {
+        usersChanged();
+    }
+}
+
+export async function stageChangesBySiteIDs(siteIDs: Number[]) {
     for (let [_, document] of documents) {
         const newDoc = document.document.replicate(net.siteId);
-        newDoc.undoOrRedoOperations(newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1));
-        Git.stageGitObject(`${vscode.workspace.rootPath}${document.metaData.file}`, newDoc.getText());
+        const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
+        newDoc.undoOrRedoOperations(operationsToExclude);
+        await Git.stageGitObject(`${vscode.workspace.rootPath}${document.metaData.file}`, newDoc.getText());
+        newDoc.undoOrRedoOperations(operationsToExclude);
     }
 }

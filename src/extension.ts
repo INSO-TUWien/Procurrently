@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 	crdt.setUserUpdatedCallback(treeview.refresh);
 
 	vscode.commands.registerCommand('stageChanges', siteId => {
-		crdt.stageChangesBySiteIDs([siteId]);
+		crdt.toggleStageChangesBySiteId(siteId);
 	})
 }
 
