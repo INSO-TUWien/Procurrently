@@ -5,10 +5,9 @@ import {
 } from '@atom/teletype-crdt';
 import Network from './network';
 import * as Git from './git';
-import * as crypto from 'crypto';
 import * as vscode from 'vscode';
-import setText from 'vscode-set-text';
 import { User } from '../ContributorsTreeView';
+import { watchFile } from 'fs';
 
 //setup peer to peer connection
 const net = new Network();
@@ -16,6 +15,7 @@ net.onRemoteEdit(onRemteChange);
 net.setDataProviderCallback(getAllChanges);
 
 const documents = new Map<string, { document: Document, metaData: { branch: string, repo: string, file: string, users: Map<Number, string> } }>();
+const localPaths = new Map<string, string>();
 
 //remote changes that have not fired a localchangeevent yet
 const currentChanges = [];
@@ -48,7 +48,7 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
 }
 
 export async function onRemteChange({ metaData, operations, authors }) {
-    const filepath = `${vscode.workspace.rootPath}${metaData.file}`;
+    const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath}${metaData.file}`;
     //todo check meta file and branch
     if (!documents.has(filepath)) {
         const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
@@ -91,6 +91,12 @@ export async function registerFile(file: vscode.TextDocument) {
                 file: (await Git.getFilePathRelativeToRepo(file.fileName)),
                 users: new Map()
             });
+            if (!localPaths.has(metaData.repo)) {
+                localPaths.set(metaData.repo, await Git.findGitDirectory(file.fileName));
+                watchFile(localPaths.get(metaData.repo)+'/.git/HEAD', (curr, prev)=>{
+                    console.log('branch changed!');
+                });
+            }
             metaData.users.set(net.siteId, await Git.getUserName(file.fileName));
 
             //pretend the initial doc came from the same source
@@ -129,9 +135,9 @@ export function getUsers() {
     const users = [];
     for (let [key, doc] of documents) {
         for (let [siteId, name] of doc.metaData.users) {
-            if(stagedSiteIds.indexOf(siteId)>-1){
-                users.push(new User(name+' (staged)', siteId));
-            }else{
+            if (stagedSiteIds.indexOf(siteId) > -1) {
+                users.push(new User(name + ' (staged)', siteId));
+            } else {
                 users.push(new User(name, siteId));
             }
         }
@@ -140,12 +146,12 @@ export function getUsers() {
 }
 
 let staging = Promise.resolve();
-const stagedSiteIds:Number[] = [];
+const stagedSiteIds: Number[] = [];
 export async function toggleStageChangesBySiteId(siteId) {
     if (stagedSiteIds.indexOf(siteId) > -1) {
-        stagedSiteIds.splice(stagedSiteIds.indexOf(siteId),1);
+        stagedSiteIds.splice(stagedSiteIds.indexOf(siteId), 1);
     }
-    else{
+    else {
         stagedSiteIds.push(siteId);
     }
     await staging;
