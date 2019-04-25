@@ -1,9 +1,48 @@
 \chapter{Implementation}
 
+\section{Git}
+
+Git provides useful information about the current project, the developer is working on, such as:
+\begin{itemize}
+    \item The current branch (the problem being worked on)
+    \item The root directory of the project (for path resolution across devices)
+    \item The current version of a file (as a basis for collaborative edits)
+    \item Information about the developer (the username)
+\end{itemize}
+
+Git stores this information in the ".git" directory in the root folder of the project.
+The data is stored in a compressed format. In order to access the information, a small library using low level git commands was implemented. 
+
+It provides functions to:
+\begin{itemize}
+    \item Find the Git directory for a given file (given the file is inside a git project)
+    \item Get the current branch of a Git repository
+    \item Get the remote URL for a repository
+    \item Get the current version of a given file
+    \item Stage a file for commit
+    \item Get the username configured for the Git repository
+\end{itemize}
+
 \section{teletype-crdt}
 
 "The string-wise sequence CRDT powering peer-to-peer collaborative editing in Teletype for Atom."\footnote{https://github.com/atom/teletype-crdt}
 This library will be used for tracking changes. It is written in Javascript and currently doesn't include an API documentation.
+
+The main functions used are
+
+\begin{lstlisting}
+setTextInRange(start: {row:Number, column:Number}, end: {row:Number, column:Number}, text: string, options?: any): [operation];
+\end{lstlisting}
+Which is used to notify the document representation about a text operation on the local document and
+\begin{lstlisting}
+integrateOperations(operations: [operations]): {textUpdates:[textUpdate], markerUpdates:any};
+\end{lstlisting}
+Which is used to notify the document representation about remote changes and returns the changes to the local file required to keep it in sync with other instances
+and
+\begin{lstlisting}
+undoOrRedoOperations(operationsToUndo: [operation]): any;
+\end{lstlisting}
+Which is used to undo changes.
 
 \subsection{Git and teletype-crdt}
 As a basis for the edit history  the current Git commit in the current branch will be used. teletype-crdt uses numeric siteIds to identify changes. The current Git commit is imported as edited by siteId 1 upon discovering the file.
