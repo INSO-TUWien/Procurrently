@@ -18,21 +18,25 @@
 	"contributes": {
 		"viewsContainers": {
 			"activitybar": [
-			  {
-				"id": "change-explorer",
-				"title": "Change Explorer",
-				"icon": "media/icon.svg"
-			  }
+				{
+					"id": "change-explorer",
+					"title": "Change Explorer",
+					"icon": "media/icon.svg"
+				}
 			]
-		  },
-		  "views": {
-            "change-explorer": [
-                {
-                    "id": "contributors",
-                    "name": "Contributors"
-                }
-            ]
-        }
+		},
+		"views": {
+			"change-explorer": [
+				{
+					"id": "contributors",
+					"name": "Contributors"
+				}
+			]
+		},
+		"commands": [{
+			"command": "procurrently.checkoutBranch",
+			"title": "Procurrently: Checkout Branch"
+	}]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

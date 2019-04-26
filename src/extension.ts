@@ -8,7 +8,7 @@ import { ContributorsTreeView } from './ContributorsTreeView';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidOpenTextDocument(crdt.registerFile);
-	if(vscode.window.activeTextEditor){
+	if (vscode.window.activeTextEditor) {
 		crdt.registerFile(vscode.window.activeTextEditor.document);
 	}
 	/* const edit = new vscode.WorkspaceEdit();
@@ -23,7 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.commands.registerCommand('stageChanges', siteId => {
 		crdt.toggleStageChangesBySiteId(siteId);
-	})
+	});
+
+	vscode.commands.registerCommand('procurrently.checkoutBranch', () => {
+		crdt.switchBranch();
+	});
 }
 
 // this method is called when your extension is deactivated

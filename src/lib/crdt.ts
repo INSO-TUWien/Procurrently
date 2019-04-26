@@ -14,20 +14,52 @@ const net = new Network();
 net.onRemoteEdit(onRemteChange);
 net.setDataProviderCallback(getAllChanges);
 
-const documents = new Map<string, { document: Document, metaData: { branch: string, repo: string, file: string, users: Map<Number, string> } }>();
+const documents = new Map<string, { document: Document, metaData: { commit:string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
 /** remote repository to path mapping */
 const localPaths = new Map<string, string>();
 /** The current branch for a file */
 const branches = new Map<string, string>();
 
+/**
+ * retrieves a document by it's metadata. If only a filename is given will return the current local version
+ * @param filename the filename
+ * @param commit the HEAD commit
+ * @param branch the Branch
+ * @param repo The remote repository url
+ */
+
+function getSpecifier(commit: string, branch: string, repo: string) {
+    return `@${commit}@${branch}@${repo}`;
+}
+
+function getLocalDocument(filename: string, commit?: string, branch?: string, repo?: string) {
+    let key;
+    if (commit && branch && repo) {
+        key = filename + getSpecifier(commit, branch, repo);
+    }
+    else if (branches.has(filename)) {
+        key = filename + branches.get(filename);
+    }
+    else {
+        return null;
+    }
+    return documents.get(key);
+}
+
+function setLocalDocument(document, filename: string, commit: string, branch: string, repo: string) {
+    const specifier = getSpecifier(commit, branch, repo);
+    documents.set(`${filename}${specifier}`, document);
+}
+
+
 //remote changes that have not fired a localchangeevent yet
 const currentChanges = [];
 
 export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
-    if (!branches.has(e.document.fileName) || !documents.has(e.document.fileName + branches.get(e.document.fileName))) {
+    if (!getLocalDocument(e.document.fileName)) {
         await registerFile(e.document);
     } else {
-        const doc = documents.get(e.document.fileName + branches.get(e.document.fileName));
+        const doc = getLocalDocument(e.document.fileName);
         const operations = [];
         for (let change of e.contentChanges) {
             const objects = ['start', 'end'];
@@ -52,12 +84,12 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
 export async function onRemteChange({ metaData, operations, authors }) {
     const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath}${metaData.file}`;
     //todo check meta file and branch
-    if (!documents.has(filepath + metaData.branch)) {
+    if (!getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo)) {
         const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
-        await registerFile(localdoc, metaData.branch);
+        await registerFile(localdoc, metaData.branch, metaData.commit, metaData.repo);
     }
 
-    const localMetaData = documents.get(filepath + metaData.branch).metaData;
+    const localMetaData = getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).metaData;
     for (let [siteId, name] of new Map<Number, string>(authors)) {
         if (!localMetaData.users.has(siteId)) {
             localMetaData.users.set(siteId, name);
@@ -68,45 +100,58 @@ export async function onRemteChange({ metaData, operations, authors }) {
     }
 
     //only apply changes if on the same branch
-    if (branches.get(filepath) == metaData.branch) {
-        const textOperations = documents.get(filepath + branches.get(filepath)).document.integrateOperations(operations);
+    if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo)) {
+        const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
         for (let o of textOperations.textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)) {
             const edit = new vscode.WorkspaceEdit();
             edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
             currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
             await vscode.workspace.applyEdit(edit);
         }
+    }else{
+        //save changes to other files
+        getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
     }
 }
 
 export async function cursorPositionChanged(e: vscode.TextEditorSelectionChangeEvent) {
     if (e.selections.length == 1) {
         registerFile(e.textEditor.document);
-        const metaData = { cursorPosition: { line: e.selections[0].active.line, character: e.selections[0].active.character }, ...documents.get(e.textEditor.document.fileName).metaData };
+        const metaData = { cursorPosition: { line: e.selections[0].active.line, character: e.selections[0].active.character }, ...getLocalDocument(e.textEditor.document.fileName).metaData };
         net.sendUpdate({ operations: [], metaData });
     }
 
 }
 
-export async function registerFile(file: vscode.TextDocument, branch?: string) {
+export async function registerFile(file: vscode.TextDocument, branch?: string, commit?: string, repo?:string) {
     if (!branch) {
         branch = await Git.getCurrentBranch(file.fileName);
+    }
+    if (!commit) {
+        commit = await Git.getCurrentCommitHash(file.fileName);
+    }
+    if(!repo){
+        repo = await Git.getRepoUrl(file.fileName);
     }
     if (!documents.has(file.fileName)) {
         try {
             const metaData = Object.freeze({
                 branch,
-                repo: (await Git.getRepoUrl(file.fileName)),
+                commit,
+                repo,
                 file: (await Git.getFilePathRelativeToRepo(file.fileName)),
                 users: new Map()
             });
             if (!localPaths.has(metaData.repo)) {
                 localPaths.set(metaData.repo, await Git.findGitDirectory(file.fileName));
-                branches.set(file.fileName, metaData.branch);
-                watchFile(localPaths.get(metaData.repo) + '/.git/HEAD', async (curr, prev) => {
-                    branches.set(file.fileName, await Git.getCurrentBranch(file.fileName));
-                    registerFile(file, await Git.getCurrentBranch(file.fileName));
-                });
+                branches.set(file.fileName, getSpecifier(await Git.getCurrentCommitHash(file.fileName), await Git.getCurrentBranch(file.fileName), await Git.getRepoUrl(file.fileName)));
+
+                const gitEnvChangedCB = async _ => {
+                    //will be executed when the current branch or head commit changes
+                    branches.set(file.fileName, getSpecifier(await Git.getCurrentCommitHash(file.fileName), await Git.getCurrentBranch(file.fileName), await Git.getRepoUrl(file.fileName)));
+                };
+                watchFile(localPaths.get(metaData.repo) + '/.git/HEAD', gitEnvChangedCB);
+                watchFile(localPaths.get(metaData.repo) + '/.git/' + metaData.branch, gitEnvChangedCB);
             }
             metaData.users.set(net.siteId, await Git.getUserName(file.fileName));
 
@@ -117,11 +162,10 @@ export async function registerFile(file: vscode.TextDocument, branch?: string) {
             //this solution is just a placeholder
             // const docText = file.getText();
             // document.setTextInRange(0,document.getText().length,docText);
-
-            documents.set(file.fileName + metaData.branch, {
+            setLocalDocument({
                 document,
                 metaData
-            });
+            }, file.fileName, commit, branch, repo);
             console.log('registered ' + metaData.file);
         } catch (e) {
             //some files opened might not be in a git repo...
@@ -180,4 +224,30 @@ export async function stageChangesBySiteIDs(siteIDs: Number[]) {
         await Git.stageGitObject(`${vscode.workspace.rootPath}${document.metaData.file}`, newDoc.getText());
         newDoc.undoOrRedoOperations(operationsToExclude);
     }
+}
+
+export async function switchBranch() {
+    const branch = await vscode.window.showQuickPick(Git.getBranches(vscode.workspace.rootPath + '/a'));// the /a is a hack to get git to not effectively cd..
+    if (!branch) {
+        return;
+    }
+    await vscode.workspace.saveAll(true);
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    await Git.resetAndSwitchBranch(vscode.workspace.rootPath + '/a', branch);
+    const edits = [];
+    for(let [key, doc] of documents){
+        const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
+        if(await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo){
+            const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
+            const localText = localdoc.getText();
+            if(doc.document.getText()!=localText){
+                const edit = new vscode.WorkspaceEdit();
+                const endPosition = localdoc.positionAt(localText.length);
+                edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0,0), endPosition), doc.document.getText());
+                currentChanges.push({ start: { line: 0, character: 0 }, end: { line: endPosition.line, character: endPosition.character }, text: doc.document.getText() });
+                edits.push(vscode.workspace.applyEdit(edit));
+            }
+        }
+    }
+    await Promise.all(edits);
 }

@@ -137,17 +137,22 @@ function parseGitObject(content: string) {
     return parsedContent;
 }
 
+export async function getCurrentCommitHash(repo:string){
+    const gitDir = await findGitDirectory(repo);
+    let commit = await getCurrentBranch(repo);
+    let currentObject = parseGitObject(await readGitObject(commit, gitDir));
+    return currentObject.filter(o => o.type == gitObjectType.tree)[0].hash;
+}
+
 /**
  * returns the current version committed in git of a specified file
  * @param filename the full path to the file including the filename
  */
 export async function getCurrentFileVersion(filename: string): Promise<string> {
     const gitDir = await findGitDirectory(filename);
-    let commit = await getCurrentBranch(filename);
     const relativeFilePath: string = await getFilePathRelativeToRepo(filename);
-    let currentObject = parseGitObject(await readGitObject(commit, gitDir));
+    let currentObject = parseGitObject(await readGitObject(await getCurrentCommitHash(filename), gitDir));
     //get the tree of the git root
-    currentObject = parseGitObject(await readGitObject(currentObject.filter(o => o.type == gitObjectType.tree)[0].hash, gitDir));
     for (let dir of relativeFilePath.split(/\//g)) {
         if (dir == '') {
             continue;
@@ -227,4 +232,19 @@ export async function stageGitObject(filename: string, content: string) {
 export async function getUserName(repo:string):Promise<string>{
     const gitDir: String = await findGitDirectory(repo);
     return (await promiseSpawn('git', ['config', 'user.name'],{cwd:gitDir})).split(/\n/)[0];
+}
+
+export async function getBranches(repo: string) {
+    const gitDir: String = await findGitDirectory(repo);
+    return (await promiseSpawn('git', ['branch', '-a'], { cwd: gitDir }))
+        .split(/\n/)
+        .map(s=>s.trim())
+        .filter(e=>!/^\s*remotes\//.test(e))
+        .filter(e=>!/^\*/.test(e));
+}
+
+export async function resetAndSwitchBranch(repo: string, branch: string) {
+    const gitDir: String = await findGitDirectory(repo);
+    await promiseSpawn('git', ['reset', '--hard', 'HEAD'], { cwd: gitDir });
+    await promiseSpawn('git', ['checkout', branch], { cwd: gitDir });
 }
