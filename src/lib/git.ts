@@ -75,7 +75,11 @@ export async function getCurrentBranch(path) {
     return (await readFile(gitDir + '/.git/HEAD')).toString().match(/ref: (.*)/)[1];
 }
 
-export async function getRepoUrl(path) {
+/**
+ * returns the origin remote url
+ * @param path the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
+export async function getRepoUrl(path: string) {
     const gitDir: String = await findGitDirectory(path);
     return promiseSpawn('git', ['config', '--get', 'remote.origin.url'], { cwd: gitDir });
 }
@@ -137,7 +141,11 @@ function parseGitObject(content: string) {
     return parsedContent;
 }
 
-export async function getCurrentCommitHash(repo:string){
+/**
+ * returns the hash of the current HEAD commit
+ * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
+export async function getCurrentCommitHash(repo: string) {
     const gitDir = await findGitDirectory(repo);
     let commit = await getCurrentBranch(repo);
     let currentObject = parseGitObject(await readGitObject(commit, gitDir));
@@ -159,7 +167,7 @@ export async function getCurrentFileVersion(filename: string): Promise<string> {
         }
         const ref = currentObject.filter(o => o.name == dir)[0];
         if (!ref) {
-            throw new Error(filename+' not found in repo');
+            throw new Error(filename + ' not found in repo');
         }
         if (ref.type == gitObjectType.tree) {
             currentObject = parseGitObject(await readGitObject(ref.hash, gitDir));
@@ -229,20 +237,29 @@ export async function stageGitObject(filename: string, content: string) {
  * returns the configured git user for a given repository
  * @param path the path to the repository or a subfolder of the repository (will automatically find .git folder)
  */
-export async function getUserName(repo:string):Promise<string>{
+export async function getUserName(repo: string): Promise<string> {
     const gitDir: String = await findGitDirectory(repo);
-    return (await promiseSpawn('git', ['config', 'user.name'],{cwd:gitDir})).split(/\n/)[0];
+    return (await promiseSpawn('git', ['config', 'user.name'], { cwd: gitDir })).split(/\n/)[0];
 }
 
+/**
+ * returns the list of local branches of this git repository
+ * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
 export async function getBranches(repo: string) {
     const gitDir: String = await findGitDirectory(repo);
     return (await promiseSpawn('git', ['branch', '-a'], { cwd: gitDir }))
         .split(/\n/)
-        .map(s=>s.trim())
-        .filter(e=>!/^\s*remotes\//.test(e))
-        .filter(e=>!/^\*/.test(e));
+        .map(s => s.trim())
+        .filter(e => !/^\s*remotes\//.test(e))
+        .filter(e => !/^\*/.test(e));
 }
 
+/**
+ * switches to a different branch regardless of current changes (equivalent of git reset --hard HEAD git checkout <branch>)
+ * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ * @param branch the branch to switch to
+ */
 export async function resetAndSwitchBranch(repo: string, branch: string) {
     const gitDir: String = await findGitDirectory(repo);
     await promiseSpawn('git', ['reset', '--hard', 'HEAD'], { cwd: gitDir });
