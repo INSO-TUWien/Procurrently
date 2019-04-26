@@ -154,6 +154,9 @@ export async function registerFile(file: vscode.TextDocument, branch?: string, c
                 watchFile(localPaths.get(metaData.repo) + '/.git/' + metaData.branch, gitEnvChangedCB);
             }
             metaData.users.set(net.siteId, await Git.getUserName(file.fileName));
+            if (usersChanged) {
+                usersChanged();
+            }
 
             //pretend the initial doc came from the same source
             const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(file.fileName)) }).replicate(net.siteId);
