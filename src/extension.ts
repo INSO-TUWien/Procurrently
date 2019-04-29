@@ -28,6 +28,10 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('procurrently.checkoutBranch', () => {
 		crdt.switchBranch();
 	});
+	
+	vscode.commands.registerCommand('procurrently.toggleRemoteChanges', () => {
+		crdt.toggleRemoteChangesVisible();
+	});
 }
 
 // this method is called when your extension is deactivated

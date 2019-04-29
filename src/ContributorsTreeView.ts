@@ -30,6 +30,9 @@ export class ContributorsTreeView implements vscode.TreeDataProvider<User>{
 }
 
 export class User extends vscode.TreeItem{
+    siteId: Number;
+    name: string;
+    
     constructor(name:string, siteId:Number){
         super(name, vscode.TreeItemCollapsibleState.None);
         this.command={
@@ -37,6 +40,8 @@ export class User extends vscode.TreeItem{
             arguments:[siteId],
             title:'Stage Changes'
         }
+        this.siteId=siteId;
+        this.name=name;
     }
 
 }

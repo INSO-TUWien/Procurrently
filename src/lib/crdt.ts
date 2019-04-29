@@ -14,7 +14,7 @@ const net = new Network();
 net.onRemoteEdit(onRemteChange);
 net.setDataProviderCallback(getAllChanges);
 
-const documents = new Map<string, { document: Document, metaData: { commit:string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
+const documents = new Map<string, { document: Document, metaData: { commit: string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
 /** remote repository to path mapping */
 const localPaths = new Map<string, string>();
 /** The current branch for a file */
@@ -90,27 +90,38 @@ export async function onRemteChange({ metaData, operations, authors }) {
     }
 
     const localMetaData = getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).metaData;
-    for (let [siteId, name] of new Map<Number, string>(authors)) {
-        if (!localMetaData.users.has(siteId)) {
-            localMetaData.users.set(siteId, name);
-            if (usersChanged) {
-                usersChanged();
+    if (authors) {
+        for (let [siteId, name] of new Map<Number, string>(authors)) {
+            if (!localMetaData.users.has(siteId)) {
+                localMetaData.users.set(siteId, name);
+                if (usersChanged) {
+                    usersChanged();
+                }
             }
         }
     }
 
-    //only apply changes if on the same branch
-    if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo)) {
-        const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
-        for (let o of textOperations.textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)) {
-            const edit = new vscode.WorkspaceEdit();
-            edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
-            currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
-            await vscode.workspace.applyEdit(edit);
-        }
-    }else{
-        //save changes to other files
+    if (!remoteChangesVisible) {
         getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
+        getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.undoOrRedoOperations(operations.filter(o => o.spliceId && o.spliceId.site != 1 && o.spliceId.site != net.siteId));
+    } else {
+        //only apply changes if on the same branch
+        if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo)) {
+            const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
+            await applyEditToLocalDoc(filepath, textOperations);
+        } else {
+            //save changes to other files
+            getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
+        }
+    }
+}
+
+async function applyEditToLocalDoc(filepath: string, textOperations) {
+    for (let o of textOperations.textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)) {
+        const edit = new vscode.WorkspaceEdit();
+        edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
+        currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
+        await vscode.workspace.applyEdit(edit);
     }
 }
 
@@ -123,14 +134,14 @@ export async function cursorPositionChanged(e: vscode.TextEditorSelectionChangeE
 
 }
 
-export async function registerFile(file: vscode.TextDocument, branch?: string, commit?: string, repo?:string) {
+export async function registerFile(file: vscode.TextDocument, branch?: string, commit?: string, repo?: string) {
     if (!branch) {
         branch = await Git.getCurrentBranch(file.fileName);
     }
     if (!commit) {
         commit = await Git.getCurrentCommitHash(file.fileName);
     }
-    if(!repo){
+    if (!repo) {
         repo = await Git.getRepoUrl(file.fileName);
     }
     if (!documents.has(file.fileName)) {
@@ -189,7 +200,7 @@ export function setUserUpdatedCallback(cb: Function) {
     usersChanged = cb;
 }
 
-export function getUsers() {
+export function getUsers(): User[] {
     const users = [];
     for (let [key, doc] of documents) {
         for (let [siteId, name] of doc.metaData.users) {
@@ -220,6 +231,7 @@ export async function toggleStageChangesBySiteId(siteId) {
 }
 
 export async function stageChangesBySiteIDs(siteIDs: Number[]) {
+    //TODO check for branch & commit
     for (let [_, document] of documents) {
         const newDoc = document.document.replicate(net.siteId);
         const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
@@ -238,19 +250,55 @@ export async function switchBranch() {
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     await Git.resetAndSwitchBranch(vscode.workspace.rootPath + '/a', branch);
     const edits = [];
-    for(let [key, doc] of documents){
+    for (let [key, doc] of documents) {
         const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
-        if(await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo){
+        if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
             const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
             const localText = localdoc.getText();
-            if(doc.document.getText()!=localText){
+            if (doc.document.getText() != localText) {
                 const edit = new vscode.WorkspaceEdit();
                 const endPosition = localdoc.positionAt(localText.length);
-                edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0,0), endPosition), doc.document.getText());
+                edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0, 0), endPosition), doc.document.getText());
                 currentChanges.push({ start: { line: 0, character: 0 }, end: { line: endPosition.line, character: endPosition.character }, text: doc.document.getText() });
                 edits.push(vscode.workspace.applyEdit(edit));
             }
         }
     }
     await Promise.all(edits);
+}
+
+let remoteChangesVisible = true;
+export async function toggleRemoteChangesVisible() {
+    remoteChangesVisible = !remoteChangesVisible;
+    const users = getUsers();
+    const siteIdsToUndo = users.map(u => u.siteId).filter(i => i != 1 && i != net.siteId);
+
+    //undo or redo operations from remote instances, 
+    for (let [_, document] of documents) {
+        const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath}${document.metaData.file}`;
+        const newDoc = document.document.replicate(net.siteId);
+        const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIdsToUndo.indexOf(o.spliceId.site) != -1);
+        const textOperations = newDoc.undoOrRedoOperations(operationsToExclude);
+        if (remoteChangesVisible) {
+            textOperations.textUpdates = invertTextUpdates(textOperations.textUpdates);
+        }
+        applyEditToLocalDoc(filepath, textOperations);
+    }
+}
+
+//copied out of @atom/teletype-crdt document because not public
+function invertTextUpdates(textUpdates) {
+    const invertedTextUpdates = []
+    for (let i = 0; i < textUpdates.length; i++) {
+        const { oldStart, oldEnd, oldText, newStart, newEnd, newText } = textUpdates[i]
+        invertedTextUpdates.push({
+            oldStart: newStart,
+            oldEnd: newEnd,
+            oldText: newText,
+            newStart: oldStart,
+            newEnd: oldEnd,
+            newText: oldText
+        })
+    }
+    return invertedTextUpdates
 }

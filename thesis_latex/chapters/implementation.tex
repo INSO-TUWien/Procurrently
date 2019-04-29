@@ -82,3 +82,8 @@ In order to avoid this race condition all changes to a file have to be carried o
 \begin{lstlisting}
 textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)
 \end{lstlisting}
+
+\subsection{Tree View}
+
+In order to stage changes by author, a treeview listing the Authors, who made changes, was created.
+The container for a treeview needs to be defined in the package.json file. 

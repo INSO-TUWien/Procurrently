@@ -33,10 +33,28 @@
 				}
 			]
 		},
-		"commands": [{
-			"command": "procurrently.checkoutBranch",
-			"title": "Procurrently: Checkout Branch"
-	}]
+		"commands": [
+			{
+				"command": "procurrently.checkoutBranch",
+				"title": "Procurrently: Checkout Branch"
+			},
+			{
+				"command": "procurrently.toggleRemoteChanges",
+				"title": "Procurrently: Toggle remote changes",
+				"icon": {
+					"light": "media/disable_sync.svg",
+					"dark": "media/disable_sync_dark.svg"
+				}
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "procurrently.toggleRemoteChanges",
+					"group": "navigation"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
