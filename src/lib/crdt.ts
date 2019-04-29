@@ -101,18 +101,13 @@ export async function onRemteChange({ metaData, operations, authors }) {
         }
     }
 
-    if (!remoteChangesVisible) {
-        getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
-        getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.undoOrRedoOperations(operations.filter(o => o.spliceId && o.spliceId.site != 1 && o.spliceId.site != net.siteId));
+    //only apply changes if on the same branch and remote changes visible
+    if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo) && remoteChangesVisible) {
+        const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
+        await applyEditToLocalDoc(filepath, textOperations);
     } else {
-        //only apply changes if on the same branch
-        if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo)) {
-            const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
-            await applyEditToLocalDoc(filepath, textOperations);
-        } else {
-            //save changes to other files
-            getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
-        }
+        //save changes to other files
+        getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
     }
 }
 
