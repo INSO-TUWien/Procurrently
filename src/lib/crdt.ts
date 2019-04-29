@@ -105,16 +105,24 @@ export async function onRemteChange({ metaData, operations, authors }) {
     if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo) && remoteChangesVisible) {
         const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
         await applyEditToLocalDoc(filepath, textOperations);
+        if(textOperations.textUpdates.length==1){
+            const o = textOperations.textUpdates[0];
+            setCursor(filepath, localMetaData.users.get(operations[0].spliceId.site), new vscode.Range(new vscode.Position(o.newEnd.row, o.newEnd.column), new vscode.Position(o.newEnd.row, o.newEnd.column)));
+        }
     } else {
         //save changes to other files
         getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
     }
 }
 
+function textOperationToRange(o) {
+    return new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column));
+}
+
 async function applyEditToLocalDoc(filepath: string, textOperations) {
     for (let o of textOperations.textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)) {
         const edit = new vscode.WorkspaceEdit();
-        edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
+        edit.replace(vscode.Uri.file(filepath), textOperationToRange(o), o.newText);
         currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
         await vscode.workspace.applyEdit(edit);
     }
@@ -296,4 +304,23 @@ function invertTextUpdates(textUpdates) {
         })
     }
     return invertedTextUpdates
+}
+
+let currentEditor: vscode.TextEditor;
+
+const decorationType = vscode.window.createTextEditorDecorationType({
+    backgroundColor: 'green',
+    border: '2px solid white'
+});
+export function setCurrentEditor(editor: vscode.TextEditor) {
+    if (!editor) {
+        return;
+    }
+    currentEditor = editor;
+}
+
+function setCursor(filename: string, username: string, range: vscode.Range) {
+    if (currentEditor && currentEditor.document.fileName == filename) {
+        currentEditor.setDecorations(decorationType, [{ hoverMessage: username, range }]);
+    }
 }

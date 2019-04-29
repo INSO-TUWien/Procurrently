@@ -10,7 +10,9 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidOpenTextDocument(crdt.registerFile);
 	if (vscode.window.activeTextEditor) {
 		crdt.registerFile(vscode.window.activeTextEditor.document);
+		crdt.setCurrentEditor(vscode.window.activeTextEditor);
 	}
+	vscode.window.onDidChangeActiveTextEditor(crdt.setCurrentEditor);
 	/* const edit = new vscode.WorkspaceEdit();
         edit.replace(vscode.Uri.file('/Users/stefangussner/git/sync-element/sync-element.js'), new vscode.Range(new vscode.Position(255,51), new vscode.Position(255,51)),'asdf');
 		vscode.workspace.applyEdit(edit); */
