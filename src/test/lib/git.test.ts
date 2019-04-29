@@ -22,6 +22,7 @@ beforeAll(async () => {
     fs.mkdirSync(testDir+'/a_directory', {recursive:true});
     console.log(await promiseSpawn('git', ['init'],{cwd:testDir}));
     fs.writeFileSync(testDir+'/test.txt','das ist ein test');
+    fs.writeFileSync(testDir+'/.gitignore','node_modules\n');
     await promiseSpawn('git',['add', 'test.txt'],{cwd:testDir});
     await promiseSpawn('git', ['commit', '-m', 'first'], {cwd:testDir});
     fs.writeFileSync(testDir+'/a_directory/test.txt','das ist ein test in einem Unterverzeichnis');
@@ -66,4 +67,15 @@ test('get current version',async ()=>{
 test('get current version no file',async ()=>{
     expect.assertions(1);
     await expect(git.getCurrentFileVersion(testDir)).rejects.toThrow('not found');
+});
+
+test('gitignore ignores the path in gitignore', async ()=>{
+    expect.assertions(1);
+    await expect(await git.isIgnored(testDir+'/node_modules')).toEqual(true);
+});
+
+
+test('gitignore does not ignore the path not in gitignore', async ()=>{
+    expect.assertions(1);
+    await expect(await git.isIgnored(testDir+'/test')).toEqual(false);
 });

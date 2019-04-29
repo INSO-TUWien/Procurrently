@@ -265,3 +265,13 @@ export async function resetAndSwitchBranch(repo: string, branch: string) {
     await promiseSpawn('git', ['reset', '--hard', 'HEAD'], { cwd: gitDir });
     await promiseSpawn('git', ['checkout', branch], { cwd: gitDir });
 }
+
+/**
+ * Checks if a file is ignored by .gitignore
+ * @param filename the file to be checked
+ */
+export async function isIgnored(filename: string) {
+    const gitDir: String = await findGitDirectory(filename);
+    const resp = await promiseSpawn('git', ['check-ignore', filename], { cwd: gitDir });
+    return resp.indexOf(filename) > -1;
+}

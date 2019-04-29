@@ -57,6 +57,9 @@ const currentChanges = [];
 
 export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
     if (!getLocalDocument(e.document.fileName)) {
+        if (await Git.isIgnored(e.document.fileName)) {
+            return;
+        }
         await registerFile(e.document);
     } else {
         const doc = getLocalDocument(e.document.fileName);
