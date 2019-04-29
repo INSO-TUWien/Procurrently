@@ -139,7 +139,8 @@ export async function registerFile(file: vscode.TextDocument, branch?: string, c
     if (!repo) {
         repo = await Git.getRepoUrl(file.fileName);
     }
-    if (!documents.has(file.fileName)) {
+    
+    if (!getLocalDocument(file.fileName, commit, branch, repo)) {
         try {
             const metaData = Object.freeze({
                 branch,
