@@ -106,7 +106,11 @@ export async function onRemteChange({ metaData, operations, authors }) {
 
     //only apply changes if on the same branch and remote changes visible
     if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo) && remoteChangesVisible) {
-        const textOperations = getLocalDocument(filepath).document.integrateOperations(operations);
+        const doc = getLocalDocument(filepath).document;
+        const textOperations = doc.integrateOperations(operations);
+        if(doc.deferredOperationsByDependencyId.size>0){
+            net.requestRemoteOperations();
+        }
         await applyEditToLocalDoc(filepath, textOperations);
     } else {
         //save changes to other files

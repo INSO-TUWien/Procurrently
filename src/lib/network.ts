@@ -1,6 +1,6 @@
 import * as net from "net";
 
-const userID = Math.floor(Math.random() * Math.pow(2, 52))+2;
+const userID = Math.floor(Math.random() * Math.pow(2, 52)) + 2;
 
 export default class Network {
     private others: net.Socket[];
@@ -49,7 +49,7 @@ export default class Network {
                         ps.on('connect', () => {
                             this.others.push(ps);
                             ps.on('close', () => this.others.splice(this.others.indexOf(this.socket), 1));
-                            ps.on('data', d => this.handleDataPacket(d.toString()));
+                            ps.on('data', d => this.handleDataPacket(d.toString(), ps));
                         })
                     } catch (e) {
                         console.log(e);
@@ -68,12 +68,12 @@ export default class Network {
                 }
             }
             s.on('close', () => this.others.splice(this.others.indexOf(s), 1));
-            s.on('data', d => this.handleDataPacket(d.toString()));
+            s.on('data', d => this.handleDataPacket(d.toString(), s));
             s.on('error', console.error);
         });
     }
 
-    private handleDataPacket(data: string) {
+    private handleDataPacket(data: string, s: net.Socket) {
         console.info('recieved ' + data);
         //handle recieve multiple json objects at once
 
@@ -86,6 +86,10 @@ export default class Network {
                 continue;
             }
             if (data[i] == '{') {
+                if (this.currentObject.length > 0) {
+                    this.handleCommand(this.currentObject, s);
+                    this.currentObject = '';
+                }
                 this.stackLevel++;
             }
             else if (data[i] == '}') {
@@ -106,6 +110,9 @@ export default class Network {
                 this.currentObject = '';
             }
         }
+        if (this.currentObject.length > 0 && this.stackLevel == 0) {
+            this.handleCommand(this.currentObject, s);
+        }
     }
 
     onRemoteEdit(cb: Function) {
@@ -120,5 +127,25 @@ export default class Network {
 
     setDataProviderCallback(cb: Function) {
         this._dataProvider = cb;
+    }
+
+    handleCommand(command: string, s: net.Socket) {
+        switch (command) {
+            case 'getOperations':
+                if (this._dataProvider) {
+                    for (let entry of this._dataProvider()) {
+                        s.write(JSON.stringify(entry));
+                    }
+                }
+                break;
+            default:
+                console.error('unknown command: ' + command);
+        }
+    }
+
+    requestRemoteOperations() {
+        this.others.forEach(socket => {
+            socket.write('getOperations');
+        });
     }
 }
