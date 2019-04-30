@@ -152,9 +152,9 @@ export async function registerFile(file: vscode.TextDocument, branch?: string, c
                 file: (await Git.getFilePathRelativeToRepo(file.fileName)),
                 users: new Map()
             });
+            branches.set(file.fileName, getSpecifier(await Git.getCurrentCommitHash(file.fileName), await Git.getCurrentBranch(file.fileName), await Git.getRepoUrl(file.fileName)));
             if (!localPaths.has(metaData.repo)) {
                 localPaths.set(metaData.repo, await Git.findGitDirectory(file.fileName));
-                branches.set(file.fileName, getSpecifier(await Git.getCurrentCommitHash(file.fileName), await Git.getCurrentBranch(file.fileName), await Git.getRepoUrl(file.fileName)));
 
                 const gitEnvChangedCB = async _ => {
                     //will be executed when the current branch or head commit changes
@@ -230,13 +230,15 @@ export async function toggleStageChangesBySiteId(siteId) {
 }
 
 export async function stageChangesBySiteIDs(siteIDs: Number[]) {
-    //TODO check for branch & commit
     for (let [_, document] of documents) {
-        const newDoc = document.document.replicate(net.siteId);
-        const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
-        newDoc.undoOrRedoOperations(operationsToExclude);
-        await Git.stageGitObject(`${vscode.workspace.rootPath}${document.metaData.file}`, newDoc.getText());
-        newDoc.undoOrRedoOperations(operationsToExclude);
+        const filepath = `${vscode.workspace.rootPath}${document.metaData.file}`;
+        if(branches.get(filepath) == getSpecifier(document.metaData.commit, document.metaData.branch, document.metaData.repo)){
+            const newDoc = document.document.replicate(net.siteId);
+            const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
+            newDoc.undoOrRedoOperations(operationsToExclude);
+            await Git.stageGitObject(filepath, newDoc.getText());
+            newDoc.undoOrRedoOperations(operationsToExclude);
+        }
     }
 }
 
