@@ -108,7 +108,7 @@ export async function onRemteChange({ metaData, operations, authors }) {
     if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo) && remoteChangesVisible) {
         const doc = getLocalDocument(filepath).document;
         const textOperations = doc.integrateOperations(operations);
-        if(doc.deferredOperationsByDependencyId.size>0){
+        if (doc.deferredOperationsByDependencyId.size > 0) {
             net.requestRemoteOperations();
         }
         await applyEditToLocalDoc(filepath, textOperations);
@@ -146,7 +146,7 @@ export async function registerFile(file: vscode.TextDocument, branch?: string, c
     if (!repo) {
         repo = await Git.getRepoUrl(file.fileName);
     }
-    
+
     if (!getLocalDocument(file.fileName, commit, branch, repo)) {
         try {
             const metaData = Object.freeze({
@@ -204,13 +204,15 @@ export function setUserUpdatedCallback(cb: Function) {
 }
 
 export function getUsers(): User[] {
-    const users = [];
+    const users: User[] = [];
     for (let [key, doc] of documents) {
         for (let [siteId, name] of doc.metaData.users) {
-            if (stagedSiteIds.indexOf(siteId) > -1) {
-                users.push(new User(name + ' (staged)', siteId));
-            } else {
-                users.push(new User(name, siteId));
+            if (users.filter(u => u.siteId == siteId).length == 0) {
+                if (stagedSiteIds.indexOf(siteId) > -1) {
+                    users.push(new User(name + ' (staged)', siteId));
+                } else {
+                    users.push(new User(name, siteId));
+                }
             }
         }
     }
@@ -236,7 +238,7 @@ export async function toggleStageChangesBySiteId(siteId) {
 export async function stageChangesBySiteIDs(siteIDs: Number[]) {
     for (let [_, document] of documents) {
         const filepath = `${vscode.workspace.rootPath}${document.metaData.file}`;
-        if(branches.get(filepath) == getSpecifier(document.metaData.commit, document.metaData.branch, document.metaData.repo)){
+        if (branches.get(filepath) == getSpecifier(document.metaData.commit, document.metaData.branch, document.metaData.repo)) {
             const newDoc = document.document.replicate(net.siteId);
             const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
             newDoc.undoOrRedoOperations(operationsToExclude);
@@ -254,6 +256,10 @@ export async function switchBranch() {
     await vscode.workspace.saveAll(true);
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     await Git.resetAndSwitchBranch(vscode.workspace.rootPath + '/a', branch);
+    stagedSiteIds.splice(0);
+    if (usersChanged) {
+        usersChanged();
+    }
     const edits = [];
     for (let [key, doc] of documents) {
         const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
