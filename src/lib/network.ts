@@ -11,6 +11,7 @@ export default class Network {
     private inString: boolean;
     private _currentEdit: Promise<any> = Promise.resolve();
     private _dataProvider: Function;
+    _lastRequestOperations: number;
 
     get siteId() {
         return userID;
@@ -18,6 +19,7 @@ export default class Network {
 
 
     constructor() {
+        this._lastRequestOperations = new Date().getTime();
         this.others = [];
         this.currentObject = '';
         this.stackLevel = 0;
@@ -154,6 +156,11 @@ export default class Network {
     }
 
     requestRemoteOperations() {
+        //give other clients 10 seconds to answer in between requesting stuff
+        if(new Date().getTime() - this._lastRequestOperations < 10000){
+            return;
+        }
+        this._lastRequestOperations = new Date().getTime();
         this.others.forEach(socket => {
             socket.write('getOperations');
         });
