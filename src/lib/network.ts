@@ -86,11 +86,11 @@ export default class Network {
                 continue;
             }
             if (data[i] == '{') {
-                if (this.currentObject.length > 0) {
-                    try{
-                        this.handleCommand(this.currentObject, s);
-                        this.currentObject = '';
-                    }catch(e){
+                if (this.currentObject.length > 1 && this.stackLevel==0) {
+                    try {
+                        this.handleCommand(this.currentObject.substr(0, this.currentObject.length - 1), s);
+                        this.currentObject = '{';
+                    } catch (e) {
                         console.error(e);
                     }
                 }
@@ -100,26 +100,27 @@ export default class Network {
                 this.stackLevel--;
             }
             if (this.stackLevel == 0) {
-                if (this.currentObject.length > 0) {
-                    const toParse = this.currentObject;
+                let edit;
+                try {
+                    edit = JSON.parse(this.currentObject);
                     this._currentEdit = this._currentEdit.then(() => {
                         try {
-                            return this._onremoteEdit(JSON.parse(toParse));
+                            this.currentObject = '';
+                            return this._onremoteEdit(edit);
                         } catch (e) {
                             console.error(e);
                             throw e;
                         }
-                    })
+                    });
+                } catch (e) {
+                    try {
+                        this.handleCommand(this.currentObject, s);
+                        this.currentObject = '';
+                    } catch (e) {
+                        console.warn(e.message);
+                    }
                 }
-                this.currentObject = '';
-            }
-        }
-        if (this.currentObject.length > 0 && this.stackLevel == 0) {
-            try{
-                this.handleCommand(this.currentObject, s);
-                this.currentObject = '';
-            }catch(e){
-                console.error(e);
+
             }
         }
     }
