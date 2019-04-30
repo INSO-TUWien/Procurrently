@@ -87,8 +87,12 @@ export default class Network {
             }
             if (data[i] == '{') {
                 if (this.currentObject.length > 0) {
-                    this.handleCommand(this.currentObject, s);
-                    this.currentObject = '';
+                    try{
+                        this.handleCommand(this.currentObject, s);
+                        this.currentObject = '';
+                    }catch(e){
+                        console.error(e);
+                    }
                 }
                 this.stackLevel++;
             }
@@ -111,7 +115,12 @@ export default class Network {
             }
         }
         if (this.currentObject.length > 0 && this.stackLevel == 0) {
-            this.handleCommand(this.currentObject, s);
+            try{
+                this.handleCommand(this.currentObject, s);
+                this.currentObject = '';
+            }catch(e){
+                console.error(e);
+            }
         }
     }
 
@@ -139,7 +148,7 @@ export default class Network {
                 }
                 break;
             default:
-                console.error('unknown command: ' + command);
+                throw new Error('unknown command: ' + command);
         }
     }
 
