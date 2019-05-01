@@ -88,41 +88,30 @@ export default class Network {
                 continue;
             }
             if (data[i] == '{') {
-                if (this.currentObject.length > 1 && this.stackLevel==0) {
-                    try {
-                        this.handleCommand(this.currentObject.substr(0, this.currentObject.length - 1), s);
-                        this.currentObject = '{';
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
                 this.stackLevel++;
             }
             else if (data[i] == '}') {
                 this.stackLevel--;
             }
             if (this.stackLevel == 0) {
-                let edit;
-                try {
-                    edit = JSON.parse(this.currentObject);
+                if (this.currentObject.length > 0) {
+                    const toParse = this.currentObject;
                     this._currentEdit = this._currentEdit.then(() => {
                         try {
-                            this.currentObject = '';
-                            return this._onremoteEdit(edit);
+                            const recieved = JSON.parse(toParse);
+                            if (recieved.update) {
+                                this._onremoteEdit(recieved.update);
+                            }
+                            else if (recieved.command){
+                                this.handleCommand(recieved.command, s);
+                            }
                         } catch (e) {
                             console.error(e);
                             throw e;
                         }
-                    });
-                } catch (e) {
-                    try {
-                        this.handleCommand(this.currentObject, s);
-                        this.currentObject = '';
-                    } catch (e) {
-                        console.warn(e.message);
-                    }
+                    })
                 }
-
+                this.currentObject = '';
             }
         }
     }
@@ -133,7 +122,7 @@ export default class Network {
 
     sendUpdate(update) {
         this.others.forEach(socket => {
-            socket.write(JSON.stringify(update));
+            socket.write(JSON.stringify({ update: update }));
         });
     }
 
@@ -157,12 +146,12 @@ export default class Network {
 
     requestRemoteOperations() {
         //give other clients 10 seconds to answer in between requesting stuff
-        if(new Date().getTime() - this._lastRequestOperations < 10000){
+        if (new Date().getTime() - this._lastRequestOperations < 10000) {
             return;
         }
         this._lastRequestOperations = new Date().getTime();
         this.others.forEach(socket => {
-            socket.write('getOperations');
+            socket.write(JSON.stringify({ command: 'getOperations' }));
         });
     }
 }
