@@ -100,10 +100,10 @@ export default class Network {
                         try {
                             const recieved = JSON.parse(toParse);
                             if (recieved.update) {
-                                this._onremoteEdit(recieved.update);
+                                return this._onremoteEdit(recieved.update);
                             }
                             else if (recieved.command) {
-                                this.handleCommand(recieved.command, s);
+                                return this.handleCommand(recieved.command, s);
                             }
                         } catch (e) {
                             console.error(e);
@@ -130,7 +130,7 @@ export default class Network {
         this._dataProvider = cb;
     }
 
-    handleCommand(command: string, s: net.Socket) {
+    async handleCommand(command: string, s: net.Socket) {
         switch (command) {
             case 'getOperations':
                 if (this._dataProvider) {
