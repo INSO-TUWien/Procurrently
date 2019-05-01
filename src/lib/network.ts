@@ -65,8 +65,8 @@ export default class Network {
             this.others.push(s);
             //when a new client connects we send him all the changes we know of
             if (this._dataProvider) {
-                for (let entry of this._dataProvider()) {
-                    s.write(JSON.stringify(entry));
+                for (let update of this._dataProvider()) {
+                    s.write(JSON.stringify({ update }));
                 }
             }
             s.on('close', () => this.others.splice(this.others.indexOf(s), 1));
@@ -102,7 +102,7 @@ export default class Network {
                             if (recieved.update) {
                                 this._onremoteEdit(recieved.update);
                             }
-                            else if (recieved.command){
+                            else if (recieved.command) {
                                 this.handleCommand(recieved.command, s);
                             }
                         } catch (e) {
@@ -122,7 +122,7 @@ export default class Network {
 
     sendUpdate(update) {
         this.others.forEach(socket => {
-            socket.write(JSON.stringify({ update: update }));
+            socket.write(JSON.stringify({ update }));
         });
     }
 
@@ -134,8 +134,8 @@ export default class Network {
         switch (command) {
             case 'getOperations':
                 if (this._dataProvider) {
-                    for (let entry of this._dataProvider()) {
-                        s.write(JSON.stringify(entry));
+                    for (let update of this._dataProvider()) {
+                        s.write(JSON.stringify({ update }));
                     }
                 }
                 break;
