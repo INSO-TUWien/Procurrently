@@ -91,7 +91,7 @@ export default async (siteId?:number) => {
     }
 
     
-
+    //for pausing remote changes
     let pendingRemoteChanges = Promise.resolve();
     async function onRemteChange({ metaData, operations, authors }) {
         const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath}${metaData.file}`;
