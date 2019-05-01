@@ -261,6 +261,9 @@ export async function switchBranch() {
         usersChanged();
     }
     const edits = [];
+    if(!remoteChangesVisible){
+        await toggleRemoteChangesVisible();
+    }
     for (let [key, doc] of documents) {
         const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
         if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
@@ -287,13 +290,16 @@ export async function toggleRemoteChangesVisible() {
     //undo or redo operations from remote instances, 
     for (let [_, document] of documents) {
         const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath}${document.metaData.file}`;
-        const newDoc = document.document.replicate(net.siteId);
-        const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIdsToUndo.indexOf(o.spliceId.site) != -1);
-        const textOperations = newDoc.undoOrRedoOperations(operationsToExclude);
-        if (remoteChangesVisible) {
-            textOperations.textUpdates = invertTextUpdates(textOperations.textUpdates);
+        if (await Git.getCurrentBranch(filepath) == document.metaData.branch && await Git.getCurrentCommitHash(filepath) == document.metaData.commit && await Git.getRepoUrl(filepath) == document.metaData.repo) {
+            const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath}${document.metaData.file}`;
+            const newDoc = document.document.replicate(net.siteId);
+            const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIdsToUndo.indexOf(o.spliceId.site) != -1);
+            const textOperations = newDoc.undoOrRedoOperations(operationsToExclude);
+            if (remoteChangesVisible) {
+                textOperations.textUpdates = invertTextUpdates(textOperations.textUpdates);
+            }
+            applyEditToLocalDoc(filepath, textOperations);
         }
-        applyEditToLocalDoc(filepath, textOperations);
     }
 }
 
