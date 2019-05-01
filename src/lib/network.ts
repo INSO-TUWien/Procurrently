@@ -12,13 +12,15 @@ export default class Network {
     private _currentEdit: Promise<any> = Promise.resolve();
     private _dataProvider: Function;
     _lastRequestOperations: number;
+    _siteId: Number;
 
     get siteId() {
-        return userID;
+        return this._siteId;
     }
 
 
-    constructor() {
+    constructor(siteId=userID) {
+        this._siteId=siteId;
         this._lastRequestOperations = new Date().getTime();
         this.others = [];
         this.currentObject = '';
@@ -37,7 +39,7 @@ export default class Network {
             });
             s.on('connect', () => {
                 host = s.localAddress;
-                s.write(JSON.stringify({ port, host, userID }));
+                s.write(JSON.stringify({ port, host, siteId }));
             })
             s.on('data', data => {
                 const otherEndpoints = JSON.parse(data.toString());

@@ -256,7 +256,16 @@ export async function getBranches(repo: string) {
 }
 
 /**
- * switches to a different branch regardless of current changes (equivalent of git reset --hard HEAD git checkout <branch>)
+ * undoes all current changes (equivalent of git reset --hard HEAD)
+ * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
+ */
+export async function reset(repo: string){
+    const gitDir: String = await findGitDirectory(repo);
+    await promiseSpawn('git', ['reset', '--hard', 'HEAD'], { cwd: gitDir });
+}
+
+/**
+ * switches to a different branch regardless of current changes (equivalent of git reset --hard HEAD && git checkout <branch>)
  * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
  * @param branch the branch to switch to
  */
