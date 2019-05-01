@@ -74,6 +74,7 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
                 //remove from known changes
                 currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
             } else {
+                console.info('local change: '+JSON.stringify({start: { row: change.range.start.line, column: change.range.start.character }, end:{ row: change.range.end.line, column: change.range.end.character }, text: change.text}));
                 operations.push(...doc.document.setTextInRange({ row: change.range.start.line, column: change.range.start.character }, { row: change.range.end.line, column: change.range.end.character }, change.text));
             }
         }
@@ -113,10 +114,9 @@ export async function onRemteChange({ metaData, operations, authors }) {
             net.requestRemoteOperations();
         }
         try {
-            await pendingRemoteChanges;
-            await applyEditToLocalDoc(filepath, textOperations);
+            await pendingRemoteChanges.then(()=>applyEditToLocalDoc(filepath, textOperations));
         } catch (e) {
-            //pending changes thrown out
+            console.error(e);
         }
     } else {
         //save changes to other files
@@ -254,11 +254,29 @@ export async function stageChangesBySiteIDs(siteIDs: Number[]) {
     }
 }
 
+function timeout(ms){
+    return new Promise(resolve=>setTimeout(resolve, ms));
+}
+
 export async function switchBranch() {
     const branch = await vscode.window.showQuickPick(Git.getBranches(vscode.workspace.rootPath + '/a'));// the /a is a hack to get git to not effectively cd..
     if (!branch) {
         return;
     }
+    if (changesPaused) {
+        cancelPausedChanges(new Error('branch switched'));
+        pendingRemoteChanges = Promise.resolve();
+        changesPaused = false;
+    }
+    //redo all invisible changes so undo all doesn't glitch
+    if(!remoteChangesVisible){
+        await toggleRemoteChangesVisible();
+    }
+    //basically undo all because vs code sometimes detects switching branches as local edits despite the files not being opened...
+    await toggleRemoteChangesVisible(true);
+    //remote changes are gonna be visible after branch switch
+    remoteChangesVisible=true;
+
     await vscode.workspace.saveAll(true);
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
     await Git.resetAndSwitchBranch(vscode.workspace.rootPath + '/a', branch);
@@ -267,16 +285,10 @@ export async function switchBranch() {
         usersChanged();
     }
     const edits = [];
-    if (!remoteChangesVisible) {
-        await toggleRemoteChangesVisible();
-    }
-    if(changesPaused){
-        cancelPausedChanges();
-        togglePauseChanges();
-    }
     for (let [key, doc] of documents) {
         const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
         if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
+            branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
             const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
             const localText = localdoc.getText();
             if (doc.document.getText() != localText) {
@@ -292,14 +304,14 @@ export async function switchBranch() {
 }
 
 let remoteChangesVisible = true;
-export async function toggleRemoteChangesVisible() {
-    if(changesPaused){
+export async function toggleRemoteChangesVisible(includeOwnChanges?:boolean) {
+    if (changesPaused) {
         vscode.window.showErrorMessage('cannot do that while changes are paused');
         return;
     }
     remoteChangesVisible = !remoteChangesVisible;
     const users = getUsers();
-    const siteIdsToUndo = users.map(u => u.siteId).filter(i => i != 1 && i != net.siteId);
+    const siteIdsToUndo = users.map(u => u.siteId).filter(i => i != 1 && (i != net.siteId || includeOwnChanges));
 
     //undo or redo operations from remote instances, 
     for (let [_, document] of documents) {
