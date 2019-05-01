@@ -84,6 +84,7 @@ export async function onLocalChange(e: vscode.TextDocumentChangeEvent) {
 
 }
 
+let pendingRemoteChanges = Promise.resolve();
 export async function onRemteChange({ metaData, operations, authors }) {
     const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath}${metaData.file}`;
     //todo check meta file and branch
@@ -111,7 +112,12 @@ export async function onRemteChange({ metaData, operations, authors }) {
         if (doc.deferredOperationsByDependencyId.size > 0) {
             net.requestRemoteOperations();
         }
-        await applyEditToLocalDoc(filepath, textOperations);
+        try {
+            await pendingRemoteChanges;
+            await applyEditToLocalDoc(filepath, textOperations);
+        } catch (e) {
+            //pending changes thrown out
+        }
     } else {
         //save changes to other files
         getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
@@ -261,8 +267,12 @@ export async function switchBranch() {
         usersChanged();
     }
     const edits = [];
-    if(!remoteChangesVisible){
+    if (!remoteChangesVisible) {
         await toggleRemoteChangesVisible();
+    }
+    if(changesPaused){
+        cancelPausedChanges();
+        togglePauseChanges();
     }
     for (let [key, doc] of documents) {
         const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
@@ -283,6 +293,10 @@ export async function switchBranch() {
 
 let remoteChangesVisible = true;
 export async function toggleRemoteChangesVisible() {
+    if(changesPaused){
+        vscode.window.showErrorMessage('cannot do that while changes are paused');
+        return;
+    }
     remoteChangesVisible = !remoteChangesVisible;
     const users = getUsers();
     const siteIdsToUndo = users.map(u => u.siteId).filter(i => i != 1 && i != net.siteId);
@@ -318,4 +332,20 @@ function invertTextUpdates(textUpdates) {
         })
     }
     return invertedTextUpdates
+}
+
+let changesPaused = false;
+let applyPausedChanges, cancelPausedChanges;
+export function togglePauseChanges() {
+    changesPaused = !changesPaused;
+    if (changesPaused) {
+        pendingRemoteChanges = new Promise((resolve, reject) => {
+            applyPausedChanges = resolve;
+            cancelPausedChanges = reject;
+        });
+    }
+    if (!changesPaused) {
+        applyPausedChanges();
+        pendingRemoteChanges = Promise.resolve();
+    }
 }

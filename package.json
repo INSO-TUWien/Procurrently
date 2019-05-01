@@ -39,6 +39,10 @@
 				"title": "Procurrently: Checkout Branch"
 			},
 			{
+				"command": "procurrently.togglePauseChanges",
+				"title": "Procurrently: pause/resume remote changess"
+			},
+			{
 				"command": "procurrently.toggleRemoteChanges",
 				"title": "Procurrently: Toggle remote changes",
 				"icon": {

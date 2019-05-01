@@ -32,6 +32,11 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('procurrently.toggleRemoteChanges', () => {
 		crdt.toggleRemoteChangesVisible();
 	});
+	
+	vscode.commands.registerCommand('procurrently.togglePauseChanges', () => {
+		crdt.togglePauseChanges();
+	});
+	
 }
 
 // this method is called when your extension is deactivated
