@@ -39,7 +39,7 @@ export default class Network {
             });
             s.on('connect', () => {
                 host = s.localAddress;
-                s.write(JSON.stringify({ port, host, userId: siteId }));
+                s.write(JSON.stringify({ port, host, userID: siteId }));
             })
             s.on('data', data => {
                 const otherEndpoints = JSON.parse(data.toString());
