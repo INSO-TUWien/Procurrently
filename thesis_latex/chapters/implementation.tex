@@ -87,3 +87,48 @@ textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)
 
 In order to stage changes by author, a treeview listing the Authors, who made changes, was created.
 The container for a treeview needs to be defined in the package.json file. 
+
+\begin{figure}[]
+    \centering
+    \includegraphics{figures/screenshots/treeview.png}
+    \caption{Tree view}
+    \label{fig:treeview}
+\end{figure}
+
+\begin{lstlisting}[label={lst:contributes_treeview_activitybar}, language:JSON]
+"contributes": {
+    "viewsContainers": {
+        "activitybar": [
+            {
+                "id": "change-explorer",
+                "title": "Change Explorer",
+                "icon": "media/icon.svg"
+            }
+        ]
+    }
+    [...]
+}
+\end{lstlisting}
+
+First an entry in the activity bar has to be declared in the viewsContainers section \ref{lst:contributes_treeview_activitybar}. It defines the icon as well as the hover text (called title) of the tab in the activity bar.
+
+\begin{lstlisting}[label={lst:contributes_treeview_view}, language:JSON]
+"contributes": {
+    [...]
+    "views": {
+        "change-explorer": [
+            {
+                "id": "contributors",
+                "name": "Contributors"
+            }
+        ]
+    }
+}
+\end{lstlisting}
+
+Additionally the view has to be declared.\ref{lst:contributes_treeview_view} This defines the heading for the treeview.
+
+\begin{lstlisting}[language:Javascript]
+const treeview = new ContributorsTreeView(crdt.getUsers);
+vscode.window.registerTreeDataProvider('contributors', treeview);
+\end{lstlisting}
