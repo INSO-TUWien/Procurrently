@@ -7,13 +7,8 @@ import { ContributorsTreeView } from './ContributorsTreeView';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-	const crdt = await Crdt.default(context.globalState.get('procurrently.siteId'));
+	const crdt = await Crdt.default(context.globalState.get('procurrently.siteId'), JSON.parse(context.globalState.get('procurrently.allChanges')));
 	context.globalState.update('procurrently.siteId', crdt.siteId);
-	if(context.globalState.get('procurrently.allChanges')){
-		for(let change of JSON.parse(context.globalState.get('procurrently.allChanges'))){
-			crdt.onRemteChange(change);
-		}
-	}
 
 	vscode.workspace.onDidOpenTextDocument(crdt.registerFile);
 	if (vscode.window.activeTextEditor) {

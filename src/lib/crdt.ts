@@ -9,16 +9,9 @@ import * as vscode from 'vscode';
 import { User } from '../ContributorsTreeView';
 import { watchFile } from 'fs';
 
-export default async (siteId?:number) => {
-    await vscode.workspace.saveAll(true);
-    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-    await Git.reset(vscode.workspace.rootPath + '/a');
-
-    //setup peer to peer connection
-    const net = new Network(siteId);
-    net.onRemoteEdit(onRemteChange);
-    net.setDataProviderCallback(getAllChanges);
-
+export default async (siteId?:number, history?) => {
+    let net;
+    
     const documents = new Map<string, { document: Document, metaData: { commit: string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
     /** remote repository to path mapping */
     const localPaths = new Map<string, string>();
@@ -119,7 +112,7 @@ export default async (siteId?:number) => {
             const doc = getLocalDocument(filepath).document;
             const textOperations = doc.integrateOperations(operations);
             if (doc.deferredOperationsByDependencyId.size > 0) {
-                net.requestRemoteOperations();
+                net && net.requestRemoteOperations();
             }
             try {
                 await pendingRemoteChanges.then(() => applyEditToLocalDoc(filepath, textOperations));
@@ -183,13 +176,13 @@ export default async (siteId?:number) => {
                     watchFile(localPaths.get(metaData.repo) + '/.git/HEAD', gitEnvChangedCB);
                     watchFile(localPaths.get(metaData.repo) + '/.git/' + metaData.branch, gitEnvChangedCB);
                 }
-                metaData.users.set(net.siteId, await Git.getUserName(file.fileName));
+                metaData.users.set(net && net.siteId || siteId, await Git.getUserName(file.fileName));
                 if (usersChanged) {
                     usersChanged();
                 }
 
                 //pretend the initial doc came from the same source
-                const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(file.fileName)) }).replicate(net.siteId);
+                const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(file.fileName)) }).replicate(net && net.siteId || siteId);
 
                 //check for local modifications already present
                 //this solution is just a placeholder
@@ -388,6 +381,20 @@ export default async (siteId?:number) => {
             saveTimeout = setTimeout(saveCB, 1000);
         }
     }
+    
+    await vscode.workspace.saveAll(true);
+    await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+    await Git.reset(vscode.workspace.rootPath + '/a');
+    if(history){
+        for(let change of history){
+            await onRemteChange(change);
+        }
+    }
+
+    //setup peer to peer connection
+    net = new Network(siteId);
+    net.onRemoteEdit(onRemteChange);
+    net.setDataProviderCallback(getAllChanges);
 
     return {onLocalChange, onRemteChange, cursorPositionChanged, registerFile, getAllChanges, setUserUpdatedCallback, getUsers, toggleStageChangesBySiteId, stageChangesBySiteIDs, switchBranch, toggleRemoteChangesVisible, togglePauseChanges, setSaveCallback, siteId: net.siteId};
 }
