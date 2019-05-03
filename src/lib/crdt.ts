@@ -392,7 +392,7 @@ export default async (siteId?:number, history?) => {
     }
 
     //setup peer to peer connection
-    net = new Network(siteId);
+    net = new Network(siteId, vscode.workspace.getConfiguration('procurrently').get('bootstrapIP'));
     net.onRemoteEdit(onRemteChange);
     net.setDataProviderCallback(getAllChanges);
 

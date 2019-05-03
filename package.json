@@ -58,7 +58,19 @@
 					"group": "navigation"
 				}
 			]
-		}
+		},
+		"configuration":[
+			{
+				"title": "Procurrently configuration",
+				"properties": {
+					"procurrently.bootstrapIP":{
+						"type":"string",
+						"default":"127.0.0.1",
+						"description": "The IP of the network bootstrap node"
+					}
+				}
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

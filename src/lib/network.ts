@@ -19,7 +19,7 @@ export default class Network {
     }
 
 
-    constructor(siteId=userID) {
+    constructor(siteId=userID, bootstrapIp?) {
         this._siteId=siteId;
         this._lastRequestOperations = new Date().getTime();
         this.others = [];
@@ -34,7 +34,7 @@ export default class Network {
             console.log('listening on port', port);
             const s = new net.Socket();
             s.connect({
-                host: process.env.bootstrap || 'localhost',
+                host: bootstrapIp || process.env.bootstrap || 'localhost',
                 port: 3000
             });
             s.on('connect', () => {
