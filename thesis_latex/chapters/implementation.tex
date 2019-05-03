@@ -35,19 +35,19 @@ The main functions used are
 \begin{lstlisting}
 setTextInRange(start: {row:Number, column:Number}, end: {row:Number, column:Number}, text: string, options?: any): [operation];
 \end{lstlisting}
-Which is used to notify the document representation about a text operation on the local document and
+which is used to notify the document representation about a text operation on the local document and
 \begin{lstlisting}
 integrateOperations(operations: [operations]): {textUpdates:[textUpdate], markerUpdates:any};
 \end{lstlisting}
-Which is used to notify the document representation about remote changes and returns the changes to the local file required to keep it in sync with other instances
+which is used to notify the document representation about remote changes and returns the changes to the local file required to keep it in sync with other instances
 and
 \begin{lstlisting}
 undoOrRedoOperations(operationsToUndo: [operation]): any;
 \end{lstlisting}
-Which is used to undo changes.
+which is used to undo changes.
 
 \subsection{Git and teletype-crdt}
-As a basis for the edit history  the current Git commit in the current branch will be used. teletype-crdt uses numeric siteIds to identify changes. The current Git commit is imported as edited by siteId 1 upon discovering the file.
+As a basis for the edit history  the current Git commit in the current branch will be used. teletype-crdt uses numeric siteIds to identify changes by author. The current Git commit is imported as edited by siteId 1 upon discovering the file. By doing this, all clients have an initial shared state based on the current version of the file known to Git.
 
 \section{VS Code Extension API}
 
@@ -128,7 +128,34 @@ First an entry in the activity bar has to be declared in the viewsContainers sec
 
 Additionally the view has to be declared.\ref{lst:contributes_treeview_view} This defines the heading for the treeview.
 
-\begin{lstlisting}
+\begin{lstlisting}[label={lst:contributes_treeview_register}]
 const treeview = new ContributorsTreeView(crdt.getUsers);
 vscode.window.registerTreeDataProvider('contributors', treeview);
 \end{lstlisting}
+
+To populate the Treeview with data, a TreeDataProvider has to be registered to the view id.\ref{lst:contributes_treeview_register}
+The TreeDataProvider interface defines functions that return all items for the treeview as well as refresh the content of the treeview.
+
+\section{Data Model}
+
+\begin{lstlisting}
+const documents = new Map<string, { document: Document, metaData: { commit: string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
+/** remote repository to path mapping */
+const localPaths = new Map<string, string>();
+/** The current branch for a file */
+const branches = new Map<string, string>();
+\end{lstlisting}
+
+All the data is stored in a map called documents.
+It's key is composed of the filename and a specifier composed from the commit, branch and remote/origin repository URL.
+
+In order to keep track of the current branch and head commit of files, the branches map contains the identifier for a file by filepath.
+
+The localPaths map contains mappings from remote/origin urls to local git directory locations.
+This enables keeping track of files across different projects.
+
+The documents map values contain an Object containing
+\begin{itemize}
+    \item document
+    \item metaData
+\end{itemize}
