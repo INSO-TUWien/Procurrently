@@ -95,7 +95,7 @@ The container for a treeview needs to be defined in the package.json file.
     \label{fig:treeview}
 \end{figure}
 
-\begin{lstlisting}[label={lst:contributes_treeview_activitybar}, language:JSON]
+\begin{lstlisting}[label={lst:contributes_treeview_activitybar}]
 "contributes": {
     "viewsContainers": {
         "activitybar": [
@@ -112,7 +112,7 @@ The container for a treeview needs to be defined in the package.json file.
 
 First an entry in the activity bar has to be declared in the viewsContainers section \ref{lst:contributes_treeview_activitybar}. It defines the icon as well as the hover text (called title) of the tab in the activity bar.
 
-\begin{lstlisting}[label={lst:contributes_treeview_view}, language:JSON]
+\begin{lstlisting}[label={lst:contributes_treeview_view}]
 "contributes": {
     [...]
     "views": {
@@ -128,7 +128,7 @@ First an entry in the activity bar has to be declared in the viewsContainers sec
 
 Additionally the view has to be declared.\ref{lst:contributes_treeview_view} This defines the heading for the treeview.
 
-\begin{lstlisting}[language:Javascript]
+\begin{lstlisting}
 const treeview = new ContributorsTreeView(crdt.getUsers);
 vscode.window.registerTreeDataProvider('contributors', treeview);
 \end{lstlisting}
