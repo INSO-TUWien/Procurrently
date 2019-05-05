@@ -111,9 +111,6 @@ export default async (siteId?:number, history?) => {
         if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo) && remoteChangesVisible) {
             const doc = getLocalDocument(filepath).document;
             const textOperations = doc.integrateOperations(operations);
-            if (doc.deferredOperationsByDependencyId.size > 0) {
-                net && net.requestRemoteOperations();
-            }
             try {
                 await pendingRemoteChanges.then(() => applyEditToLocalDoc(filepath, textOperations));
             } catch (e) {
