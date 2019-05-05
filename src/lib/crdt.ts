@@ -46,6 +46,10 @@ export default async (siteId?:number, history?) => {
 
     function setLocalDocument(document, filename: string, commit: string, branch: string, repo: string) {
         const specifier = getSpecifier(commit, branch, repo);
+        if(documents.has(`${filename}${specifier}`)){
+            console.warn('document already exists, document not updated!');
+            return;
+        }
         documents.set(`${filename}${specifier}`, document);
     }
 
