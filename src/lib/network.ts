@@ -77,6 +77,14 @@ export default class Network {
         });
     }
 
+    close(){
+        this.socket.close();
+        for(let o of this.others){
+            o.end();
+        }
+        this._onremoteEdit=()=>{};
+    }
+
     private handleDataPacket(data: string, s: net.Socket) {
         console.info('recieved ' + data);
         //handle recieve multiple json objects at once
