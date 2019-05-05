@@ -77,7 +77,7 @@ export default async (siteId?:number, history?) => {
                 }
             }
             if (operations.length > 0) {
-                net.sendUpdate({ metaData: doc.metaData, operations, authors: Array.from(doc.metaData.users) });
+                net.sendUpdate({ metaData: doc.metaData, operations:operations.map(serializeOperation), authors: Array.from(doc.metaData.users) });
                 save();
             }
         }
@@ -87,6 +87,7 @@ export default async (siteId?:number, history?) => {
     //for pausing remote changes
     let pendingRemoteChanges = Promise.resolve();
     async function onRemteChange({ metaData, operations, authors }) {
+        operations=operations.map(deserializeOperation);
         const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath}${metaData.file}`;
         //todo check meta file and branch
         if (!getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo)) {
