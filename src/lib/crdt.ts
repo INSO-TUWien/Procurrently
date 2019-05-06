@@ -168,14 +168,7 @@ export default async (siteId?: number, history?) => {
                 branches.set(file, getSpecifier(await Git.getCurrentCommitHash(file), await Git.getCurrentBranch(file), await Git.getRepoUrl(file)));
                 if (!localPaths.has(metaData.repo)) {
                     localPaths.set(metaData.repo, await Git.findGitDirectory(file));
-
-                    const gitEnvChangedCB = async _ => {
-                        //will be executed when the current branch or head commit changes
-                        branches.set(file, getSpecifier(await Git.getCurrentCommitHash(file), await Git.getCurrentBranch(file), await Git.getRepoUrl(file)));
-                        //TODO this should effectively be a branch switch
-                    };
-                    watchFile(localPaths.get(metaData.repo) + '/.git/HEAD', gitEnvChangedCB);
-                    watchFile(localPaths.get(metaData.repo) + '/.git/' + metaData.branch, gitEnvChangedCB);
+                    Git.onHeadChanged(file, onBranchChanged);
                 }
                 metaData.users.set(net && net.siteId || siteId, await Git.getUserName(file));
                 if (usersChanged) {
@@ -266,6 +259,30 @@ export default async (siteId?: number, history?) => {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    async function onBranchChanged() {
+        stagedSiteIds.splice(0);
+        if (usersChanged) {
+            usersChanged();
+        }
+        const edits = [];
+        for (let [key, doc] of documents) {
+            const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
+            if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
+                branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
+                const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
+                const localText = localdoc.getText();
+                if (doc.document.getText() != localText) {
+                    const edit = new vscode.WorkspaceEdit();
+                    const endPosition = localdoc.positionAt(localText.length);
+                    edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0, 0), endPosition), doc.document.getText());
+                    currentChanges.push({ start: { line: 0, character: 0 }, end: { line: endPosition.line, character: endPosition.character }, text: doc.document.getText() });
+                    edits.push(vscode.workspace.applyEdit(edit));
+                }
+            }
+        }
+        await Promise.all(edits);
+    }
+
     async function switchBranch() {
         const branch = await vscode.window.showQuickPick(Git.getBranches(vscode.workspace.rootPath + '/a'));// the /a is a hack to get git to not effectively cd..
         if (!branch) {
@@ -288,27 +305,7 @@ export default async (siteId?: number, history?) => {
         await vscode.workspace.saveAll(true);
         await vscode.commands.executeCommand('workbench.action.closeAllEditors');
         await Git.resetAndSwitchBranch(vscode.workspace.rootPath + '/a', branch);
-        stagedSiteIds.splice(0);
-        if (usersChanged) {
-            usersChanged();
-        }
-        const edits = [];
-        for (let [key, doc] of documents) {
-            const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
-            if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
-                branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
-                const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
-                const localText = localdoc.getText();
-                if (doc.document.getText() != localText) {
-                    const edit = new vscode.WorkspaceEdit();
-                    const endPosition = localdoc.positionAt(localText.length);
-                    edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0, 0), endPosition), doc.document.getText());
-                    currentChanges.push({ start: { line: 0, character: 0 }, end: { line: endPosition.line, character: endPosition.character }, text: doc.document.getText() });
-                    edits.push(vscode.workspace.applyEdit(edit));
-                }
-            }
-        }
-        await Promise.all(edits);
+        await onBranchChanged();
     }
 
     let remoteChangesVisible = true;

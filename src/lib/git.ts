@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 import * as path from 'path';
 import { spawn } from 'child_process';
+import * as chokidar from 'chokidar';
 
 const readFile = promisify(fs.readFile);
 const readDir = promisify(fs.readdir);
@@ -287,4 +288,20 @@ export async function isIgnored(filename: string) {
     const gitDir: String = await findGitDirectory(filename);
     const resp = await promiseSpawn('git', ['check-ignore', filename], { cwd: gitDir });
     return resp.indexOf(filename) > -1;
+}
+
+const headChangedCallbacks = new Map<string, Function>();
+export async function onHeadChanged(repo: string, cb: Function) {
+    const gitDir: string = await findGitDirectory(repo);
+    if (headChangedCallbacks.has(gitDir)) {
+        console.warn('handler for repo already defined');
+        return;
+    }
+    chokidar.watch(gitDir).on('all', async (name, path) => {
+        if (/HEAD$/.test(path) || /refs\/heads/) {
+            const dir = await findGitDirectory(path);
+            headChangedCallbacks.get(dir)(dir);
+        }
+    })
+    headChangedCallbacks.set(gitDir, cb);
 }
