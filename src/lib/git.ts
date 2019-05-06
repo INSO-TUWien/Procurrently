@@ -15,16 +15,20 @@ const readDir = promisify(fs.readdir);
  */
 function promiseSpawn(process, args, options = {}): Promise<string> {
     return new Promise(async (resolve, reject) => {
-        const proc = spawn(process, args, options);
-        let output = '';
-        proc.stdout.on('data', data => {
-            output += data.toString();
-        });
-        proc.stdout.on('end', () => {
-            resolve(output);
-        });
-        proc.stderr.on('data', d => console.error(d.toString()));
-        proc.on('exit', code => code != 0 ? reject('unexpected error') : null);
+        try {
+            const proc = spawn(process, args, options);
+            let output = '';
+            proc.stdout.on('data', data => {
+                output += data.toString();
+            });
+            proc.stdout.on('end', () => {
+                resolve(output);
+            });
+            proc.stderr.on('data', d => console.error(d.toString()));
+            proc.on('exit', code => code != 0 ? reject('unexpected error') : null);
+        } catch (e) {
+            reject(e);
+        }
     });
 }
 
@@ -146,13 +150,19 @@ function parseGitObject(content: string) {
     return parsedContent;
 }
 
+export async function getBranchCommitsSinceCommit(repo: string, branch: string, commit: string) {
+    const gitDir = await findGitDirectory(repo);
+    const rawCommits = await promiseSpawn('git', ['rev-list', '-b', branch, '--pretty=format:"%H"', '--no-patch', commit + '..HEAD'], { cwd: gitDir });
+    return rawCommits.split(/\n/g);
+}
+
 /**
  * returns the hash of the current HEAD commit
  * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
  */
-export async function getCurrentCommitHash(repo: string) {
+export async function getCurrentCommitHash(repo: string, branch?: string) {
     const gitDir = await findGitDirectory(repo);
-    let commit = await getCurrentBranch(repo);
+    let commit = branch || await getCurrentBranch(repo);
     let currentObject = parseGitObject(await readGitObject(commit, gitDir));
     return currentObject.filter(o => o.type == gitObjectType.tree)[0].hash;
 }
@@ -297,8 +307,8 @@ export async function onHeadChanged(repo: string, cb: Function) {
         console.warn('handler for repo already defined');
         return;
     }
-    chokidar.watch(gitDir).on('all', async (name, path) => {
-        if (/HEAD$/.test(path) || /refs\/heads/) {
+    chokidar.watch(gitDir + '/.git/').on('all', async (name, path) => {
+        if ((/HEAD$/.test(path) || /refs\/heads/.test(path)) && name == 'change') {
             const dir = await findGitDirectory(path);
             headChangedCallbacks.get(dir)(dir);
         }
