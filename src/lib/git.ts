@@ -156,10 +156,10 @@ export async function getCurrentCommitHash(repo: string) {
  * returns the current version committed in git of a specified file
  * @param filename the full path to the file including the filename
  */
-export async function getCurrentFileVersion(filename: string): Promise<string> {
+export async function getCurrentFileVersion(filename: string, commit?:string): Promise<string> {
     const gitDir = await findGitDirectory(filename);
     const relativeFilePath: string = await getFilePathRelativeToRepo(filename);
-    let currentObject = parseGitObject(await readGitObject(await getCurrentCommitHash(filename), gitDir));
+    let currentObject = parseGitObject(await readGitObject(commit || await getCurrentCommitHash(filename), gitDir));
     //get the tree of the git root
     for (let dir of relativeFilePath.split(/\//g)) {
         if (dir == '') {

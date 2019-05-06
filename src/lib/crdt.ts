@@ -183,7 +183,7 @@ export default async (siteId?:number, history?) => {
                 }
 
                 //pretend the initial doc came from the same source
-                const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(file.fileName)) }).replicate(net && net.siteId || siteId);
+                const document = new Document({ siteId: 1, text: (await Git.getCurrentFileVersion(file.fileName, commit)) }).replicate(net && net.siteId || siteId);
 
                 //check for local modifications already present
                 //this solution is just a placeholder
