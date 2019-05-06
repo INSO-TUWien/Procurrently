@@ -172,6 +172,7 @@ export default async (siteId?: number, history?) => {
                     const gitEnvChangedCB = async _ => {
                         //will be executed when the current branch or head commit changes
                         branches.set(file, getSpecifier(await Git.getCurrentCommitHash(file), await Git.getCurrentBranch(file), await Git.getRepoUrl(file)));
+                        //TODO this should effectively be a branch switch
                     };
                     watchFile(localPaths.get(metaData.repo) + '/.git/HEAD', gitEnvChangedCB);
                     watchFile(localPaths.get(metaData.repo) + '/.git/' + metaData.branch, gitEnvChangedCB);
