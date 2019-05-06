@@ -265,20 +265,37 @@ export default async (siteId?: number, history?) => {
             usersChanged();
         }
         const edits = [];
+        const keysToRemove = [];
         for (let [key, doc] of documents) {
             const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
-            if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getCurrentCommitHash(filepath) == doc.metaData.commit && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
-                branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
-                const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
-                const localText = localdoc.getText();
-                if (doc.document.getText() != localText) {
-                    const edit = new vscode.WorkspaceEdit();
-                    const endPosition = localdoc.positionAt(localText.length);
-                    edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0, 0), endPosition), doc.document.getText());
-                    currentChanges.push({ start: { line: 0, character: 0 }, end: { line: endPosition.line, character: endPosition.character }, text: doc.document.getText() });
-                    edits.push(vscode.workspace.applyEdit(edit));
+            if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
+                if (await Git.getCurrentCommitHash(filepath) == doc.metaData.commit) {
+                    branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
+                    const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
+                    const localText = localdoc.getText();
+                    if (doc.document.getText() != localText) {
+                        const edit = new vscode.WorkspaceEdit();
+                        const endPosition = localdoc.positionAt(localText.length);
+                        edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(0, 0), endPosition), doc.document.getText());
+                        currentChanges.push({ start: { line: 0, character: 0 }, end: { line: endPosition.line, character: endPosition.character }, text: doc.document.getText() });
+                        edits.push(vscode.workspace.applyEdit(edit));
+                    }
+                } else {
+                    try {
+                        //either we are ahead or behind this change
+                        if (!(await Git.getBranchCommitsSinceCommit(filepath, doc.metaData.branch, doc.metaData.commit)).includes(await Git.getCurrentCommitHash(filepath, doc.metaData.branch))) {
+                            //this commit is older than the currently checked out one
+                            keysToRemove.push(key);
+                        }
+                    } catch (e) {
+                        console.error('failed to remove outdated file ' + JSON.stringify(doc));
+                        console.error(e);
+                    }
                 }
             }
+        }
+        for (let key of keysToRemove) {
+            documents.delete(key);
         }
         await Promise.all(edits);
     }
