@@ -56,10 +56,14 @@ export async function findGitDirectory(startpath: string): Promise<string> {
     }
     let found = false;
     while (currpath.length > 0) {
-        const dir = await readDir(currpath);
-        if (dir.indexOf('.git') > -1) {
-            repositories.set(startpath, currpath);
-            return currpath;
+        try {
+            const dir = await readDir(currpath);
+            if (dir.indexOf('.git') > -1) {
+                repositories.set(startpath, currpath);
+                return currpath;
+            }
+        } catch (e) {
+            //directory not on disk
         }
         currpath = dirUp(currpath);
     }
@@ -156,7 +160,7 @@ export async function getCurrentCommitHash(repo: string) {
  * returns the current version committed in git of a specified file
  * @param filename the full path to the file including the filename
  */
-export async function getCurrentFileVersion(filename: string, commit?:string): Promise<string> {
+export async function getCurrentFileVersion(filename: string, commit?: string): Promise<string> {
     const gitDir = await findGitDirectory(filename);
     const relativeFilePath: string = await getFilePathRelativeToRepo(filename);
     let currentObject = parseGitObject(await readGitObject(commit || await getCurrentCommitHash(filename), gitDir));
@@ -259,7 +263,7 @@ export async function getBranches(repo: string) {
  * undoes all current changes (equivalent of git reset --hard HEAD)
  * @param repo the path to the repository or a subfolder of the repository (will automatically find .git folder)
  */
-export async function reset(repo: string){
+export async function reset(repo: string) {
     const gitDir: String = await findGitDirectory(repo);
     await promiseSpawn('git', ['reset', '--hard', 'HEAD'], { cwd: gitDir });
 }

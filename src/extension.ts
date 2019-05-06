@@ -7,12 +7,12 @@ import { ContributorsTreeView } from './ContributorsTreeView';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-	const crdt = await Crdt.default(context.globalState.get('procurrently.siteId'), context.globalState.get('procurrently.allChanges') ? JSON.parse(context.globalState.get('procurrently.allChanges')):null);
+	const crdt = await Crdt.default(context.globalState.get('procurrently.siteId'), context.globalState.get('procurrently.allChanges') ? JSON.parse(context.globalState.get('procurrently.allChanges')) : null);
 	context.globalState.update('procurrently.siteId', crdt.siteId);
 
-	vscode.workspace.onDidOpenTextDocument(crdt.registerFile);
+	vscode.workspace.onDidOpenTextDocument(d => crdt.registerFile(d.fileName));
 	if (vscode.window.activeTextEditor) {
-		crdt.registerFile(vscode.window.activeTextEditor.document);
+		crdt.registerFile(vscode.window.activeTextEditor.document.fileName);
 	}
 	/* const edit = new vscode.WorkspaceEdit();
         edit.replace(vscode.Uri.file('/Users/stefangussner/git/sync-element/sync-element.js'), new vscode.Range(new vscode.Position(255,51), new vscode.Position(255,51)),'asdf');
