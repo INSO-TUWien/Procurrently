@@ -302,7 +302,10 @@ export async function onHeadChanged(repo: string, cb: Function) {
     }
     chokidar.watch(gitDir + '/.git/').on('all', async (name, path) => {
         if ((/HEAD$/.test(path) || /refs\/heads/.test(path)) && name == 'change') {
-            const dir = await findGitDirectory(path);
+            let dir = await findGitDirectory(path);
+            if (dir[dir.length - 1] == '/') {
+                dir = dir.substr(0, dir.length - 1);
+            }
             headChangedCallbacks.get(dir)(dir);
         }
     })
