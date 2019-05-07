@@ -19,8 +19,8 @@ export default class Network {
     }
 
 
-    constructor(siteId=userID, bootstrapIp?) {
-        this._siteId=siteId;
+    constructor(siteId = userID, bootstrapIp?) {
+        this._siteId = siteId;
         this._lastRequestOperations = new Date().getTime();
         this.others = [];
         this.currentObject = '';
@@ -52,6 +52,7 @@ export default class Network {
                         ps.connect(peer);
                         ps.on('connect', () => {
                             this.others.push(ps);
+                            this.handleCommand('getOperations', ps);
                             ps.on('close', () => this.others.splice(this.others.indexOf(this.socket), 1));
                             ps.on('data', d => this.handleDataPacket(d.toString(), ps));
                         })
@@ -66,23 +67,19 @@ export default class Network {
         this.socket.on('connection', s => {
             this.others.push(s);
             //when a new client connects we send him all the changes we know of
-            if (this._dataProvider) {
-                for (let update of this._dataProvider()) {
-                    s.write(JSON.stringify({ update }));
-                }
-            }
+            this.handleCommand('getOperations', s);
             s.on('close', () => this.others.splice(this.others.indexOf(s), 1));
             s.on('data', d => this.handleDataPacket(d.toString(), s));
             s.on('error', console.error);
         });
     }
 
-    close(){
+    close() {
         this.socket.close();
-        for(let o of this.others){
+        for (let o of this.others) {
             o.end();
         }
-        this._onremoteEdit=()=>{};
+        this._onremoteEdit = () => { };
     }
 
     private handleDataPacket(data: string, s: net.Socket) {
