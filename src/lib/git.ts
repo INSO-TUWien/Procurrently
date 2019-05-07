@@ -39,15 +39,8 @@ const repositories: Map<string, string> = new Map();
  * @param path A unix style path
  * @returns the path to the parent directory
  */
-function dirUp(path: string) {
-    const parts = path.split(/\//g);
-    for (let i = parts.length - 1; i > 0; i--) {
-        if (parts[i] == '') {
-            continue;
-        }
-        return parts.slice(0, i).join('/');
-    }
-    return '';
+function dirUp(dir: string) {
+    return path.join(dir, '../').toString();
 }
 
 /**
@@ -176,7 +169,7 @@ export async function getCurrentFileVersion(filename: string, commit?: string): 
     const relativeFilePath: string = await getFilePathRelativeToRepo(filename);
     let currentObject = parseGitObject(await readGitObject(commit || await getCurrentCommitHash(filename), gitDir));
     //get the tree of the git root
-    for (let dir of relativeFilePath.split(/\//g)) {
+    for (let dir of relativeFilePath.split(path.sep)) {
         if (dir == '') {
             continue;
         }
