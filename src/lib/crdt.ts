@@ -71,7 +71,7 @@ export default async (siteId?: number, history?) => {
                 const props = ['line', 'character'];
 
                 //check if this change has just been added by remote
-                const knownChanges = currentChanges.filter(c => objects.map(o => props.map(p => c[o][p] == change.range[o][p])) && c.text == change.text);
+                const knownChanges = currentChanges.filter(c => objects.map(o => props.map(p => c[o][p] == change.range[o][p])) && c.text == change.text && c.filename == e.document.fileName);
                 if (knownChanges.length > 0) {
                     //remove from known changes
                     currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
@@ -130,7 +130,7 @@ export default async (siteId?: number, history?) => {
         for (let o of textOperations.textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)) {
             const edit = new vscode.WorkspaceEdit();
             edit.replace(vscode.Uri.file(filepath), new vscode.Range(new vscode.Position(o.oldStart.row, o.oldStart.column), new vscode.Position(o.oldEnd.row, o.oldEnd.column)), o.newText);
-            currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText });
+            currentChanges.push({ start: { line: o.oldStart.row, character: o.oldStart.column }, end: { line: o.oldEnd.row, character: o.oldEnd.column }, text: o.newText, filepath });
             await vscode.workspace.applyEdit(edit);
         }
     }
