@@ -28,7 +28,7 @@ It provides functions to:
 \section{teletype-crdt}
 
 "The string-wise sequence CRDT powering peer-to-peer collaborative editing in Teletype for Atom."\footnote{https://github.com/atom/teletype-crdt}
-This library will be used for tracking changes. It is written in Javascript and currently doesn't include an API documentation.
+This library will be used for tracking changes. It is written in JavaScript and currently doesn't include an API documentation.
 
 The main functions used are
 
@@ -128,17 +128,17 @@ First an entry in the activity bar has to be declared in the viewsContainers sec
 
 Additionally the view has to be declared.\ref{lst:contributes_treeview_view} This defines the heading for the treeview.
 
-\begin{lstlisting}[label={lst:contributes_treeview_register}]
+\begin{lstlisting}[label={lst:contributes_treeview_register} caption=Define Tree View Data Provider]
 const treeview = new ContributorsTreeView(crdt.getUsers);
 vscode.window.registerTreeDataProvider('contributors', treeview);
 \end{lstlisting}
 
-To populate the Treeview with data, a TreeDataProvider has to be registered to the view id.\ref{lst:contributes_treeview_register}
+To populate the Tree View with data, a TreeDataProvider has to be registered to the view id.\ref{lst:contributes_treeview_register}
 The TreeDataProvider interface defines functions that return all items for the treeview as well as refresh the content of the treeview.
 
 \section{Data Model}
 
-\begin{lstlisting}
+\begin{lstlisting}[label={lst:datamodel_declarations}, caption=data model declarations]
 const documents = new Map<string, { document: Document, metaData: { commit: string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
 /** remote repository to path mapping */
 const localPaths = new Map<string, string>();
@@ -146,7 +146,7 @@ const localPaths = new Map<string, string>();
 const branches = new Map<string, string>();
 \end{lstlisting}
 
-All the data is stored in a map called documents.
+All the data is stored in a map called documents.(See \ref{lst:datamodel_declarations})
 It's key is composed of the filename and a specifier composed from the commit, branch and remote/origin repository URL.
 
 In order to keep track of the current branch and head commit of files, the branches map contains the identifier for a file by filepath.
@@ -154,8 +154,50 @@ In order to keep track of the current branch and head commit of files, the branc
 The localPaths map contains mappings from remote/origin urls to local git directory locations.
 This enables keeping track of files across different projects.
 
-The documents map values contain an Object containing
+
+The documents map values contain
+
+\subsection{The Document Object}
+
+The document object has two properties
+
 \begin{itemize}
     \item document
     \item metaData
 \end{itemize}
+
+The document property points to an instalce of the document class provided by teletype-crdt.
+
+The metaData property contains the relevant information from Git about the document:
+\begin{itemize}
+    \item branch
+    \item commit
+    \item repo
+    \item file
+    \item users
+\end{itemize}
+
+The users property contains a map with the teletype-crdt siteId as a key and the git username as a value.
+This information is required to display usersnames in the staging Tree View.
+
+\section{Reacting to Local Changes}
+
+In order to process a local change, provided by the onDidChangeTextDocument API call, the extension first checks, if the change has been added by a remote client. This is necessary because the VS Code API does not differentiate between changes by the user and changes by extensions. (See \ref{lst:localchange_check_known}) Otherwise changes are duplicated endlessly because every remote change is propagated back to all other clients
+
+\begin{lstlisting}[label={lst:localchange_check_known}, caption=Is this change already known to the data model? ]
+const objects = ['start', 'end'];
+const props = ['line', 'character'];
+
+//check if this change has just been added by remote
+const knownChanges = currentChanges
+    .filter(c => 
+        objects.map(o => 
+            props.map(p => 
+                c[o][p] == change.range[o][p])) 
+        && c.text == change.text 
+        && c.filename == e.document.fileName);
+if (knownChanges.length > 0) {
+    //remove from known changes
+    currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
+}
+\end{lstlisting}

@@ -9,6 +9,10 @@
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax
+\contentsline {lstlisting}{\numberline {5.1}data model declarations}{12}{lstlisting.5.1}
+\defcounter {refsection}{0}\relax
+\contentsline {lstlisting}{\numberline {5.2}Is this change already known to the data model?}{13}{lstlisting.5.2}
+\defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
