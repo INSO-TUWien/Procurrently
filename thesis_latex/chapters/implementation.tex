@@ -182,7 +182,7 @@ This information is required to display usersnames in the staging Tree View.
 
 \section{Reacting to Local Changes}
 
-In order to process a local change, provided by the onDidChangeTextDocument API call, the extension first checks, if the change has been added by a remote client. This is necessary because the VS Code API does not differentiate between changes by the user and changes by extensions. (See \ref{lst:localchange_check_known}) Otherwise changes are duplicated endlessly because every remote change is propagated back to all other clients
+In order to process a local change, provided by the onDidChangeTextDocument API call, the extension first checks, if the change has been added by a remote client. This is necessary because the VS Code API does not differentiate between changes by the user and changes by extensions. (See \ref{lst:localchange_check_known}) Otherwise changes are duplicated endlessly because every remote change is propagated back to all other clients as a new change.
 
 \begin{lstlisting}[label={lst:localchange_check_known}, caption=Is this change already known to the data model? ]
 const objects = ['start', 'end'];
@@ -201,3 +201,106 @@ if (knownChanges.length > 0) {
     currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
 }
 \end{lstlisting}
+
+To update the teletype-crdt document the setTextInRange function is used. It returns a list of operations. This list of operations is sent in a JSON object containing the metaData associated with the document.\ref{lst:change_json}
+
+\begin{lstlisting}[label={lst:change_json}, caption=Network Data Packet]
+{
+    "update": {
+        "metaData": {
+            "branch": "refs/heads/master",
+            "commit": "05fc4663235f36ba054ea37fd7f92e9a5555edf2",
+            "repo": "git@bitbucket.org:company/a_repository.git\n",
+            "file": "/app.js",
+            "users": {}
+        },
+        "operations": [
+            {
+                "type": "splice",
+                "spliceId": {
+                    "site": 2766400253437581,
+                    "seq": 3
+                },
+                "insertion": {
+                    "text": "a",
+                    "leftDependencyId": {
+                        "site": 0,
+                        "seq": 0
+                    },
+                    "offsetInLeftDependency": {
+                        "row": 0,
+                        "column": 0
+                    },
+                    "rightDependencyId": {
+                        "site": 2766400253437581,
+                        "seq": 1
+                    },
+                    "offsetInRightDependency": {
+                        "row": 0,
+                        "column": 0
+                    }
+                }
+            }
+        ],
+        "authors": [
+            [
+                2766400253437581,
+                "Stefan Gussner"
+            ]
+        ]
+    }
+}
+\end{lstlisting}
+
+\section{Network Transport}
+
+\subsection{Establishing the Peer To Peer Connections}
+On Bootup a connection to a bootstrap server is established. 
+The peer sends the bootstrap server his ip as well as the port of the socket the peer is listening on for incoming connections.
+Upon recieving this information the bootstrap server responds with a list of ips and ports of all the other registered peers.
+The peer then tries to connect to every peer in that list.
+
+Once a connection is established, the peers exchange all the operations they know about.
+
+\subsection{Handling Changes}
+Every change is propergated to every node known to the peer. This approach only works for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other clients when switching branches. Additionally changes could be propergated via a gossip based protocol.
+
+\section{Handling Remote Changes}
+
+Handling incoming changes has two main challanges:
+\begin{itemize}
+    \item concurrent changes
+    \item finding files on disk
+\end{itemize}
+
+\subsection{Concurrent Changes}
+
+Concurrent changes can introduce errors when adding them to a file. 
+Given two changes on the same line one of the changes will have it's index changed by the other one.
+
+To illustrate the problem consider this example:
+
+The initial line consists of the string "12345".
+Now peer A adds "g" after index 3 and peer B adds "c" after index 4
+The local result for A is "123g45" and the local result for B is "1234c5".
+The correct result for the changes would then be "123g4c5"
+The crdt data type handles this concurrency problem and if the change from peer B is processed after the change from peer A the insert operation of B is adjusted from index 4 to 5.
+But this assumes that all the changes are processed sequentially. If the order of insertions is not guaranteed the resulting string could turn into "123g45c" if the crdt document processes the changes in the order A -> B and the VS Code Edit is processed in the order B -> A.
+
+In order to deal with this problem the network waits for the promise chain handling the response until the change has been added to the file.
+
+\begin{lstlisting}[label={lst:promise_chain}, caption=Network Promise Chain]
+this._currentEdit = this._currentEdit.then(() => {
+    [...]
+    return this._onremoteEdit(recieved.update);
+    [...]
+})
+\end{lstlisting}
+
+\ref{lst:promise_chain} ensures that incoming change packets are processed sequentially by building a promise chain.
+
+\subsection{Finding files on Disk}
+
+Given the information from the network finding the file the change corresponds to is not trivial.
+
+First the appropriate Git repository has to be located.
