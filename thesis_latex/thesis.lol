@@ -17,13 +17,15 @@
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {5.4}Network Promise Chain}{15}{lstlisting.5.4}
 \defcounter {refsection}{0}\relax
-\addvspace {10pt}
+\contentsline {lstlisting}{\numberline {5.5}Adding Change to Local Document}{16}{lstlisting.5.5}
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {8.1}Short code}{18}{lstlisting.8.1}
+\addvspace {10pt}
+\defcounter {refsection}{0}\relax
+\contentsline {lstlisting}{\numberline {8.1}Short code}{19}{lstlisting.8.1}
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax

@@ -299,8 +299,32 @@ this._currentEdit = this._currentEdit.then(() => {
 
 \ref{lst:promise_chain} ensures that incoming change packets are processed sequentially by building a promise chain.
 
-\subsection{Finding files on Disk}
+\subsection{Finding Files on Disk}
 
 Given the information from the network finding the file the change corresponds to is not trivial.
 
 First the appropriate Git repository has to be located.
+In order to accomplish that every time a local file is accessed the location of the local Git repository is saved in a map with the remote repository url as a key. This map is used to look up the path of the Git repository. 
+
+If the file has not been accessed previously, the base version of the file has to be established.
+By using the getCurrentFileVersion function of the Git library to retrieve the appropriate version from the Git repository to replay changes onto.
+
+\subsection{Adding Changes to File}
+
+If the file changed by the remote peer is currently checked out, the change has to be incorporated into it. Otherwise the change will just be saved to the atom-teletype document representation. (See \ref{lst:add_change_to_local})
+
+\begin{lstlisting}[label={lst:add_change_to_local}, caption=Adding Change to Local Document]
+//only apply changes if on the same branch and remote changes visible
+if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, metaData.repo) && remoteChangesVisible) {
+    const doc = getLocalDocument(filepath).document;
+    const textOperations = doc.integrateOperations(operations);
+    try {
+        await pendingRemoteChanges.then(() => applyEditToLocalDoc(filepath, textOperations));
+    } catch (e) {
+        console.error(e);
+    }
+} else {
+    //save changes to other files
+    getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
+}
+\end{lstlisting}
