@@ -195,8 +195,9 @@ The users property contains a map with the teletype-crdt siteId as a key and the
 This information is required to display usersnames in the staging Tree View.
 
 \section{Reacting to Local Changes}
+If a file has not yet been accessed, it has to be registered. This establishes the current version of the file known to Git. Additionally The localPaths map is updated with the repository remote origin URL as the key and the location of the git repository on disk as the value. This will later be used for incoming changes.
 
-In order to process a local change, provided by the onDidChangeTextDocument API call, the extension first checks, if the change has been added by a remote client. This is necessary because the VS Code API does not differentiate between changes by the user and changes by extensions. (See \ref{lst:localchange_check_known}) Otherwise changes are duplicated endlessly because every remote change is propagated back to all other clients as a new change.
+In order to process a local change, provided by the onDidChangeTextDocument API call, the extension checks, if the change has been added by a remote client. This is necessary because the VS Code API does not differentiate between changes by the user and changes by extensions. (See \ref{lst:localchange_check_known}) Otherwise changes are duplicated endlessly because every remote change is propagated back to all other clients as a new change.
 
 \begin{lstlisting}[label={lst:localchange_check_known}, caption=Is This Change Already Known to The Data Model? ]
 const objects = ['start', 'end'];
@@ -216,7 +217,7 @@ if (knownChanges.length > 0) {
 }
 \end{lstlisting}
 
-To update the teletype-crdt document the setTextInRange function is used. It returns a list of operations. This list of operations is sent in a JSON object containing the metaData associated with the document.\ref{lst:change_json}
+To update the teletype-crdt document the setTextInRange function is used. It returns a list of operations. This list of operations is sent in a JSON object containing the metaData associated with the document. (See \ref{lst:change_json})
 
 \begin{lstlisting}[label={lst:change_json}, caption=Network Data Packet]
 {
@@ -269,15 +270,15 @@ To update the teletype-crdt document the setTextInRange function is used. It ret
 \section{Network Transport}
 
 \subsection{Establishing the Peer To Peer Connections}
-On Bootup a connection to a bootstrap server is established. 
-The peer sends the bootstrap server his ip as well as the port of the socket the peer is listening on for incoming connections.
+When the extension is activated, a to a bootstrap server is established. 
+The peer sends the bootstrap server his ip as well as the port of the socket, the peer is listening on for incoming connections.
 Upon recieving this information the bootstrap server responds with a list of ips and ports of all the other registered peers.
 The peer then tries to connect to every peer in that list.
 
-Once a connection is established, the peers exchange all the operations they know about.
+Once a connection is established, the peers exchange all the changes they know about.
 
 \subsection{Handling Changes}
-Every change is propergated to every node known to the peer. This approach only works for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other clients when switching branches. Additionally changes could be propergated via a gossip based protocol.
+Every change is propergated to every node known to the peer. This approach is performant enough for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other peers when switching branches. Additionally changes could be propergated via a gossip based protocol.
 
 \section{Handling Remote Changes}
 
@@ -301,7 +302,8 @@ The correct result for the changes would then be "123g4c5"
 The crdt data type handles this concurrency problem and if the change from peer B is processed after the change from peer A the insert operation of B is adjusted from index 4 to 5.
 But this assumes that all the changes are processed sequentially. If the order of insertions is not guaranteed the resulting string could turn into "123g45c" if the crdt document processes the changes in the order A -> B and the VS Code Edit is processed in the order B -> A.
 
-In order to deal with this problem the network waits for the promise chain handling the response until the change has been added to the file.
+To ensure consistency, the network layer waits for the change handling promise to resolve before processing the next change. This can be thought of as "pretending network changes have been delayed".
+CRDTs such as atom-teletype are designed to handle delayed network packets. Therefore this ensures consistent change replication. \ref{lst:promise_chain} ensures that incoming change packets are processed sequentially by building a promise chain.
 
 \begin{lstlisting}[label={lst:promise_chain}, caption=Network Promise Chain]
 this._currentEdit = this._currentEdit.then(() => {
@@ -311,14 +313,12 @@ this._currentEdit = this._currentEdit.then(() => {
 })
 \end{lstlisting}
 
-\ref{lst:promise_chain} ensures that incoming change packets are processed sequentially by building a promise chain.
+\subsection{Locating Files on Disk}
 
-\subsection{Finding Files on Disk}
-
-Given the information from the network finding the file the change corresponds to is not trivial.
+Given the information from the network locating the file the change corresponds to is not trivial.
 
 First the appropriate Git repository has to be located.
-In order to accomplish that every time a local file is accessed the location of the local Git repository is saved in a map with the remote repository url as a key. This map is used to look up the path of the Git repository. 
+This information can be looked up in the localPaths map.
 
 If the file has not been accessed previously, the base version of the file has to be established.
 By using the getCurrentFileVersion function of the Git library to retrieve the appropriate version from the Git repository to replay changes onto.
