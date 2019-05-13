@@ -11,17 +11,20 @@ Git provides useful information about the current project, the developer is work
 \end{itemize}
 
 Git stores this information in the ".git" directory in the root folder of the project.
-The data is stored in a compressed format. In order to access the information, a small library using low level git commands was implemented. 
+The data is stored in a compressed format. In order to access the information, a small library using low level Git commands was implemented. 
 
 It provides functions to:
 \begin{itemize}
-    \item Find the Git directory for a given file (given the file is inside a git project)
+    \item Find the Git directory for a given file (given the file is inside a Git repository)
     \item Get the current branch of a Git repository
     \item Get the remote URL for a repository
+    \item Get the path of a file within a repository
+    \item Get a list of commit hashes
     \item Get the current version of a given file
     \item Stage a file for commit
     \item Get the username configured for the Git repository
     \item Get a list of branches of a Git repository
+    \item Do a Git reset
     \item Switch a repository to a different branch
 \end{itemize}
 
@@ -30,21 +33,26 @@ It provides functions to:
 "The string-wise sequence CRDT powering peer-to-peer collaborative editing in Teletype for Atom."\footnote{https://github.com/atom/teletype-crdt}
 This library will be used for tracking changes. It is written in JavaScript and currently doesn't include an API documentation.
 
-The main functions used are
+The main functions used are: 
 
-\begin{lstlisting}
+\begin{itemize}
+    \item \ref{lst:setTextInRange} to notify the document representation about a text operation on the local document
+    \item \ref{lst:integrateOperations} to notify the document representation about remote changes and returns the changes to the local file required to keep it in sync with other instances
+    \item \ref{lst:undoOrRedoOperations} to generate diffs for hiding remote changes as well as staging changes
+\end{itemize}
+
+
+\begin{lstlisting}[label={lst:setTextInRange}, caption=VS Code API setTextInRange]
 setTextInRange(start: {row:Number, column:Number}, end: {row:Number, column:Number}, text: string, options?: any): [operation];
 \end{lstlisting}
-which is used to notify the document representation about a text operation on the local document and
-\begin{lstlisting}
+
+\begin{lstlisting}[label={lst:integrateOperations}, caption=VS Code API integrateOperations]
 integrateOperations(operations: [operations]): {textUpdates:[textUpdate], markerUpdates:any};
 \end{lstlisting}
-which is used to notify the document representation about remote changes and returns the changes to the local file required to keep it in sync with other instances
-and
-\begin{lstlisting}
+
+\begin{lstlisting}[label={lst:undoOrRedoOperations}, caption=VS Code API undoOrRedoOperations]
 undoOrRedoOperations(operationsToUndo: [operation]): any;
 \end{lstlisting}
-which is used to undo changes.
 
 \subsection{Git and teletype-crdt}
 As a basis for the edit history  the current Git commit in the current branch will be used. teletype-crdt uses numeric siteIds to identify changes by author. The current Git commit is imported as edited by siteId 1 upon discovering the file. By doing this, all clients have an initial shared state based on the current version of the file known to Git.
@@ -151,7 +159,7 @@ It's key is composed of the filename and a specifier composed from the commit, b
 
 In order to keep track of the current branch and head commit of files, the branches map contains the identifier for a file by filepath.
 
-The localPaths map contains mappings from remote/origin urls to local git directory locations.
+The localPaths map contains mappings from remote/origin urls to local Git directory locations.
 This enables keeping track of files across different projects.
 
 
@@ -177,7 +185,7 @@ The metaData property contains the relevant information from Git about the docum
     \item users
 \end{itemize}
 
-The users property contains a map with the teletype-crdt siteId as a key and the git username as a value.
+The users property contains a map with the teletype-crdt siteId as a key and the Git username as a value.
 This information is required to display usersnames in the staging Tree View.
 
 \section{Reacting to Local Changes}
