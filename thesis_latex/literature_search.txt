@@ -5,3 +5,11 @@
 10.04.2019: branching version control
     ACM New York, NY, USA ©2011
         Branching and merging: an investigation into current version control practices
+
+13.05.2019: "real time collaboration" (filter since 2015)
+     2015 12th International Conference on Information Technology - New Generations
+        Enabling Real-Time Context-Aware Collaboration through 5G and Mobile Edge Computing
+
+13.05.2019: Enabling Real-Time Context-Aware Collaboration through 5G and Mobile Edge Computing
+    IEEE Communications Magazine ( Volume: 52 , Issue: 5 , May 2014 )
+        Device-to-device communication in 5G cellular networks: challenges, solutions, and future directions
