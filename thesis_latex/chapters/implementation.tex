@@ -42,20 +42,20 @@ The main functions used are:
 \end{itemize}
 
 
-\begin{lstlisting}[label={lst:setTextInRange}, caption=VS Code API setTextInRange]
+\begin{lstlisting}[label={lst:setTextInRange}, caption=teletype-crdt setTextInRange]
 setTextInRange(start: {row:Number, column:Number}, end: {row:Number, column:Number}, text: string, options?: any): [operation];
 \end{lstlisting}
 
-\begin{lstlisting}[label={lst:integrateOperations}, caption=VS Code API integrateOperations]
+\begin{lstlisting}[label={lst:integrateOperations}, caption=teletype-crdt integrateOperations]
 integrateOperations(operations: [operations]): {textUpdates:[textUpdate], markerUpdates:any};
 \end{lstlisting}
 
-\begin{lstlisting}[label={lst:undoOrRedoOperations}, caption=VS Code API undoOrRedoOperations]
+\begin{lstlisting}[label={lst:undoOrRedoOperations}, caption=teletype-crdt undoOrRedoOperations]
 undoOrRedoOperations(operationsToUndo: [operation]): any;
 \end{lstlisting}
 
 \subsection{Git and teletype-crdt}
-As a basis for the edit history  the current Git commit in the current branch will be used. teletype-crdt uses numeric siteIds to identify changes by author. The current Git commit is imported as edited by siteId 1 upon discovering the file. By doing this, all clients have an initial shared state based on the current version of the file known to Git.
+As a basis for the edit history  the current Git commit in the current branch will be used. Teletype-crdt uses numeric siteIds to identify changes by author. The current Git commit is imported as edited by siteId 1 upon discovering the file. By doing this, all clients have an initial shared state based on the current version of the file known to Git.
 
 \section{VS Code Extension API}
 
@@ -63,47 +63,45 @@ VS Code runs extension in a seperate process and provides an asynchronous Javasc
 The examples provided in the vscode-extension-samples repository\footnote{https://github.com/Microsoft/vscode-extension-samples} are mostly written in Typescript\footnote{https://www.typescriptlang.org/} and all the Interfaces have type definitions for Typescript.
 Therefore the Extension will use Typescript as well.
 
-\subsection{Used API functions}
+\subsection{Used API Functions}
 
-\begin{lstlisting}
+The VS Code API provides a set of asynchronous functions that return Promises.
+The extension uses the following set:
+
+\begin{itemize}
+    \item \ref{lst:onDidChangeTextDocument} "An event that is emitted when a text document is changed. This usually happens when the contents changes but also when other things like the dirty-state changes."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} to detect user modifications to files
+    \item \ref{lst:onDidOpenTextDocument} "An event that is emitted when a text document is opened or when the language id of a text document has been changed."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} to initialize the document representation when a user opens a file
+    \item \ref{lst:applyEdit} "Make changes to one or many resources or create, delete, and rename resources as defined by the given workspace edit."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} to apply edits from other peers to a file
+\end{itemize}
+
+\begin{lstlisting}[label={lst:onDidChangeTextDocument}, caption=VS Code API onDidChangeTextDocument]
 vscode.workspace.onDidChangeTextDocument()
 \end{lstlisting}
 
-"An event that is emitted when a text document is changed. This usually happens when the contents changes but also when other things like the dirty-state changes."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
-
-\begin{lstlisting}
+\begin{lstlisting}[label={lst:onDidOpenTextDocument}, caption=VS Code API onDidOpenTextDocument]
 vscode.workspace.onDidOpenTextDocument()
 \end{lstlisting}
 
-"An event that is emitted when a text document is opened or when the language id of a text document has been changed."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
-
-\begin{lstlisting}
+\begin{lstlisting}[label={lst:applyEdit}, caption=VS Code API applyEdit]
 vscode.workspace.applyEdit(edit)
 \end{lstlisting}
-"Make changes to one or many resources or create, delete, and rename resources as defined by the given workspace edit."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace}
 
-This function returns a promise which resolves when the change has been added to the text document.
+\ref{lst:applyEdit} returns a promise which resolves when the change has been added to the text document.
 An edit is given by a document, the line and column of start and end of the edit in that document and the new text to be inserted there.
-If text is added or removed within a line, the columns of the text change after the edit has been applied (when the promise resolves). If another edit is applied before the promise resolved, the indices of the text might have not been changed yet and therefore at a different position than expected. VS Codes WorkspaceEdit supports grouping change operations together. But change operations are not treated as happening all at a time so if for example the text "123" was typed the teletype-crdt library would essentially output Line 1 Char 1 to Line 1 Char 1 changed to "1", Line 1 Char 2 to Line 2 Char 2 changed to "2" and so on. This is kind of expected behaviour so far but VS Code's WorkspaceEdit treats this as independent operations and if there was text after the insertion the changes would not be inserted as 1 block but interlaced with the previous text. 
+If text is added or removed within a line, the columns of the text change after the edit has been applied (when the promise resolves). If another edit is applied before the promise resolved, the indices of the text might have not been changed yet and therefore at a different position than expected. VS Codes WorkspaceEdit supports grouping change operations together. But change operations are not treated as happening all at a time so if for example the text "123" was typed the teletype-crdt library would essentially output Line 1 Char 1 to Line 1 Char 1 changed to "1", Line 1 Char 2 to Line 2 Char 2 changed to "2" and so on. This is kind of expected behaviour so far but VS Code's WorkspaceEdit treats this as independent operations and if there was text after the insertion the changes would not be inserted as one block but interlaced with the previous text. 
 
-In order to avoid this race condition all changes to a file have to be carried out sequentially. This is not noticable when changes by regular typing are integrated into the local document. But when the multiple cursors\footnote{https://code.visualstudio.com/docs/getstarted/tips-and-tricks\#\_editing-hacks} are used the change integration can slow down noticably. In order to support multiple cursors the changes are sorted by column in decending order to prevent shifting indices. 
-\begin{lstlisting}
+In order to avoid this race condition all changes to a file have to be carried out sequentially. This is not noticable when changes by regular typing are integrated into the local document. But when the multiple cursors\footnote{https://code.visualstudio.com/docs/getstarted/tips-and-tricks\#\_editing-hacks} are used the change integration can slow down noticably. In order to support multiple cursors the changes are sorted by column in decending order to prevent shifting indices. (See \ref{lst:sort_changes})
+\begin{lstlisting}[label={lst:sort_changes}, caption=Sorting Changes by Column to Prevent Index Shifting]
 textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)
 \end{lstlisting}
 
 \subsection{Tree View}
 
-In order to stage changes by author, a treeview listing the Authors, who made changes, was created.
-The container for a treeview needs to be defined in the package.json file. 
+In order to stage changes by author, a Tree View listing the Authors, who made changes, was created.
+The container for a Tree View needs to be defined in the package.json file. \ref{fig:treeview}
 
-\begin{figure}[]
-    \centering
-    \includegraphics{figures/screenshots/treeview.png}
-    \caption{Tree view}
-    \label{fig:treeview}
-\end{figure}
-
-\begin{lstlisting}[label={lst:contributes_treeview_activitybar}]
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[label={lst:contributes_treeview_activitybar}, caption=Tree View Activitybar]
 "contributes": {
     "viewsContainers": {
         "activitybar": [
@@ -117,10 +115,11 @@ The container for a treeview needs to be defined in the package.json file.
     [...]
 }
 \end{lstlisting}
+\end{minipage}
 
-First an entry in the activity bar has to be declared in the viewsContainers section \ref{lst:contributes_treeview_activitybar}. It defines the icon as well as the hover text (called title) of the tab in the activity bar.
+First an entry in the activity bar has to be declared in the viewsContainers section (See \ref{lst:contributes_treeview_activitybar}). It defines the icon as well as the hover text (called title) of the tab in the activity bar.
 
-\begin{lstlisting}[label={lst:contributes_treeview_view}]
+\begin{lstlisting}[label={lst:contributes_treeview_view}, caption=Tree View Pannel Definition]
 "contributes": {
     [...]
     "views": {
@@ -134,19 +133,26 @@ First an entry in the activity bar has to be declared in the viewsContainers sec
 }
 \end{lstlisting}
 
-Additionally the view has to be declared.\ref{lst:contributes_treeview_view} This defines the heading for the treeview.
+\begin{figure}[hb]
+    \centering
+    \includegraphics{figures/screenshots/treeview.png}
+    \caption{Tree view}
+    \label{fig:treeview}
+\end{figure}
 
-\begin{lstlisting}[label={lst:contributes_treeview_register} caption=Define Tree View Data Provider]
+Additionally the view has to be declared.\ref{lst:contributes_treeview_view} This defines the heading for the Tree View.
+
+\begin{lstlisting}[label={lst:contributes_treeview_register}, caption=Define Tree View Data Provider]
 const treeview = new ContributorsTreeView(crdt.getUsers);
 vscode.window.registerTreeDataProvider('contributors', treeview);
 \end{lstlisting}
 
-To populate the Tree View with data, a TreeDataProvider has to be registered to the view id.\ref{lst:contributes_treeview_register}
-The TreeDataProvider interface defines functions that return all items for the treeview as well as refresh the content of the treeview.
+To populate the Tree View with data, a TreeDataProvider has to be registered to the view id. (See \ref{lst:contributes_treeview_register})
+The TreeDataProvider interface defines functions that return all items for the Tree View as well as refresh the content of the Tree View.
 
 \section{Data Model}
 
-\begin{lstlisting}[label={lst:datamodel_declarations}, caption=data model declarations]
+\begin{lstlisting}[label={lst:datamodel_declarations}, caption=Data Model Declarations]
 const documents = new Map<string, { document: Document, metaData: { commit: string, branch: string, repo: string, file: string, users: Map<Number, string> } }>();
 /** remote repository to path mapping */
 const localPaths = new Map<string, string>();
@@ -192,7 +198,7 @@ This information is required to display usersnames in the staging Tree View.
 
 In order to process a local change, provided by the onDidChangeTextDocument API call, the extension first checks, if the change has been added by a remote client. This is necessary because the VS Code API does not differentiate between changes by the user and changes by extensions. (See \ref{lst:localchange_check_known}) Otherwise changes are duplicated endlessly because every remote change is propagated back to all other clients as a new change.
 
-\begin{lstlisting}[label={lst:localchange_check_known}, caption=Is this change already known to the data model? ]
+\begin{lstlisting}[label={lst:localchange_check_known}, caption=Is This Change Already Known to The Data Model? ]
 const objects = ['start', 'end'];
 const props = ['line', 'character'];
 
