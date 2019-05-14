@@ -13,3 +13,7 @@
 13.05.2019: Enabling Real-Time Context-Aware Collaboration through 5G and Mobile Edge Computing
     IEEE Communications Magazine ( Volume: 52 , Issue: 5 , May 2014 )
         Device-to-device communication in 5G cellular networks: challenges, solutions, and future directions
+
+14.05.2019: "real time collaboration" programming
+    2017 IEEE 21st International Conference on Computer Supported Cooperative Work in Design (CSCWD)
+        CoVim: Incorporating real-time collaboration capabilities into comprehensive text editors

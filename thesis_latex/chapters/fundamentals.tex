@@ -12,6 +12,8 @@
 Teletype for Atom\footnote{https://github.com/atom/teletype/issues/211} is a Project enabling editing files peer to peer. It is based on 	\cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting} \cite{YuWeihai:2014} \cite{BriotUrsoShapiro:2016:HighResponsivenessGroupEditing}.
 With Teletype it is possible to edit files currently opened by the "host". The files are only persisted on the "host" not on all peers.\footnote{https://teletype.atom.io/}
 Therefore disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless they are opened by the host. 
+\subsection{CoVim}
+CoVim\cite{ChoNgSun:2017:CoVim:Incorporatingreal-timecollaborationcapabilitiesintocomprehensivetexteditors} uses Operational Transforms just like Teletype for Atom. But uses a different method of detecting state changes. Instead of observing user interactions it observes changes to files and generates Operational Transforms from diffing states.
 \subsection{Visual Studio Live Share}
 Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that it enables sharing debugging sessions and ports opened by debugging sessions are forwarded to clients. As with Teletype for Atom files are only persisted on the "host"  
 \subsection{Multihack-Brackets}
