@@ -17,3 +17,7 @@
 14.05.2019: "real time collaboration" programming
     2017 IEEE 21st International Conference on Computer Supported Cooperative Work in Design (CSCWD)
         CoVim: Incorporating real-time collaboration capabilities into comprehensive text editors
+
+14.05.2019: "real time collaboration" programming
+    MobileDeLi 2015 Proceedings of the 3rd International Workshop on Mobile Development Lifecycle
+        Implementing real-time collaboration in TouchDevelop using AST merges
