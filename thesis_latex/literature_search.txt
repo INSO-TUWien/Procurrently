@@ -29,3 +29,7 @@
 15.05.2019: code review git -patent (filter since 2018)
     ICSE-SEIP '18 Proceedings of the 40th International Conference on Software Engineering: Software Engineering in Practice
         Modern code review: a case study at google
+
+15.05.2019: code review git -patent (filter since 2018)
+    Queue - Benchmarking
+        CodeFlow: Improving the Code Review Process at Microsoft
