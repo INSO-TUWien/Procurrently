@@ -1,15 +1,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Ergebnisse}
+\chapter{Results}
 \label{sec:results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Die Resultate der Arbeit präsentieren und nach Möglichkeit aussagekräftige, eigenständige Abbildungen einbauen. Namen des Kapitels konkretisieren, an jeweilige Arbeit anpassen -- Lösungsvorschlag/Implementierung im Titel des Kapitels benennen.
-\makeatletter\ifthesis@masterthesis
-Bei einer Soft\-ware-Ent\-wicklungs\-arbeit ggf. eine Beschreibung der Qualitätsmerkmale der neuen Implementierung (Performance, Sicherheit, Messergebnisse etc.) geben.
+In this chapter Procurrently will be evaluated based on the scenarios and compared to existing tools.
+Furthermore limitations compared to other tools will be described.
 
-Bei einer Arbeit zu einem abstrakteren Architekturthema können hier die Eigenschaften nach der Anwendung der konzipierten Architektur beschrieben werden. Kommt sie in mehreren Fallbeispielen zum Einsatz, erfolgt hier ein Vergleich der jeweiligen Ergebnisse (z.B. gab es Unterschiede im Umsetzungserfolg, die sich auf konkrete Eigenschaften der betrachteten Fallbeispiele zurückführen lassen).
+\section{Evaluation}
+Procurrently succeeded in using information provided by Git to provide branch based real time document synchronization. Only changes on the same branch are displayed to other users.
 
-Bei einer Arbeit zur Softwareauswahl und Einführung wird eine Beschreibung von Qualitätseigenschaften des mit der Einführung neu geschaffenen SOLL-Zustands gegeben.
+Changes to all documents in Git projects are shared with other peers (note that this is not the entire project structure as described in Limitations).
 
-Bei einer Arbeit, deren Fokus auf der Durchführung und Auswertung von Fragebögen liegt, erfolgt in diesem Kapitel die Auswertung der Fragebögen.
-\fi\makeatother
+Changes can be staged by author. This provides accountablility and clarity about changes.
+
+Files defined to be ignored by Git are also ignored by Procurrently.
+Therefore Procurrently does not 
+
+Procurrently was tested in a real world development environment with 2 users for 5 hours. After a short introduction to the new Git checkout procedure the tool did not cause friction for the users. During the test situations similar to \ref{sec:scenario1} were encountered multiple times. Procurrently was working as expected and aided the problem solution by providing fast context switching without the overhead of synchronizing changes via Git.
+
+\section{Limitations}
+
+Compared to other current solutions, Procurrently is unable to track files that do not exist in the last Git commit because the base version of a file is derived from the lastest Git commit. This behaviour is necessary because some VS Code extensions create temporary files that do not get persisted to the filesystem but fire change events.
+
+Procurrently is not secure. Anyone on the network can modify files in the repository. Also all the traffic is unencrypted and can therefore be read by anyone on the network.
+
+The staging view does not differentiate between different branches so all collaborators across all Git repositories and branches are presented as stageable instead of filtering by collaborators who changed the current working context.
+
+Due to the possible inconsistencies introduced by the asynchronous VS Code applyEdit API function and the workaround described in \ref{subsec:concurrentchanges} processing huge change sets is noticeably slow. This is most obvious when processing multi cursor changes with more than 20 cursors at once.
