@@ -14,7 +14,13 @@ Changes to all documents in Git projects are shared with other peers (note that 
 Changes can be staged by author. This provides accountablility and clarity about changes.
 
 Files defined to be ignored by Git are also ignored by Procurrently.
-Therefore Procurrently does not 
+
+\subsection{Other Solutions}
+Procurrently runs on the client and to some extent even works offline. Although some of the Tools described in \ref{sec:stateoftheart} are client side applications/extensions none of them provide support working offline. Having data available on the client at all times provides a performance advantage for Procurrently because when changesets have to be computed for displaying/hiding remote changes or branches are switched all the necessary data is already in memory on the device and is therefore very fast. It is also enables real time collaborations in environments without a stable internet connection such as trains.
+
+Other solutions do not consider the version control system when providing real time changes. This limits their usability in corporate environments. Procurrently is a tool for Git based environments and their use-cases in corporate environments. 
+
+\subsection{Testing Procurrently in the Real World}
 
 Procurrently was tested in a real world development environment with 2 users for 5 hours. After a short introduction to the new Git checkout procedure the tool did not cause friction for the users. During the test situations similar to \ref{sec:scenario1} were encountered multiple times. Procurrently was working as expected and aided the problem solution by providing fast context switching without the overhead of synchronizing changes via Git.
 
