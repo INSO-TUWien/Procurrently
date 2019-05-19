@@ -1,27 +1,23 @@
-# Hello World Sample
+# Procurrently
 
-This is a Hello World example that shows you how to use VS Code API.
+## WARNING
 
-Guide for this sample: https://code.visualstudio.com/api/get-started/your-first-extension.
+__Installing this extension will do a git reset on every git repository opened with VS Code!__
 
-## Demo
+All the changes are sent over unencrypted and unauthenticated.
 
-![demo](demo.gif)
+## VS Code Extension
 
-## VS Code API
+Procurrently is an experimental extension for VS Code for real time collaboration based on Git.
 
-### `vscode` module
+### Setup
 
-- [`commands.registerCommand`](https://code.visualstudio.com/api/references/vscode-api#commands.registerCommand)
-- [`window.showInformationMessage`](https://code.visualstudio.com/api/references/vscode-api#window.showInformationMessage)
+To get started, the server needs to be run
 
-### Contribution Points
+```node src/server/server.js```
 
-- [`contributes.commands`](https://code.visualstudio.com/api/references/contribution-points#contributes.commands)
+The IP of the server needs to be provided in the ```procurrently.bootstrapIP``` setting.
 
-## Running the Sample
+### Git checkout
 
-- Run `npm install` in terminal to install dependencies
-- Run the `Run Extension` target in the Debug View. This will:
-	- Start a task `npm: watch` to compile the code
-	- Run the extension in a new VS Code window
+Procurrently will autosave your changes and syhcnronize them to other clients. In order to checkout a different branch without committing them just open the command pallette and use the command ```Procurrently: Checkout Branch```.
