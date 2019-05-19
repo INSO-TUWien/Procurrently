@@ -210,7 +210,7 @@ const knownChanges = currentChanges
             props.map(p => 
                 c[o][p] == change.range[o][p])) 
         && c.text == change.text 
-        && c.filename == e.document.fileName);
+        && c.filepath == e.document.fileName);
 if (knownChanges.length > 0) {
     //remove from known changes
     currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
