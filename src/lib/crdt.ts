@@ -71,7 +71,7 @@ export default async (siteId?: number, history?) => {
                 const props = ['line', 'character'];
 
                 //check if this change has just been added by remote
-                const knownChanges = currentChanges.filter(c => objects.map(o => props.map(p => c[o][p] == change.range[o][p])) && c.text == change.text && c.filename == e.document.fileName);
+                const knownChanges = currentChanges.filter(c => objects.map(o => props.map(p => c[o][p] == change.range[o][p])) && c.text == change.text && c.filepath == e.document.fileName);
                 if (knownChanges.length > 0) {
                     //remove from known changes
                     currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
