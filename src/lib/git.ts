@@ -53,10 +53,11 @@ export async function findGitDirectory(startpath: string): Promise<string> {
         return repositories.get(startpath);
     }
     let found = false;
-    while (currpath.length > 0) {
+    while (currpath != dirUp(currpath)) {
         try {
             const dir = await readDir(currpath);
             if (dir.indexOf('.git') > -1) {
+                currpath += path.sep;
                 repositories.set(startpath, currpath);
                 return currpath;
             }
@@ -65,7 +66,7 @@ export async function findGitDirectory(startpath: string): Promise<string> {
         }
         currpath = dirUp(currpath);
     }
-    throw new Error('Not a git directory');
+    throw new Error(startpath + ': Not a git directory');
 }
 
 /**
@@ -101,7 +102,7 @@ function readGitObject(hash: string, repositoryPath: string): Promise<string> {
  */
 export async function getFilePathRelativeToRepo(filename: string): Promise<string> {
     const dir: string = await findGitDirectory(filename);
-    return filename.substr(dir.length);
+    return path.relative(dir, filename);
 }
 
 enum gitObjectType {
@@ -235,7 +236,7 @@ async function addGitObject(content: string, repo): Promise<string> {
  * @param content the content to stage into this file
  */
 export async function stageGitObject(filename: string, content: string) {
-    const path = (await getFilePathRelativeToRepo(filename)).substr(1);
+    const path = (await getFilePathRelativeToRepo(filename));
     const repositoryPath = await findGitDirectory(filename);
     const hash = await addGitObject(content, repositoryPath);
     await promiseSpawn('git', ['update-index', '--add', '--cacheinfo', '100644', hash, path], { cwd: repositoryPath });
@@ -310,4 +311,9 @@ export async function onHeadChanged(repo: string, cb: Function) {
         }
     })
     headChangedCallbacks.set(gitDir, cb);
+}
+
+export async function commit(message: string, repo: string): Promise<string> {
+    await promiseSpawn('git', ['commit', '-m', message], { cwd: await findGitDirectory(repo + '/a') });
+    return getCurrentCommitHash(repo);
 }

@@ -35,6 +35,10 @@
 		},
 		"commands": [
 			{
+				"command": "procurrently.commitChanges",
+				"title": "Procurrently: Commit"
+			},
+			{
 				"command": "procurrently.checkoutBranch",
 				"title": "Procurrently: Checkout Branch"
 			},

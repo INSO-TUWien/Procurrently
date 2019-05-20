@@ -76,6 +76,7 @@ export default async (siteId?: number, history?) => {
                     //remove from known changes
                     currentChanges.splice(currentChanges.indexOf(knownChanges[0]));
                 } else {
+
                     console.info('local change: ' + JSON.stringify({ start: { row: change.range.start.line, column: change.range.start.character }, end: { row: change.range.end.line, column: change.range.end.character }, text: change.text }));
                     operations.push(...doc.document.setTextInRange({ row: change.range.start.line, column: change.range.start.character }, { row: change.range.end.line, column: change.range.end.character }, change.text));
                 }
@@ -91,7 +92,7 @@ export default async (siteId?: number, history?) => {
     //for pausing remote changes
     let pendingRemoteChanges = Promise.resolve();
     async function onRemteChange({ metaData, operations, authors }) {
-        const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath}${metaData.file}`;
+        const filepath = `${localPaths.has(metaData.repo) ? localPaths.get(metaData.repo) : vscode.workspace.rootPath + '/'}${metaData.file}`;
         //todo check meta file and branch
         if (!getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo)) {
             await registerFile(filepath, metaData.branch, metaData.commit, metaData.repo);
@@ -242,7 +243,7 @@ export default async (siteId?: number, history?) => {
 
     async function stageChangesBySiteIDs(siteIDs: Number[]) {
         for (let [_, document] of documents) {
-            const filepath = `${vscode.workspace.rootPath}${document.metaData.file}`;
+            const filepath = `${vscode.workspace.rootPath + '/'}${document.metaData.file}`;
             if (branches.get(filepath) == getSpecifier(document.metaData.commit, document.metaData.branch, document.metaData.repo)) {
                 const newDoc = document.document.replicate(net.siteId);
                 const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
@@ -250,6 +251,70 @@ export default async (siteId?: number, history?) => {
                 await Git.stageGitObject(filepath, newDoc.getText());
                 newDoc.undoOrRedoOperations(operationsToExclude);
             }
+        }
+    }
+
+    async function commitChanges() {
+        const message = await vscode.window.showInputBox({ prompt: 'commit message' });
+        if (message) {
+            commitChangesBySiteIDs(message, stagedSiteIds);
+        }
+    }
+
+    async function commitChangesBySiteIDs(message, siteIDs) {
+        if (siteIDs.length == 0) {
+            vscode.window.showErrorMessage('please stage authors for commit first!');
+            return;
+        }
+        //stage all the changes by author...
+        const keysToDelete = [];
+        const reposToCommit = new Set<string>();
+        for (let [key, document] of documents) {
+            const filepath = `${vscode.workspace.rootPath + '/'}${document.metaData.file}`;
+            if (branches.get(filepath) == getSpecifier(document.metaData.commit, document.metaData.branch, document.metaData.repo)) {
+                const newDoc = document.document.replicate(net.siteId);
+                const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
+                newDoc.undoOrRedoOperations(operationsToExclude);
+                await Git.stageGitObject(filepath, newDoc.getText());
+                keysToDelete.push(key);
+                reposToCommit.add(await Git.findGitDirectory(filepath));
+            }
+        }
+
+        //commit
+        await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+        const newCommitHashes = new Map<string, string>();
+        for (let project of reposToCommit) {
+            newCommitHashes.set(project, await Git.commit(message, project + '/a'));
+        }
+        await onBranchChanged();
+
+        //replay non committed changes onto new commit
+        for (let key of keysToDelete) {
+            const document = documents.get(key);
+            const filepath = `${vscode.workspace.rootPath + '/'}${document.metaData.file}`;
+            await registerFile(filepath);
+            const postCommitDoc = getLocalDocument(filepath);
+            const newDoc = document.document.replicate(net.siteId);
+            const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
+
+            //update operations of new doc
+            for (let site of new Set(operationsToExclude.map(o => o.spliceId.site))) {
+                const textUpdates = invertTextUpdates(newDoc.undoOrRedoOperations(operationsToExclude.filter(o => o.spliceId.site == site)).textUpdates);
+                await applyEditToLocalDoc(filepath, { textUpdates });
+                for (let update of textUpdates) {
+                    postCommitDoc.document.setTextInRange(update.oldStart, update.oldEnd, update.newText)[0].spliceId.site = site;
+                }
+            }
+            //update authors of new doc
+            for (let [k, v] of document.metaData.users) {
+                postCommitDoc.metaData.users.set(k, v);
+            }
+        }
+
+        //these changes are on the old commit and are no longer needed
+        for (let key of keysToDelete) {
+            documents.delete(key);
         }
     }
 
@@ -267,10 +332,10 @@ export default async (siteId?: number, history?) => {
         const edits = [];
         const keysToRemove = [];
         for (let [key, doc] of documents) {
-            const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath}${doc.metaData.file}`;
+            const filepath = `${localPaths.has(doc.metaData.repo) ? localPaths.get(doc.metaData.repo) : vscode.workspace.rootPath + '/'}${doc.metaData.file}`;
+            branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
             if (await Git.getCurrentBranch(filepath) == doc.metaData.branch && await Git.getRepoUrl(filepath) == doc.metaData.repo) {
                 if (await Git.getCurrentCommitHash(filepath) == doc.metaData.commit) {
-                    branches.set(filepath, getSpecifier(await Git.getCurrentCommitHash(filepath), await Git.getCurrentBranch(filepath), await Git.getRepoUrl(filepath)));
                     const localdoc = await vscode.workspace.openTextDocument(vscode.Uri.parse(`file://${filepath}`));
                     const localText = localdoc.getText();
                     if (doc.document.getText() != localText) {
@@ -295,7 +360,7 @@ export default async (siteId?: number, history?) => {
             }
         }
         for (let key of keysToRemove) {
-            documents.delete(key);
+            //documents.delete(key);
         }
         await Promise.all(edits);
     }
@@ -337,9 +402,9 @@ export default async (siteId?: number, history?) => {
 
         //undo or redo operations from remote instances, 
         for (let [_, document] of documents) {
-            const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath}${document.metaData.file}`;
+            const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath + '/'}${document.metaData.file}`;
             if (await Git.getCurrentBranch(filepath) == document.metaData.branch && await Git.getCurrentCommitHash(filepath) == document.metaData.commit && await Git.getRepoUrl(filepath) == document.metaData.repo) {
-                const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath}${document.metaData.file}`;
+                const filepath = `${localPaths.has(document.metaData.repo) ? localPaths.get(document.metaData.repo) : vscode.workspace.rootPath + '/'}${document.metaData.file}`;
                 const newDoc = document.document.replicate(net.siteId);
                 const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIdsToUndo.indexOf(o.spliceId.site) != -1);
                 const textOperations = newDoc.undoOrRedoOperations(operationsToExclude);
@@ -421,5 +486,5 @@ export default async (siteId?: number, history?) => {
     net.onRemoteEdit(onRemteChange);
     net.setDataProviderCallback(getAllChanges);
 
-    return { onLocalChange, onRemteChange, cursorPositionChanged, registerFile, getAllChanges, setUserUpdatedCallback, getUsers, toggleStageChangesBySiteId, stageChangesBySiteIDs, switchBranch, toggleRemoteChangesVisible, togglePauseChanges, setSaveCallback, siteId: net.siteId };
+    return { onLocalChange, onRemteChange, cursorPositionChanged, registerFile, getAllChanges, setUserUpdatedCallback, getUsers, toggleStageChangesBySiteId, stageChangesBySiteIDs, switchBranch, toggleRemoteChangesVisible, togglePauseChanges, setSaveCallback, siteId: net.siteId, commitChanges };
 }

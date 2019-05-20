@@ -40,6 +40,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		crdt.togglePauseChanges();
 	});
 
+	vscode.commands.registerCommand('procurrently.commitChanges', () => {
+		crdt.commitChanges();
+	});
+
 	crdt.setSaveCallback(() => {
 		context.globalState.update('procurrently.allChanges', JSON.stringify(crdt.getAllChanges()));
 	});
