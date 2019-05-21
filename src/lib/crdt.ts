@@ -277,6 +277,7 @@ export default async (siteId?: number, history?) => {
                 const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && ourSiteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
                 newDoc.undoOrRedoOperations(operationsToExclude);
                 await Git.stageGitObject(filepath, newDoc.getText());
+                newDoc.undoOrRedoOperations(operationsToExclude);
                 keysToDelete.push(key);
                 reposToCommit.add(await Git.findGitDirectory(filepath));
             }
@@ -306,22 +307,25 @@ export default async (siteId?: number, history?) => {
 
             //update operations of new doc
             for (let site of new Set(operationsToExclude.map(o => o.spliceId.site))) {
-                const textUpdates = invertTextUpdates(newDoc.undoOrRedoOperations(operationsToExclude.filter(o => o.spliceId.site == site)).textUpdates);
-                await applyEditToLocalDoc(filepath, { textUpdates });
+                const textUpdates = newDoc.undoOrRedoOperations(operationsToExclude.filter(o => o.spliceId.site == site)).textUpdates;
                 for (let update of textUpdates) {
-                    postCommitDoc.document.setTextInRange(update.oldStart, update.oldEnd, update.newText)[0].spliceId.site = site;
+                    postCommitDoc.document = postCommitDoc.document.replicate(site);
+                    postCommitDoc.document.setTextInRange(update.oldStart, update.oldEnd, update.newText);
                 }
             }
             //update authors of new doc
             for (let [k, v] of document.metaData.users) {
                 postCommitDoc.metaData.users.set(k, v);
             }
+            postCommitDoc.document = postCommitDoc.document.replicate(net && net.siteId || siteId);
         }
 
         //these changes are on the old commit and are no longer needed
         for (let key of keysToDelete) {
             documents.delete(key);
         }
+
+        await onBranchChanged();
     }
 
 
@@ -369,6 +373,7 @@ export default async (siteId?: number, history?) => {
             //documents.delete(key);
         }
         await Promise.all(edits);
+        net.requestRemoteOperations();
     }
 
     async function switchBranch() {
