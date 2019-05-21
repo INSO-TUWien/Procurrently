@@ -262,6 +262,7 @@ export default async (siteId?: number, history?) => {
     }
 
     async function commitChangesBySiteIDs(message, siteIDs) {
+        const ourSiteIDs = JSON.parse(JSON.stringify(siteIDs));
         if (siteIDs.length == 0) {
             vscode.window.showErrorMessage('please stage authors for commit first!');
             return;
@@ -273,7 +274,7 @@ export default async (siteId?: number, history?) => {
             const filepath = `${vscode.workspace.rootPath + '/'}${document.metaData.file}`;
             if (branches.get(filepath) == getSpecifier(document.metaData.commit, document.metaData.branch, document.metaData.repo)) {
                 const newDoc = document.document.replicate(net.siteId);
-                const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
+                const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && ourSiteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
                 newDoc.undoOrRedoOperations(operationsToExclude);
                 await Git.stageGitObject(filepath, newDoc.getText());
                 keysToDelete.push(key);
@@ -286,6 +287,7 @@ export default async (siteId?: number, history?) => {
         const newCommitHashes = new Map<string, string>();
         for (let project of reposToCommit) {
             newCommitHashes.set(project, await Git.commit(message, project + '/a'));
+            await Git.reset(project + '/a');
         }
         await onBranchChanged();
 
@@ -295,8 +297,12 @@ export default async (siteId?: number, history?) => {
             const filepath = `${vscode.workspace.rootPath + '/'}${document.metaData.file}`;
             await registerFile(filepath);
             const postCommitDoc = getLocalDocument(filepath);
+            if (postCommitDoc.metaData.commit == document.metaData.commit) {
+                console.error('post commit is same as pre commit!');
+                return;
+            }
             const newDoc = document.document.replicate(net.siteId);
-            const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && siteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
+            const operationsToExclude = newDoc.getOperations().filter(o => o.spliceId && ourSiteIDs.indexOf(o.spliceId.site) == -1 && o.spliceId.site != 1);
 
             //update operations of new doc
             for (let site of new Set(operationsToExclude.map(o => o.spliceId.site))) {
