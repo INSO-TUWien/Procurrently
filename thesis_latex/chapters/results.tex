@@ -42,3 +42,9 @@ The staging view does not differentiate between different branches so all collab
 Due to the possible inconsistencies introduced by the asynchronous VS Code applyEdit API function and the workaround described in \ref{subsec:concurrentchanges} processing huge change sets is noticeably slow. This is most obvious when processing multi cursor changes with more than 20 cursors at once.
 
 Because the networking layer does not support UDP hole punching\cite{10.1007/978-3-642-20798-3_1} or similar techniques, communication between peers only works when clients are in the same local network.
+
+Branch switching and commiting changes sometimes have to be done through custom commands in VS Code instead of having the flexibility of doing those tasks using the command line and potentially using other programs or scripts to call those functions.
+
+Procurrently enables switching branches while the current branch has been modified and the changes would be overwritten by Git. But this feature only works when using the custom VS Code command "Procurrently: Checkout Branch".
+
+Procurrentlys function to commit changes by author only works properly if using the custom VS Code command "Procurrently: Commit". Otherwise non commited changes will be lost after the commit because the changes are tied to the commit hash.
