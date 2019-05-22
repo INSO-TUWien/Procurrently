@@ -1,5 +1,7 @@
 \chapter{Implementation}
 
+This chapter describes the implementation details of Procurrently, the extension for VS Code. It gives an overview of the Git library, that needed to be developed sinve other available solutions would not work inside a VS Code extension context as well as used VS Code APIs. Additionally the data structure and change handling by the extension are described.
+
 \section{Git}
 
 Git provides useful information about the current project, the developer is working on, such as:
@@ -12,21 +14,13 @@ Git provides useful information about the current project, the developer is work
 
 Git stores this information in the ".git" directory in the root folder of the project.
 The data is stored in a compressed format. In order to access the information, a small library using low level Git commands was implemented. 
+A custom implementation was nessesary because the NodeGit\footnote{https://github.com/nodegit/nodegit} library would crashes VS Code as soon as the extension would import it.
 
-It provides functions to:
-\begin{itemize}
-    \item Find the Git directory for a given file (given the file is inside a Git repository)
-    \item Get the current branch of a Git repository
-    \item Get the remote URL for a repository
-    \item Get the path of a file within a repository
-    \item Get a list of commit hashes
-    \item Get the current version of a given file
-    \item Stage a file for commit
-    \item Get the username configured for the Git repository
-    \item Get a list of branches of a Git repository
-    \item Do a Git reset
-    \item Switch a repository to a different branch
-\end{itemize}
+The Git library provides a low level interface for interacting with a Git repository. It provides functions to find the Git directory for a given file (given the file is inside a Git repository) and retrieve information like the path of a file within the repository, information about the current commit, hash, branch, remote URL, username of the repository, versions of a file. This information is crucial for determining the version of a file that has been modified by the user and finding the identical file on the mashine of another user.
+
+Additionally the Git library provides function to stage files for commit, commit changes and do a Git reset. The stage and commit functions are required in order to stage changes by author and commit them. The Git reset function is used to synchronize file contents to the version known to Git. This enables synchronizing the files without establishing base versions of files over the network first.
+
+The Git library can invoke a callback function when the current state of a repository changes. This is the case if a different branch is checked out or the current commit changes due to the user commiting or a git pull. Because once the repository changes, the appropriate changes have to be applied to documents and only changes for the same repository state can be replayed.
 
 \section{teletype-crdt}
 
