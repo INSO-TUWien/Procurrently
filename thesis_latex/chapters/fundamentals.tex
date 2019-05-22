@@ -21,7 +21,7 @@ TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web based
 general-purpose language, as long as the editor can parse the
 program being edited and transparently tag AST nodes with
 an identifier. Naturally, this requires non-trivial support from
-the editor".\cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges} The AST translation would have to be implemented for every programming language supported. Additionally the transformation from AST to text might not guarantee the same code just the same AST which could lead to confusion for developers.\ref{fig:touchdevelop}
+the editor".\cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges} The AST translation would have to be implemented for every programming language supported. Additionally the transformation from AST to text might not guarantee the same code just the same AST which could lead to confusion for developers.\autoref{fig:touc hdevelop}
 \begin{figure}[hb]
     \centering
     \includegraphics{figures/screenshots/touchdevelop.png}
@@ -32,7 +32,7 @@ the editor".\cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecol
 \subsection{CodeR}
 CodeR\cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming} is a Web IDE with built in chat for the programming languages C, C++ and JAVA. 
 \subsection{Visual Studio Live Share}
-Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that it enables sharing debugging sessions and ports opened by debugging sessions are forwarded to clients. As with Teletype for Atom files are only persisted on the "host". \ref{fig:liveshare}
+Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that it enables sharing debugging sessions and ports opened by debugging sessions are forwarded to clients. As with Teletype for Atom files are only persisted on the "host". \autoref{fig:liveshare}
 \begin{figure}[hb]
     \centering
     \includegraphics[width=100mm]{figures/screenshots/vscodeliveshare.png}
@@ -43,7 +43,7 @@ Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services
 \subsection{Multihack-Brackets}
 Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019 it is not possible to verify performance or functionality since joining a session just crashes the brackets editor. Apparently the development has been stopped. The last commit in the repository was over a year ago (in February of 2018).
 \subsection{Codeshare}
-Codeshare\footnote{https://codeshare.io} is a web based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. \ref{fig:codeshare}
+Codeshare\footnote{https://codeshare.io} is a web based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. \autoref{fig:codeshare}
 \begin{figure}[h]
     \centering
     \includegraphics[width=100mm]{figures/screenshots/codeshare.png}
@@ -52,7 +52,7 @@ Codeshare\footnote{https://codeshare.io} is a web based collaborative editor. It
     \label{fig:codeshare}
 \end{figure}
 \subsection{Summary}
-As described in \ref{tab:sota} current solutions are mostly implemented as extensions to code editors. Only codeshare is web based because it is based around the use-case of doing interviews. Overall none of the current solutions have any considerations for dealing with an underlying version control system of a project.
+As described in \autoref{tab:sota} current solutions are mostly implemented as extensions to code editors. Only codeshare is web based because it is based around the use-case of doing interviews. Overall none of the current solutions have any considerations for dealing with an underlying version control system of a project.
 
 \begin{table}
 	\centering
