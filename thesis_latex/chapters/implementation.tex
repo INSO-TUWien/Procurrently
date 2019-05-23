@@ -27,13 +27,12 @@ The Git library can invoke a callback function when the current state of a repos
 "The string-wise sequence CRDT powering peer-to-peer collaborative editing in Teletype for Atom."\footnote{https://github.com/atom/teletype-crdt}
 This library will be used for tracking changes. It is written in JavaScript and currently does not include an API documentation.
 
-The main functions used are: 
 
-\begin{itemize}
-    \item \autoref{lst:setTextInRange} to notify the document representation about a text operation on the local document
-    \item \autoref{lst:integrateOperations} to notify the document representation about remote changes and returns the changes to the local file required to keep it in sync with other instances
-    \item \autoref{lst:undoOrRedoOperations} to generate diffs for hiding remote changes as well as staging changes
-\end{itemize}
+Teletype-crdt provides the Document class. This class represents a shared document using a CRDT. In order to notify the document representation about a local change, the setTextInRange (see \autoref{lst:setTextInRange}) function can be used.
+
+When a change from another instance of the document is recieved, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function.
+
+Since the document turns every text change into an operation and operations contain information about the author, sometimes the effect of operations need to be determined. For example if staging changes by author. To do this, the undoOrRedoOperations function is used (see \autoref{lst:undoOrRedoOperations}). It returns a set of modifications for the file on disk equivalent to an undo of a set of operations. Which, if this function is not used otherwise translates to the mapping of operations to effects of operations described above.
 
 
 \begin{lstlisting}[label={lst:setTextInRange}, caption=teletype-crdt setTextInRange]
