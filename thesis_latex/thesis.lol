@@ -25,7 +25,7 @@
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {7.6}VS Code API applyEdit}{13}{lstlisting.7.6}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {7.7}Sorting Changes by Column to Prevent Index Shifting}{14}{lstlisting.7.7}
+\contentsline {lstlisting}{\numberline {7.7}Sorting Changes by Column to Prevent Index Shifting}{13}{lstlisting.7.7}
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {7.8}Tree View Activitybar}{14}{lstlisting.7.8}
 \defcounter {refsection}{0}\relax
@@ -33,7 +33,7 @@
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {7.10}Define Tree View Data Provider}{14}{lstlisting.7.10}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {7.11}Data Model Declarations}{15}{lstlisting.7.11}
+\contentsline {lstlisting}{\numberline {7.11}Data Model Declarations}{14}{lstlisting.7.11}
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {7.12}Is This Change Already Known to The Data Model?}{16}{lstlisting.7.12}
 \defcounter {refsection}{0}\relax
@@ -41,7 +41,7 @@
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {7.14}Network Promise Chain}{18}{lstlisting.7.14}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {7.15}Adding Change to Local Document}{19}{lstlisting.7.15}
+\contentsline {lstlisting}{\numberline {7.15}Adding Change to Local Document}{18}{lstlisting.7.15}
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax

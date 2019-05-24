@@ -33,3 +33,7 @@
 15.05.2019: code review git -patent (filter since 2018)
     Queue - Benchmarking
         CodeFlow: Improving the Code Review Process at Microsoft
+
+24.05.2019: javascript promises
+    Proceedings of the ACM on Programming Languages
+        A model for reasoning about JavaScript promises

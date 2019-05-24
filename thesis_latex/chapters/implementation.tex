@@ -23,6 +23,7 @@ Additionally the Git library provides function to stage files for commit, commit
 The Git library can invoke a callback function when the current state of a repository changes. This is the case if a different branch is checked out or the current commit changes due to the user commiting or a git pull. Because once the repository changes, the appropriate changes have to be applied to documents and only changes for the same repository state can be replayed.
 
 \section{teletype-crdt}
+\label{sec:teletypecrdt}
 
 "The string-wise sequence CRDT powering peer-to-peer collaborative editing in Teletype for Atom."\footnote{https://github.com/atom/teletype-crdt}
 This library will be used for tracking changes. It is written in JavaScript and currently does not include an API documentation.
@@ -30,7 +31,7 @@ This library will be used for tracking changes. It is written in JavaScript and 
 
 Teletype-crdt provides the Document class. This class represents a shared document using a CRDT. In order to notify the document representation about a local change, the setTextInRange (see \autoref{lst:setTextInRange}) function can be used.
 
-When a change from another instance of the document is recieved, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function.
+When a change from another instance of the document is recieved, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function. This function returns a set of TextUpdates, which are changes to the text of the document to match the operations.
 
 Since the document turns every text change into an operation and operations contain information about the author, sometimes the effect of operations need to be determined. For example if staging changes by author. To do this, the undoOrRedoOperations function is used (see \autoref{lst:undoOrRedoOperations}). It returns a set of modifications for the file on disk equivalent to an undo of a set of operations. Which, if this function is not used otherwise translates to the mapping of operations to effects of operations described above.
 
@@ -58,14 +59,13 @@ Therefore the Extension will use Typescript as well.
 
 \subsection{Used API Functions}
 
-The VS Code API provides a set of asynchronous functions that return Promises.
-The extension uses the following set:
+The VS Code API provides a set of asynchronous functions that return Promises. Promises have been added in ECMAScript 6 and provide a standardised way of handling asynchronous code in ECMAScript.\cite{Madsen:2017:MRJ:3152284.3133910} ECMAScript is the standard for the JavaScript language.
 
-\begin{itemize}
-    \item \autoref{lst:onDidChangeTextDocument} "An event that is emitted when a text document is changed. This usually happens when the contents changes but also when other things like the dirty-state changes."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} to detect user modifications to files
-    \item \autoref{lst:onDidOpenTextDocument} "An event that is emitted when a text document is opened or when the language id of a text document has been changed."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} to initialize the document representation when a user opens a file
-    \item \autoref{lst:applyEdit} "Make changes to one or many resources or create, delete, and rename resources as defined by the given workspace edit."\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} to apply edits from other peers to a file
-\end{itemize}
+Procurrently mainly uses the onDidChangeTextDocument (see \autoref{lst:onDidChangeTextDocument}) and the applyEdit (see \autoref{lst:applyEdit}) function. 
+
+Using the onDidChangeTextDocument function (see \autoref{lst:onDidChangeTextDocument}), a callback function is invoked whenever a text document is changed.\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} This callback function converts the event provided by VS Code to a teletype-crdt operation using using the setTextInRange function (see \autoref{sec:teletypecrdt}) and sends the resulting operation to all other peers.
+
+Other peers subsequently use the applyEdit function (see \autoref{lst:applyEdit}) to apply the TextUpdates from the integrateOperations function (see \autoref{sec:teletypecrdt}) to the document on disk.
 
 \begin{lstlisting}[label={lst:onDidChangeTextDocument}, caption=VS Code API onDidChangeTextDocument]
 vscode.workspace.onDidChangeTextDocument()
