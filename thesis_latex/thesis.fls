@@ -1369,6 +1369,9 @@ OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 INPUT /Users/stefangussner/git/collabri/thesis_latex/chapters/appendix.tex
 INPUT /Users/stefangussner/git/collabri/thesis_latex/chapters/appendix.tex
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
