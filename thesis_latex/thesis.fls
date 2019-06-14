@@ -1195,6 +1195,9 @@ OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT C:\Program Files\MiKTeX 2.9\fonts\tfm\adobe\times\ptmr8t.tfm
 INPUT C:\Program Files\MiKTeX 2.9\fonts\tfm\adobe\times\ptmb8t.tfm
 INPUT C:\Program Files\MiKTeX 2.9\fonts\tfm\public\amsfonts\symbols\msam10.tfm
@@ -1441,6 +1444,12 @@ OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.loa
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.aux
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\titlepages\titlepage_inso_en.aux
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\titlepages\titlepage_inso_en.aux
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
