@@ -10,13 +10,14 @@
 
 This section describes and discusses current state of the art tools for real time collaboration.
 
-\subsection{Teletype for Atom}
-Teletype for Atom\footnote{https://github.com/atom/teletype/issues/211} is a Project enabling editing files peer to peer. It is based on 	\cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting} \cite{YuWeihai:2014} \cite{BriotUrsoShapiro:2016:HighResponsivenessGroupEditing}.
-With Teletype it is possible to edit files currently opened by the "host". The files are only persisted on the "host" not on all peers.\footnote{https://teletype.atom.io/}
-Therefore disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless they are opened by the host. 
-\subsection{CoVim}
+\subsection{Scientific Solutions}
+
+In this section, scientific solutions for real time collaboration will be discussed.
+
+\subsubsection{CoVim}
 CoVim\cite{ChoNgSun:2017:CoVim:Incorporatingreal-timecollaborationcapabilitiesintocomprehensivetexteditors} uses Operational Transforms just like Teletype for Atom. But uses a different method of detecting state changes. Instead of observing user interactions it observes changes to files and generates Operational Transforms from diffing states.
-\subsection{TouchDevelop}
+
+\subsubsection{TouchDevelop}
 TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web based editor. It enables real time collaboration by merging ASTs. The paper claims "Indeed, we claim that this approach is generalizable to a
 general-purpose language, as long as the editor can parse the
 program being edited and transparently tag AST nodes with
@@ -29,7 +30,7 @@ the editor".\cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecol
 	\href{https://www.touchdevelop.com/}{https://www.touchdevelop.com/}
     \label{fig:touchdevelop}
 \end{figure}
-\subsection{CodeR}
+\subsubsection{CodeR}
 CodeR\cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming} is a Web IDE with built in chat for the programming languages C, C++ and JAVA. 
 \begin{figure}[hb]
     \centering
@@ -38,7 +39,17 @@ CodeR\cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforC
 	\cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming}
     \label{fig:touchdevelop}
 \end{figure}
-\subsection{Visual Studio Live Share}
+
+\newpage
+\subsection{Available Software Tools}
+
+In this seciton, currently available solftware solutions for real time collaboration will be discussed.
+
+\subsubsection{Teletype for Atom}
+Teletype for Atom\footnote{https://github.com/atom/teletype/issues/211} is a Project enabling editing files peer to peer. It is based on 	\cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting} \cite{YuWeihai:2014} \cite{BriotUrsoShapiro:2016:HighResponsivenessGroupEditing}.
+With Teletype it is possible to edit files currently opened by the "host". The files are only persisted on the "host" not on all peers.\footnote{https://teletype.atom.io/}
+Therefore disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless they are opened by the host. 
+\subsubsection{Visual Studio Live Share}
 Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that it enables sharing debugging sessions and ports opened by debugging sessions are forwarded to clients. As with Teletype for Atom files are only persisted on the "host". \autoref{fig:liveshare}
 \begin{figure}[hb]
     \centering
@@ -47,9 +58,9 @@ Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services
 	\href{https://code.visualstudio.com/blogs/2017/11/15/live-share}{https://code.visualstudio.com/blogs/2017/11/15/live-share}
     \label{fig:liveshare}
 \end{figure}
-\subsection{Multihack-Brackets}
+\subsubsection{Multihack-Brackets}
 Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019 it is not possible to verify performance or functionality since joining a session just crashes the brackets editor. Apparently the development has been stopped. The last commit in the repository was over a year ago (in February of 2018).
-\subsection{Codeshare}
+\subsubsection{Codeshare}
 Codeshare\footnote{https://codeshare.io} is a web based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. \autoref{fig:codeshare}
 \begin{figure}[h]
     \centering
@@ -58,7 +69,7 @@ Codeshare\footnote{https://codeshare.io} is a web based collaborative editor. It
 	\href{https://codeshare.io}{https://codeshare.io}
     \label{fig:codeshare}
 \end{figure}
-\subsection{Collabode}
+\subsubsection{Collabode}
 Collabode\cite{Goldman:2011:RCC:2047196.2047215} is "a web-based Java integrated development environment". It shares changes between developers as soon as they have no compilation errors. It is designed for the Java language. \autoref{fig:collabode}
 \begin{figure}[h]
     \centering
