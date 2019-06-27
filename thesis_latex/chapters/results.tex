@@ -6,6 +6,23 @@
 In this chapter Procurrently will be evaluated based on the scenarios and compared to existing tools.
 Furthermore limitations compared to other tools will be described.
 
+\subsection{Evaluating Scenarios}
+
+Procurrently was evaluated using the scenarios described in \autoref{sec:scenarios}.
+These were tested on a real git repository containing 600 files. One of the files most commonly used in testing was app.js containing over 7000 characters or about 200 lines. The test was run on two MacBook Pros using a 802.11ac Wi-Fi connection.
+The boostrap server was run on one of the MacBooks. The IP for the boostrap server was configured before starting the test using the VS Code settings menu. 
+
+\subsubsection{Scenario 1}
+
+The branches used in the test were "bug-hunt" and "buildsystem-test". On branch bug-hunt the files /app.js and /routes/account.js were modified by inserting comments. The configured username was "Stefan Gussner". 
+After that on branch "buildsystem-test" the files /app.js and /routes/index.js were modified by inserting comments. The configured username was "Michael".
+
+On the computer with the Username "Michael" configured, the VS Code Command Palette was opened and the option Procurrently: Checkout Branch was selected. From the presented options the branch "bug-hunt" was selected. All the files were closed and the files /app.js and /routes/account.js were opened. The modifications on branch "bug-hunt" were visible in the files and the changes in branch "buildsystem-test" were no longer visible. The file /routes/account.js was modified by inserting another comment. The changes were immediately visible on the other computer. Using the VS Code Command Palette, the computer with the Username "Michael" configured switched back to branch "buildsystem-test".
+
+\subsubsection{Scenario 2}
+
+
+
 \section{Results}
 Procurrently succeeded in using information provided by Git to provide branch based real time document synchronization. Only changes on the same branch are displayed to other users.
 
