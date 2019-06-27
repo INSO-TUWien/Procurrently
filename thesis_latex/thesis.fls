@@ -234,6 +234,8 @@ INPUT C:\Users\Stefan\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\libraries\pgfli
 INPUT C:\Users\Stefan\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\modules\pgfmodulematrix.code.tex
 INPUT C:\Users\Stefan\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\frontendlayer\tikz\libraries\tikzlibrarytopaths.code.tex
 INPUT C:\Users\Stefan\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\frontendlayer\tikz\libraries\tikzlibrarytopaths.code.tex
+INPUT C:\Users\Stefan\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\subcaption.sty
+INPUT C:\Users\Stefan\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\subcaption.sty
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\styles\TUINFDA.sty
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\styles\TUINFDA.sty
 INPUT C:\Program Files\MiKTeX 2.9\tex\latex\base\fontenc.sty
@@ -1355,6 +1357,32 @@ OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1appjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1appjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1appjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1appjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1appjs_on_bughunt.png
+INPUT C:\Program Files\MiKTeX 2.9\fonts\tfm\adobe\times\ptmb8t.tfm
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1accountjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1accountjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1accountjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1accountjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1accountjs_on_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_branch.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_branch.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_branch.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_branch.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_branch.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1checkout_bughunt.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1staging_view.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1staging_view.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1staging_view.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1staging_view.png
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\scenarios\1staging_view.png
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\stage-by-author.png
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\stage-by-author.png
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\figures\screenshots\stage-by-author.png
@@ -1370,6 +1398,11 @@ OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT C:\Program Files\MiKTeX 2.9\fonts\vf\adobe\times\ptmb8t.vf
+INPUT C:\Program Files\MiKTeX 2.9\fonts\tfm\adobe\times\ptmb8r.tfm
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
@@ -1388,6 +1421,9 @@ INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\discussion.tex
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\discussion.tex
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\conclusion.tex
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\conclusion.tex
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
@@ -1441,6 +1477,24 @@ OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.loa
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.aux
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\titlepages\titlepage_inso_en.aux
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\chapters\titlepages\titlepage_inso_en.aux
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
+OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 INPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
 OUTPUT c:\Users\Stefan\git\Procurrently\thesis_latex\thesis.mw
