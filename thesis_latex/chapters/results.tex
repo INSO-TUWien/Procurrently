@@ -30,7 +30,7 @@ After that on branch "buildsystem-test" the files /app.js and /routes/index.js w
         \caption{routes/account.js}
         \label{fig:1account_on_bughunt}
     \end{subfigure}
-    \caption{Branch bug-hunt initial modifications}
+    \caption{Scenario1: Branch bug-hunt initial modifications}
 \end{figure}
 
 \begin{figure}[h]
@@ -46,13 +46,13 @@ After that on branch "buildsystem-test" the files /app.js and /routes/index.js w
         \caption{Select Branch}
         \label{fig:1checkout_bughunt}
     \end{subfigure}
-    \caption{Checkout a different Branch}
+    \caption{Scenario1: Checkout a different Branch}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\textwidth]{figures/screenshots/scenarios/1staging_view.png}
-    \caption{account.js modified by Michael}
+    \caption{Scenario1: account.js modified by Michael}
     \label{fig:1staging}
 \end{figure}
 
@@ -60,7 +60,30 @@ On the computer with the Username "Michael" configured, the VS Code Command Pale
 
 \subsubsection{Scenario 2}
 
-Both computers started out on the same branch. On the computer with the username "Stefan Gussner" a comment reading "comment from stefan" was created. On the other computer a comment reading "comment from michael" was added.
+Both computers started out on the same branch. On the computer with the username "Stefan Gussner" a comment reading "comment from stefan" was created. On the other computer a comment reading "comment from michael" was added (see \autoref{fig:2comments}). The VS Code Command Palette was used to execute the Procurrently: Toggle remote changes option (see \autoref{fig:2togglechanges}). After that, all remote changes were removed from the file and only local changes were left (See \autoref{fig:2onlylocalchanges}). Later the Command Palette was used again to execute the Procurrently: Toggle remote changes command again to display the remote changes again.
+
+\begin{figure}[h]
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{figures/screenshots/scenarios/2comments.png}
+        \caption{Comments Added by Both Collaborators}
+        \label{fig:2comments}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/2togglechanges.png}
+        \caption{VS Code Command Palette Menu Toggle Changes}
+        \label{fig:2togglechanges}
+    \end{subfigure}
+    \caption{Scenario 2}
+\end{figure}
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/screenshots/scenarios/2onlylocalchanges.png}
+	\caption{Scenario2: Only Local Changes Visible}
+    \label{fig:2onlylocalchanges}
+\end{figure}
 
 \section{Results}
 Procurrently succeeded in using information provided by Git to provide branch based real time document synchronization. Only changes on the same branch are displayed to other users.
