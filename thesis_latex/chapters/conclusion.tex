@@ -26,15 +26,17 @@ Furthermore it is possible that a system like Procurrently could reduce friction
 As speed in Continuous Integration systems is crucial: "The dominant technical factors which explain Travis abandonment are \textbf{Build duration} and Language"\cite{8595199}, Procurrently could also find use-cases in Continuous Integration augmenting common workflows based on Git. 
 Current workflows react to commits as described:
 
-"
-\begin{itemize}
-    \item Developers builds and pushes code to Github
-    \item Github will use a webhook to notify Jenkins of the recent change
-    \item Jenkins will pull the Github repository, including the Dock-erfile describing the image along with the application
-    \item Jenkins will then build the Docker image of that application on the Jenkins slave node
-    \item Jenkins will run the Docker container on the slave node and will execute the appropriate tests
-    \item If the tests are successful, the docker image is then pushed to the Docker Hub with the appropriate version number"
-\end{itemize}
-"\cite{8695332}
+\blockquote[{\cite{8695332}}]{
+    \begin{itemize}
+        \item Developers builds and pushes code to Github
+        \item Github will use a webhook to notify Jenkins of the recent change
+        \item Jenkins will pull the Github repository, including the Dock-erfile describing the image along with the application
+        \item Jenkins will then build the Docker image of that application on the Jenkins slave node
+        \item Jenkins will run the Docker container on the slave node and will execute the appropriate tests
+        \item If the tests are successful, the docker image is then pushed to the Docker Hub with the appropriate version number
+    \end{itemize}
+}
+
+\cite{8695332}
 
 Additionally to listing to pushes on Github, builds could be triggered when any developer changes a file in Procurrently and the results of the test results could be displayed within the editor as soon as the tests have run. This could reduce feedback delay of Continuous Integration systems.
