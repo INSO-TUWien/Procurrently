@@ -2,7 +2,7 @@
 
 \input{chapters/styles/jslisting.tex}
 
-This chapter describes the implementation details of Procurrently, the extension for VS Code. It gives an overview of the Git library, that needed to be developed sinve other available solutions would not work inside a VS Code extension context as well as used VS Code APIs. Additionally the data structure and change handling by the extension are described.
+This chapter describes the implementation details of Procurrently, the extension for VS Code. It gives an overview of the Git library, that needed to be developed sinve other available solutions would not work inside a VS Code extension context as well as used VS Code APIs. Additionally, the data structure and change handling by the extension are described.
 
 \section{Git}
 
@@ -20,7 +20,7 @@ A custom implementation was necessary because the NodeGit\footnote{https://githu
 
 The Git library provides a low-level interface for interacting with a Git repository. It provides functions to find the Git directory for a given file (given the file is inside a Git repository) and retrieve information like the path of a file within the repository, information about the current commit, hash, branch, remote URL, username of the repository, versions of a file. This information is crucial for determining the version of a file that has been modified by the user and finding the identical file on the machine of another user.
 
-Additionally the Git library provides function to stage files for commit, commit changes and do a Git reset. The stage and commit functions are required in order to stage changes by author and commit them. The Git reset function is used to synchronize file contents to the version known to Git. This enables synchronizing the files without establishing base versions of files over the network first.
+Additionally, the Git library provides function to stage files for commit, commit changes and do a Git reset. The stage and commit functions are required in order to stage changes by author and commit them. The Git reset function is used to synchronize file contents to the version known to Git. This enables synchronizing the files without establishing base versions of files over the network first.
 
 The Git library can invoke a callback function when the current state of a repository changes. This is the case if a different branch is checked out or the current commit changes due to the user committing or a git pull. Because once the repository changes, the appropriate changes have to be applied to documents and only changes for the same repository state can be replayed.
 
@@ -33,7 +33,7 @@ This library will be used for tracking changes. It is written in JavaScript and 
 
 Teletype-crdt provides the Document class. This class represents a shared document using a CRDT. In order to notify the document representation about a local change, the setTextInRange (see \autoref{lst:setTextInRange}) function can be used.
 
-When a change from another instance of the document is receieved, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function. This function returns a set of TextUpdates, which are changes to the text of the document to match the operations.
+When a change from another instance of the document is received, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function. This function returns a set of TextUpdates, which are changes to the text of the document to match the operations.
 
 Since the document turns every text change into an operation and operations contain information about the author, sometimes the effect of operations needs to be determined. For example, if staging changes by author. To do this, the undoOrRedoOperations function is used (see \autoref{lst:undoOrRedoOperations}). It returns a set of modifications for the file on disk equivalent to an undo of a set of operations. Which, if this function is not used otherwise translates to the mapping of operations to effects of operations described above.
 
@@ -55,9 +55,9 @@ As a basis for the edit history  the current Git commit in the current branch wi
 
 \section{VS Code Extension API}
 
-VS Code runs extension in a seperate process and provides an asynchronous JavaScript API.
+VS Code runs extension in a separate process and provides an asynchronous JavaScript API.
 The examples provided in the vscode-extension-samples repository\footnote{https://github.com/Microsoft/vscode-extension-samples} are mostly written in Typescript\footnote{https://www.typescriptlang.org/} and all the Interfaces have type definitions for Typescript.
-Therefore the extension will use Typescript as well.
+Therefore, the extension will use Typescript as well.
 
 \subsection{Used API Functions}
 
@@ -65,7 +65,7 @@ The VS Code API provides a set of asynchronous functions that return Promises. P
 
 Procurrently mainly uses the onDidChangeTextDocument (see \autoref{lst:onDidChangeTextDocument}) and the applyEdit (see \autoref{lst:applyEdit}) function. 
 
-Using the onDidChangeTextDocument function (see \autoref{lst:onDidChangeTextDocument}), a callback function is invoked whenever a text document is changed.\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} This callback function converts the event provided by VS Code to a teletype-crdt operation using using the setTextInRange function (see \autoref{sec:teletypecrdt}) and sends the resulting operation to all other peers.
+Using the onDidChangeTextDocument function (see \autoref{lst:onDidChangeTextDocument}), a callback function is invoked whenever a text document is changed.\footnote{https://code.visualstudio.com/api/references/vscode-api\#workspace} This callback function converts the event provided by VS Code to a teletype-crdt operation using the setTextInRange function (see \autoref{sec:teletypecrdt}) and sends the resulting operation to all other peers.
 
 Other peers subsequently use the applyEdit function (see \autoref{lst:applyEdit}) to apply the TextUpdates from the integrateOperations function (see \autoref{sec:teletypecrdt}) to the document on disk.
 
@@ -266,16 +266,16 @@ To update the teletype-crdt document the setTextInRange function is used. It ret
 
 An essential part of Procurrently is the handling the changes over the peer to peer connections.
 
-\subsection{Establishing the Peer To Peer Connections}
+\subsection{Establishing the Peer to Peer Connections}
 When the extension is activated, a to a bootstrap server is established. 
 The peer sends the bootstrap server his IP address as well as the port of the socket, the peer is listening on for incoming connections.
-Upon receieving this information, the bootstrap server responds with a list of IP addresses and ports of all the other registered peers.
+Upon receiving this information, the bootstrap server responds with a list of IP addresses and ports of all the other registered peers.
 The peer then tries to connect to every peer in that list.
 
 Once a connection is established, the peers exchange all the changes they know about.
 
 \subsection{Handling Changes}
-Every change is propagated to every node known to the peer. This approach is performant enough for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other peers when switching branches. Additionally, changes could be propagated via a gossip based protocol.
+Every change is propagated to every node known to the peer. This approach is performant enough for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other peers when switching branches. Additionally, changes could be propagated via a gossip-based protocol.
 
 \section{Handling Remote Changes}
 
