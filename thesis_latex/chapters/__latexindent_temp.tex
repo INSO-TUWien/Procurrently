@@ -4,7 +4,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 In this chapter Procurrently will be evaluated based on the scenarios and compared to existing tools.
-Furthermore limitations compared to other tools will be described.
+Furthermore, limitations compared to other tools will be described.
 
 \subsection{Evaluating Scenarios}
 
@@ -90,17 +90,17 @@ Procurrently was tested in a real world development environment with 2 users for
 
 \section{Limitations}
 
-Compared to other current solutions, Procurrently is unable to track files that do not exist in the last Git commit because the base version of a file is derived from the lastest Git commit. This behaviour is necessary because some VS Code extensions create temporary files that do not get persisted to the filesystem but fire change events. Not ignoring these files would force developers to extend their .gitignore configuration and interfere with Procurrentlys goal of not requiring extra configuration by the developer.
+Compared to other current solutions, Procurrently is unable to track files that do not exist in the last Git commit because the base version of a file is derived from the latest Git commit. This behaviour is necessary because some VS Code extensions create temporary files that do not get persisted to the filesystem but fire change events. Not ignoring these files would force developers to extend their .gitignore configuration and interfere with Procurrentlys goal of not requiring extra configuration by the developer.
 
 Procurrently is not secure. Anyone on the network can modify files in the repository. Also all the traffic is unencrypted and can therefore be read by anyone on the network. This might not be a problem for open source projects as well as people working in corporate network environments.
 
-The staging view does not differentiate between different branches so all collaborators across all Git repositories and branches are presented as stageable instead of filtering by collaborators who changed the current working context.
+The staging view does not differentiate between different branches so all collaborators across all Git repositories and branches are presented as changes to be staged instead of filtering by collaborators who changed the current working context.
 
 Due to the possible inconsistencies introduced by the asynchronous VS Code applyEdit API function and the workaround described in \autoref{subsec:concurrentchanges} processing huge change sets is noticeably slow. This is most obvious when processing multi cursor changes with more than 20 cursors at once.
 
 Because the networking layer does not support UDP hole punching\cite{10.1007/978-3-642-20798-3_1} or similar techniques, communication between peers only works when clients are in the same local network.
 
-Branch switching and commiting changes sometimes have to be done through custom commands in VS Code instead of having the flexibility of doing those tasks using the command line and potentially using other programs or scripts to call those functions.
+Branch switching and committing changes sometimes have to be done through custom commands in VS Code instead of having the flexibility of doing those tasks using the command line and potentially using other programs or scripts to call those functions.
 
 Procurrently enables switching branches while the current branch has been modified and the changes would be overwritten by Git. But this feature only works when using the custom VS Code command "Procurrently: Checkout Branch".
 

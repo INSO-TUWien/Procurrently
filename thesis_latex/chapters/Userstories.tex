@@ -2,7 +2,7 @@
 
 As a programmer I want to have access the entire project structure when using a code editor.
 
-As a programmer I want clean seperation between branches and do not want to see changes to other branches when using a version control system.
+As a programmer I want clean separation between branches and do not want to see changes to other branches when using a version control system.
 
 As a programmer I want to be able to stage changes that I made to Git.
 
@@ -16,7 +16,7 @@ As a programmer I want to be able to edit files with up to 4 people at a time. A
 
 \section{Scenarios}
 \label{sec:scenarios}
-Ih this section multiple scenarios are derived from the user stories.
+In this section multiple scenarios are derived from the user stories.
 
 \subsection{Scenario 1}
 \label{sec:scenario1}
@@ -27,8 +27,8 @@ Person A encounters unexpected behaviour of his code. He requests help from pers
 Neither persons A nor B want to commit their changes at this point.
 Person B uses the VS Code Command Palette and chooses the option "Procurrently: Checkout Branch" and chooses branch Ba.
 Person B now sees only the modifications in /app.js and /routes/accounts.js from branch Ba.
-Upon discovering the problem in the sourcecode, person B modifies /routes/account.js to solve the problem.
-Person A can see the the changes in real time.
+Upon discovering the problem in the source code, person B modifies /routes/account.js to solve the problem.
+Person A can see the changes in real time.
 Person B once again opens the VS Code Command Palette and chooses the option "Procurrently: Checkout Branch" and chooses branch Bb.
 Person B now sees the modifications in /app.js and /routes/main.js on Branch Bb and can continue working on his task.
 
@@ -38,10 +38,10 @@ Person A is modifying and testing a new feature while person B is working on set
 This is interfering with the test of person A. Person A opens the VS Code Command Palette and chooses the option "Procurrently: Toggle remote changes".
 All the modifications of B are reverted in the documents of person A.
 During that person B can still see the modifications of person A which helps person B to determine the correct caching headers for the different routes.
-Person As laptop disconnects from the network. Therefore person B can no longer recieve real time updates from person A.
+Person As laptop disconnects from the network. Therefore, person B can no longer receieve real time updates from person A.
 Person As laptop reboots unexpectedly. Once the laptop is booted up again, person A opens VS Code and can continue to work where he left off.
 Person A now wants to know about the progress of person B and turns on remote changes. Person A can see all the changes of person B until person A disconnected from the network. Person A disables remote changes again and continues to work on his new feature.
-Later on person Bs laptop reconnects to the network and person B can recieve all the modifications person B missed.
+Later on, person Bs laptop reconnects to the network and person B can receieve all the modifications person B missed.
 Once person A is happy with the implementation of the new feature, he wants to test the caching behaviour himself to make sure person B has understood his code correctly.
 Person A opens the VS Code Command Palette and chooses the option "Procurrently: Toggle remote changes".
 Person A now sees all the modifications of person B again including the modifications B made while person A had disabled the remote changes.

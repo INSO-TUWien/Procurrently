@@ -16,13 +16,13 @@ Git provides useful information about the current project, the developer is work
 
 Git stores this information in the ".git" directory in the root folder of the project.
 The data is stored in a compressed format. In order to access the information, a small library using low level Git commands was implemented. 
-A custom implementation was nessesary because the NodeGit\footnote{https://github.com/nodegit/nodegit} library would crashes VS Code as soon as the extension would import it.
+A custom implementation was necessary because the NodeGit\footnote{https://github.com/nodegit/nodegit} library would crash VS Code as soon as the extension would import it.
 
-The Git library provides a low level interface for interacting with a Git repository. It provides functions to find the Git directory for a given file (given the file is inside a Git repository) and retrieve information like the path of a file within the repository, information about the current commit, hash, branch, remote URL, username of the repository, versions of a file. This information is crucial for determining the version of a file that has been modified by the user and finding the identical file on the mashine of another user.
+The Git library provides a low-level interface for interacting with a Git repository. It provides functions to find the Git directory for a given file (given the file is inside a Git repository) and retrieve information like the path of a file within the repository, information about the current commit, hash, branch, remote URL, username of the repository, versions of a file. This information is crucial for determining the version of a file that has been modified by the user and finding the identical file on the machine of another user.
 
 Additionally the Git library provides function to stage files for commit, commit changes and do a Git reset. The stage and commit functions are required in order to stage changes by author and commit them. The Git reset function is used to synchronize file contents to the version known to Git. This enables synchronizing the files without establishing base versions of files over the network first.
 
-The Git library can invoke a callback function when the current state of a repository changes. This is the case if a different branch is checked out or the current commit changes due to the user commiting or a git pull. Because once the repository changes, the appropriate changes have to be applied to documents and only changes for the same repository state can be replayed.
+The Git library can invoke a callback function when the current state of a repository changes. This is the case if a different branch is checked out or the current commit changes due to the user committing or a git pull. Because once the repository changes, the appropriate changes have to be applied to documents and only changes for the same repository state can be replayed.
 
 \section{teletype-crdt}
 \label{sec:teletypecrdt}
@@ -33,9 +33,9 @@ This library will be used for tracking changes. It is written in JavaScript and 
 
 Teletype-crdt provides the Document class. This class represents a shared document using a CRDT. In order to notify the document representation about a local change, the setTextInRange (see \autoref{lst:setTextInRange}) function can be used.
 
-When a change from another instance of the document is recieved, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function. This function returns a set of TextUpdates, which are changes to the text of the document to match the operations.
+When a change from another instance of the document is receieved, the teletype-crdt document can be notified using the integrateOperations (see \autoref{lst:integrateOperations}) function. This function returns a set of TextUpdates, which are changes to the text of the document to match the operations.
 
-Since the document turns every text change into an operation and operations contain information about the author, sometimes the effect of operations need to be determined. For example if staging changes by author. To do this, the undoOrRedoOperations function is used (see \autoref{lst:undoOrRedoOperations}). It returns a set of modifications for the file on disk equivalent to an undo of a set of operations. Which, if this function is not used otherwise translates to the mapping of operations to effects of operations described above.
+Since the document turns every text change into an operation and operations contain information about the author, sometimes the effect of operations needs to be determined. For example, if staging changes by author. To do this, the undoOrRedoOperations function is used (see \autoref{lst:undoOrRedoOperations}). It returns a set of modifications for the file on disk equivalent to an undo of a set of operations. Which, if this function is not used otherwise translates to the mapping of operations to effects of operations described above.
 
 
 \begin{lstlisting}[label={lst:setTextInRange}, caption=teletype-crdt setTextInRange]
@@ -55,7 +55,7 @@ As a basis for the edit history  the current Git commit in the current branch wi
 
 \section{VS Code Extension API}
 
-VS Code runs extension in a seperate process and provides an asynchronous Javascript API.
+VS Code runs extension in a seperate process and provides an asynchronous JavaScript API.
 The examples provided in the vscode-extension-samples repository\footnote{https://github.com/Microsoft/vscode-extension-samples} are mostly written in Typescript\footnote{https://www.typescriptlang.org/} and all the Interfaces have type definitions for Typescript.
 Therefore the extension will use Typescript as well.
 
@@ -85,7 +85,7 @@ vscode.workspace.applyEdit(edit)
 An edit is given by a document, the line and column of start and end of the edit in that document and the new text to be inserted there.
 If text is added or removed within a line, the columns of the text change after the edit has been applied (when the promise resolves). If another edit is applied before the promise resolved, the indices of the text might have not been changed yet and therefore at a different position than expected. VS Codes WorkspaceEdit supports grouping change operations together. But change operations are not treated as happening all at a time so if for example the text "123" was typed the teletype-crdt library would essentially output Line 1 Char 1 to Line 1 Char 1 changed to "1", Line 1 Char 2 to Line 2 Char 2 changed to "2" and so on. This is kind of expected behaviour so far but VS Code's WorkspaceEdit treats this as independent operations and if there was text after the insertion the changes would not be inserted as one block but interlaced with the previous text. 
 
-In order to avoid this race condition all changes to a file have to be carried out sequentially. This is not noticable when changes by regular typing are integrated into the local document. But when the multiple cursors\footnote{https://code.visualstudio.com/docs/getstarted/tips-and-tricks\#\_editing-hacks} are used the change integration can slow down noticably. In order to support multiple cursors the changes are sorted by column in decending order to prevent shifting indices. (See \autoref{lst:sort_changes})
+In order to avoid this race condition all changes to a file have to be carried out sequentially. This is not noticeable when changes by regular typing are integrated into the local document. But when the multiple cursors\footnote{https://code.visualstudio.com/docs/getstarted/tips-and-tricks\#\_editing-hacks} are used the change integration can slow down noticeably. In order to support multiple cursors, the changes are sorted by column in descending order to prevent shifting indices. (See \autoref{lst:sort_changes})
 \begin{lstlisting}[label={lst:sort_changes}, caption=Sorting Changes by Column to Prevent Index Shifting]
 textUpdates.sort((a, b) => b.oldStart.column - a.oldStart.column)
 \end{lstlisting}
@@ -114,7 +114,7 @@ The container for a Tree View needs to be defined in the package.json file. \aut
 
 First an entry in the activity bar has to be declared in the viewsContainers section (See \autoref{lst:contributes_treeview_activitybar}). It defines the icon as well as the hover text (called title) of the tab in the activity bar.
 
-\begin{lstlisting}[label={lst:contributes_treeview_view}, caption=Tree View Pannel Definition]
+\begin{lstlisting}[label={lst:contributes_treeview_view}, caption=Tree View Panel Definition]
 "contributes": {
     [...]
     "views": {
@@ -135,7 +135,7 @@ First an entry in the activity bar has to be declared in the viewsContainers sec
     \label{fig:treeview}
 \end{figure}
 
-Additionally the view has to be declared.\autoref{lst:contributes_treeview_view} This defines the heading for the Tree View.
+Additionally, the view has to be declared.\autoref{lst:contributes_treeview_view} This defines the heading for the Tree View.
 
 \begin{lstlisting}[label={lst:contributes_treeview_register}, caption=Define Tree View Data Provider]
 const treeview = new ContributorsTreeView(crdt.getUsers);
@@ -155,12 +155,12 @@ const localPaths = new Map<string, string>();
 const branches = new Map<string, string>();
 \end{lstlisting}
 
-All the data is stored in a map called documents.(See \autoref{lst:datamodel_declarations})
+All the data is stored in a map called documents. (See \autoref{lst:datamodel_declarations})
 It's key is composed of the filename and a specifier composed from the commit, branch and remote/origin repository URL.
 
-In order to keep track of the current branch and head commit of files, the branches map contains the identifier for a file by filepath.
+In order to keep track of the current branch and head commit of files, the branches map contains the identifier for a file by file path.
 
-The localPaths map contains mappings from remote/origin urls to local Git directory locations.
+The localPaths map contains mappings from remote/origin URLs to local Git directory locations.
 This enables keeping track of files across different projects.
 
 
@@ -175,7 +175,7 @@ The document object has two properties
     \item metaData
 \end{itemize}
 
-The document property points to an instalce of the document class provided by teletype-crdt.
+The document property points to an instance of the document class provided by teletype-crdt.
 
 The metaData property contains the relevant information from Git about the document:
 \begin{itemize}
@@ -187,7 +187,7 @@ The metaData property contains the relevant information from Git about the docum
 \end{itemize}
 
 The users property contains a map with the teletype-crdt siteId as a key and the Git username as a value.
-This information is required to display usersnames in the staging Tree View.
+This information is required to display usernames in the staging Tree View.
 
 \section{Reacting to Local Changes}
 If a file has not yet been accessed, it has to be registered. This establishes the current version of the file known to Git. Additionally The localPaths map is updated with the repository remote origin URL as the key and the location of the git repository on disk as the value. This will later be used for incoming changes.
@@ -268,18 +268,18 @@ An essential part of Procurrently is the handling the changes over the peer to p
 
 \subsection{Establishing the Peer To Peer Connections}
 When the extension is activated, a to a bootstrap server is established. 
-The peer sends the bootstrap server his ip as well as the port of the socket, the peer is listening on for incoming connections.
-Upon recieving this information the bootstrap server responds with a list of ips and ports of all the other registered peers.
+The peer sends the bootstrap server his IP address as well as the port of the socket, the peer is listening on for incoming connections.
+Upon receieving this information, the bootstrap server responds with a list of IP addresses and ports of all the other registered peers.
 The peer then tries to connect to every peer in that list.
 
 Once a connection is established, the peers exchange all the changes they know about.
 
 \subsection{Handling Changes}
-Every change is propergated to every node known to the peer. This approach is performant enough for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other peers when switching branches. Additionally changes could be propergated via a gossip based protocol.
+Every change is propagated to every node known to the peer. This approach is performant enough for small groups. To scale up to more clients, peers could intelligently only send changes to peers, who are currently on the same branch and peers could request operations from other peers when switching branches. Additionally, changes could be propagated via a gossip based protocol.
 
 \section{Handling Remote Changes}
 
-Handling incoming changes has two main challanges:
+Handling incoming changes has two main challenges:
 \begin{itemize}
     \item concurrent changes
     \item finding files on disk
@@ -288,9 +288,9 @@ Handling incoming changes has two main challanges:
 \subsection{Concurrent Changes}
 \label{subsec:concurrentchanges}
 Concurrent changes can introduce errors when adding them to a file. 
-Given two changes on the same line one of the changes will have it's index changed by the other one.
+Given two changes on the same line one of the changes will have its index changed by the other one.
 
-To illustrate the problem consider this example:
+To illustrate the problem, consider this example:
 
 The initial line consists of the string "12345".
 Now peer A adds "g" after index 3 and peer B adds "c" after index 4
@@ -300,12 +300,12 @@ The crdt data type handles this concurrency problem and if the change from peer 
 But this assumes that all the changes are processed sequentially. If the order of insertions is not guaranteed the resulting string could turn into "123g45c" if the crdt document processes the changes in the order A -> B and the VS Code Edit is processed in the order B -> A.
 
 To ensure consistency, the network layer waits for the change handling promise to resolve before processing the next change. This can be thought of as "pretending network changes have been delayed".
-CRDTs such as atom-teletype are designed to handle delayed network packets. Therefore this ensures consistent change replication. \autoref{lst:promise_chain} ensures that incoming change packets are processed sequentially by building a promise chain.
+CRDTs such as atom-teletype are designed to handle delayed network packets. Therefore, this ensures consistent change replication. \autoref{lst:promise_chain} ensures that incoming change packets are processed sequentially by building a promise chain.
 
 \begin{lstlisting}[label={lst:promise_chain}, caption=Network Promise Chain]
 this._currentEdit = this._currentEdit.then(() => {
     [...]
-    return this._onremoteEdit(recieved.update);
+    return this._onremoteEdit(receieved.update);
     [...]
 })
 \end{lstlisting}

@@ -5,25 +5,25 @@
 
 Millions of developers are collaborating\footnote{https://octoverse.github.com} on source code every day.
 Especially in corporate environments tools for collaboration on source code are an integral part of the workflow.
-Those tools are not just for managing versions and enabling merging conflicts, but are vital for communication.
+Those tools are not just for managing versions and enabling merging conflicts but are vital for communication.
 
 %=======================================================================
 \section{Problem Description}
 %=======================================================================
 
-When multiple people are working on solving a Problem it is not clear who is implementing which part. Current vcs systems conflict resolutions require manual conflict resolution if multiple people have modified the same file.
-In order for a group to discuss a problem all the code has to be commited and pulled by everyone first. This introduces friction. In order to solve these and other problems real time collaborative editors have been created.
-But current implementations of real time collaboration editors / editor plugins are unaware of the underlying version control system and therefore are based on the idea of just sharing files of a host mashine or a single source of truth file on a server instead of basing edit histories on versions of files known to the version control system anyway.
+When multiple people are working on solving a Problem it is not clear who is implementing which part. Current version control systems (vcs) conflict resolutions require manual conflict resolution if multiple people have modified the same file.
+In order for a group to discuss a problem all the code has to be committed and pulled by everyone first. This introduces friction. In order to solve these and other problems real time collaborative editors have been created.
+But current implementations of real time collaboration editors / editor plugins are unaware of the underlying version control system and therefore are based on the idea of just sharing files of a host machine or a single source of truth file on a server instead of basing edit histories on versions of files known to the version control system anyway.
 
-In state of the art collaborative code editors it is not possible for a user to easily see who made specific changes. Usually all the changes are bundled in one commit and the accountability is lost. In order to convert this concurrent model to a commit understood by Git it should be possible to stage changes by author. This approach might require more sophisticated logic than just interpreting changes as strings given that a command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic.
+In state-of-the-art collaborative code editors it is not possible for a user to easily see who made specific changes. Usually all the changes are bundled in one commit and the accountability is lost. In order to convert this concurrent model to a commit understood by Git it should be possible to stage changes by author. This approach might require more sophisticated logic than just interpreting changes as strings given that a command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic.
 
 \section{Expected Results}
 
 Enable real time collaboration on source code based on a Git\footnote{\href{https://git-scm.com/}{https://git-scm.com/}} project by
 continuous tracking of code changes synchronizing over peer to peer connection.
-Lowering overhead of splitting tasks by enabling everyone see what other people are working on. Allowing discussions about source code that has not yet been commited.
-Changes should be commitable by author. In order to be able to compile sourcecode, changes of other people can be toggled off.
-Using Git as a base enables opportunistic real time collaboration. In other words if a connection is possible changes will be propagated  to other people working on the same branch. If not the changes will be sent when a connection is available. \cite{AlwisSillito:2009:centralToDecentralVCS},\cite{6188603} Therefore it should be analog to the benefits of moving to a decentralized vcs.
+Lowering overhead of splitting tasks by enabling everyone see what other people are working on. Allowing discussions about source code that has not yet been committed.
+Changes should be committable by author. In order to be able to compile source code, changes of other people can be toggled off.
+Using Git as a base enables opportunistic real time collaboration. In other words, if a connection is possible changes will be propagated  to other people working on the same branch. If not the changes will be sent when a connection is available. \cite{AlwisSillito:2009:centralToDecentralVCS},\cite{6188603} Therefore it should be analogue to the benefits of moving to a decentralized vcs.
 
 %=======================================================================
 \section{Motivation}
@@ -31,4 +31,4 @@ Using Git as a base enables opportunistic real time collaboration. In other word
 
 Current implementations of real time collaboration tools are not designed with version control systems in mind.
 
-Transforming real time collaborative edits into regular Git commits by author will reduce a lot of friction in the adoption for real time collaboration software. Using a peer to peer solution with the ability to deal with disconnect events using information already known to the version control system will drasticly increase the ease of use. Ideally a user will not even have to think about using the extension.
+Transforming real time collaborative edits into regular Git commits by author will reduce a lot of friction in the adoption for real time collaboration software. Using a peer to peer solution with the ability to deal with disconnect events using information already known to the version control system will drastically increase the ease of use. Ideally a user will not even have to think about using the extension.

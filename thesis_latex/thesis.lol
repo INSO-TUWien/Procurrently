@@ -25,7 +25,7 @@
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {5.8}Tree View Activitybar}{16}{lstlisting.5.8}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {5.9}Tree View Pannel Definition}{16}{lstlisting.5.9}
+\contentsline {lstlisting}{\numberline {5.9}Tree View Panel Definition}{16}{lstlisting.5.9}
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {5.10}Define Tree View Data Provider}{17}{lstlisting.5.10}
 \defcounter {refsection}{0}\relax

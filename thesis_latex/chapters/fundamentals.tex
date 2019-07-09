@@ -3,7 +3,7 @@
 \label{sec:fundamentals}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section multiple solutions for real time collaboration will be analyzed. 
+In this section multiple solutions for real time collaboration will be analysed. 
 The results from the survey will be used as a basis for the requirements analysis.
 
 %=======================================================================
@@ -21,11 +21,11 @@ In this section, scientific solutions for real time collaboration will be discus
 CoVim\cite{ChoNgSun:2017:CoVim:Incorporatingreal-timecollaborationcapabilitiesintocomprehensivetexteditors} uses Operational Transforms just like Teletype for Atom. But uses a different method of detecting state changes. Instead of observing user interactions it observes changes to files and generates Operational Transforms from diffing states.
 
 \subsubsection{TouchDevelop}
-TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web based editor. It enables real time collaboration by merging ASTs. The paper claims "Indeed, we claim that this approach is generalizable to a
+TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web-based editor. It enables real time collaboration by merging ASTs. The paper claims "Indeed, we claim that this approach is generalizable to a
 general-purpose language, as long as the editor can parse the
 program being edited and transparently tag AST nodes with
 an identifier. Naturally, this requires non-trivial support from
-the editor".\cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges} The AST translation would have to be implemented for every programming language supported. Additionally the transformation from AST to text might not guarantee the same code just the same AST which could lead to confusion for developers.\autoref{fig:touchdevelop}
+the editor".\cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges} The AST translation would have to be implemented for every programming language supported. Additionally, the transformation from AST to text might not guarantee the same code just the same AST which could lead to confusion for developers.\autoref{fig:touchdevelop}
 \begin{figure}[hb]
     \centering
     \includegraphics{figures/screenshots/touchdevelop.png}
@@ -62,9 +62,9 @@ Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services
     \label{fig:liveshare}
 \end{figure}
 \subsubsection{Multihack-Brackets}
-Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019 it is not possible to verify performance or functionality since joining a session just crashes the brackets editor. Apparently the development has been stopped. The last commit in the repository was over a year ago (in February of 2018).
+Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019 it is not possible to verify performance or functionality since joining a session just crashes the brackets editor. Apparently, the development has been stopped. The last commit in the repository was over a year ago (in February of 2018).
 \subsubsection{Codeshare}
-Codeshare\footnote{https://codeshare.io} is a web based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. \autoref{fig:codeshare}
+Codeshare\footnote{https://codeshare.io} is a web-based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. \autoref{fig:codeshare}
 \begin{figure}[h]
     \centering
     \includegraphics[width=100mm]{figures/screenshots/codeshare.png}
@@ -82,7 +82,7 @@ Collabode\cite{Goldman:2011:RCC:2047196.2047215} is "a web-based Java integrated
     \label{fig:collabode}
 \end{figure}
 \subsection{Summary}
-As described in \autoref{tab:sota} current solutions are mostly implemented as extensions to code editors. Only codeshare is web based because it is based around the use-case of doing interviews. Overall none of the current solutions have any considerations for dealing with an underlying version control system of a project.
+As described in \autoref{tab:sota} current solutions are mostly implemented as extensions to code editors. Only codeshare is web-based because it is based around the use-case of doing interviews. Overall none of the current solutions have any considerations for dealing with an underlying version control system of a project.
 
 \begin{table}
 	\centering
@@ -108,7 +108,7 @@ In order to update shared objects stored at different sites a "commutative repli
 But there is a problem with this approach. If there are concurrent insertions at the same position of a document, a global order for the conflicting information has to be established. \cite{PreguicaMarquesShapiroLetia:2009},\cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting} have a solution to this problem: every site gets a unique siteID and a logical clock or counter. Concurrent inserts are then ordered either by the counter (smaller counter first) or if the counters are identical by the siteID.
 
 \section{Scrum}
-Scrum is an agile, iterative software development process. Work is divided into Sprints. There are daily meetings called "Daily Scrum". In those meetings important questions are evalutated as a group. One of them is "What impediments stand in the way of you meeting your commitments to this Sprint and this project?".\cite{schwaber2004agile},\cite{10.1007/978-1-4471-0947-1_11}
+Scrum is an agile, iterative software development process. Work is divided into Sprints. There are daily meetings called "Daily Scrum". In those meetings important questions are evaluatated as a group. One of them is "What impediments stand in the way of you meeting your commitments to this Sprint and this project?".\cite{schwaber2004agile},\cite{10.1007/978-1-4471-0947-1_11}
 In theory this introduces a maximum delay of one day from potentially blocking code being written to the person depending on it knowing about it. This time can further be decreased by establishing tighter communication between team members.
 Especially in distributed development, it is important to "Arrange an access to multiple communication tools"\cite{5196933} for unofficial distributed meetings.\cite{4638656}
 Since the version control system is a communication tool, improving version control systems improves communication tools and aids Scrum based software development processes.
@@ -121,4 +121,4 @@ Companies like Google and Microsoft use a process called "code review" to valida
 reason, even today CodeFlow remains a tool that works
 client-side, meaning you can download your change first
 and then interact with it, which makes switching between
-files and different regions very, very fast."\cite{CzerwonkaGreilerBirdPanjerCoatta:2018:CodeFlow:ImprovingtheCodeReviewProcessatMicrosoft} Therefore another important goal for this thesis is to deliver an experience that works client side and keeps working when disconnecting and reconnecting to networks.
+files and different regions very, very fast."\cite{CzerwonkaGreilerBirdPanjerCoatta:2018:CodeFlow:ImprovingtheCodeReviewProcessatMicrosoft} Therefore, another important goal for this thesis is to deliver an experience that works client-side and keeps working when disconnecting and reconnecting to networks.
