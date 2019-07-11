@@ -11,7 +11,37 @@ The results from the survey will be used as a basis for the requirements analysi
 \label{sec:stateoftheart}
 %=======================================================================
 
-This section describes and discusses current state of the art tools for real time collaboration.
+This section describes and discusses current state-of-the-art tools for real time collaboration.
+
+\subsection{Available Software Tools}
+
+In this section, currently available software solutions for real time collaboration will be discussed.
+
+\subsubsection{Teletype for Atom}
+Teletype for Atom\footnote{https://github.com/atom/teletype/issues/211} is a Project enabling editing files peer to peer. It is based on \cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting}, \cite{YuWeihai:2014} and \cite{BriotUrsoShapiro:2016:HighResponsivenessGroupEditing}.
+With Teletype it is possible to edit files currently opened by the "host". The files are only persisted on the "host" not on all peers.\footnote{https://teletype.atom.io/}
+Therefore disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless they are opened by the host. 
+\subsubsection{Visual Studio Live Share}
+Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that it enables sharing debugging sessions and ports opened by debugging sessions are forwarded to clients. As with Teletype for Atom files are only persisted on the "host". (See \autoref{fig:liveshare})
+\begin{figure}[hb]
+    \centering
+    \includegraphics[width=100mm]{figures/screenshots/vscodeliveshare.png}
+	\caption{Visual Studio Live Share}
+	\href{https://code.visualstudio.com/blogs/2017/11/15/live-share}{https://code.visualstudio.com/blogs/2017/11/15/live-share}
+    \label{fig:liveshare}
+\end{figure}
+\subsubsection{Multihack-Brackets}
+Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019 it is not possible to verify performance or functionality since joining a session just crashes the brackets editor. Apparently, the development has been stopped. The last commit in the repository was over a year ago (in February of 2018).
+\subsubsection{Codeshare}
+Codeshare\footnote{https://codeshare.io} is a web-based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. (See\autoref{fig:codeshare})
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=100mm]{figures/screenshots/codeshare.png}
+	\caption{Codeshare}
+	\href{https://codeshare.io}{https://codeshare.io}
+    \label{fig:codeshare}
+\end{figure}
+
 
 \subsection{Scientific Solutions}
 
@@ -25,7 +55,7 @@ TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web-based
 general-purpose language, as long as the editor can parse the
 program being edited and transparently tag AST nodes with
 an identifier. Naturally, this requires non-trivial support from
-the editor". \cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges} The AST translation would have to be implemented for every programming language supported. Additionally, the transformation from AST to text might not guarantee the same code just the same AST which could lead to confusion for developers.\autoref{fig:touchdevelop}
+the editor". \cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges} The AST translation would have to be implemented for every programming language supported. Additionally, the transformation from AST to text might not guarantee the same code just the same AST which could lead to confusion for developers. (See \autoref{fig:touchdevelop})
 \begin{figure}[hb]
     \centering
     \includegraphics{figures/screenshots/touchdevelop.png}
@@ -34,46 +64,17 @@ the editor". \cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timeco
     \label{fig:touchdevelop}
 \end{figure}
 \subsubsection{CodeR}
-CodeR \cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming} is a Web IDE with built in chat for the programming languages C, C++ and JAVA. 
+CodeR \cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming} is a Web IDE with built in chat for the programming languages C, C++ and JAVA. (See \autoref{fig:coder})
 \begin{figure}[hb]
     \centering
     \includegraphics[width=100mm]{figures/screenshots/CodeR.png}
 	\caption{CodeR }
 	\cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming}
-    \label{fig:touchdevelop}
+    \label{fig:coder}
 \end{figure}
 
-\newpage
-\subsection{Available Software Tools}
-
-In this section, currently available software solutions for real time collaboration will be discussed.
-
-\subsubsection{Teletype for Atom}
-Teletype for Atom\footnote{https://github.com/atom/teletype/issues/211} is a Project enabling editing files peer to peer. It is based on 	\cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting} \cite{YuWeihai:2014} \cite{BriotUrsoShapiro:2016:HighResponsivenessGroupEditing}.
-With Teletype it is possible to edit files currently opened by the "host". The files are only persisted on the "host" not on all peers.\footnote{https://teletype.atom.io/}
-Therefore disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless they are opened by the host. 
-\subsubsection{Visual Studio Live Share}
-Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that it enables sharing debugging sessions and ports opened by debugging sessions are forwarded to clients. As with Teletype for Atom files are only persisted on the "host". \autoref{fig:liveshare}
-\begin{figure}[hb]
-    \centering
-    \includegraphics[width=100mm]{figures/screenshots/vscodeliveshare.png}
-	\caption{Visual Studio Live Share}
-	\href{https://code.visualstudio.com/blogs/2017/11/15/live-share}{https://code.visualstudio.com/blogs/2017/11/15/live-share}
-    \label{fig:liveshare}
-\end{figure}
-\subsubsection{Multihack-Brackets}
-Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019 it is not possible to verify performance or functionality since joining a session just crashes the brackets editor. Apparently, the development has been stopped. The last commit in the repository was over a year ago (in February of 2018).
-\subsubsection{Codeshare}
-Codeshare\footnote{https://codeshare.io} is a web-based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file. \autoref{fig:codeshare}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=100mm]{figures/screenshots/codeshare.png}
-	\caption{Codeshare}
-	\href{https://codeshare.io}{https://codeshare.io}
-    \label{fig:codeshare}
-\end{figure}
 \subsubsection{Collabode}
-Collabode \cite{Goldman:2011:RCC:2047196.2047215} is "a web-based Java integrated development environment". It shares changes between developers as soon as they have no compilation errors. It is designed for the Java language. (See \autoref{fig:collabode})
+Collabode is "a web-based Java integrated development environment" \cite{Goldman:2011:RCC:2047196.2047215}. It shares changes between developers as soon as they have no compilation errors. It is designed for the Java language. (See \autoref{fig:collabode})
 \begin{figure}[h]
     \centering
     \includegraphics[width=100mm]{figures/screenshots/collabode.jpg}
@@ -81,8 +82,10 @@ Collabode \cite{Goldman:2011:RCC:2047196.2047215} is "a web-based Java integrate
 	\cite{Goldman:2011:RCC:2047196.2047215}
     \label{fig:collabode}
 \end{figure}
+
+\newpage
 \subsection{Summary}
-As described in \autoref{tab:sota} current solutions are mostly implemented as extensions to code editors. Only codeshare is web-based because it is based around the use-case of doing interviews. Overall none of the current solutions have any considerations for dealing with an underlying version control system of a project.
+As described in \autoref{tab:sota} current solutions are either implemented as extensions to code editors or as web applications. Overall none of the current solutions have any considerations for dealing with an underlying version control system of a project.
 \begin{table}
 	\begin{minipage}{6cm}
 		\begin{tabular}{| >{\bfseries}l | l | l | l | l | }
@@ -91,10 +94,12 @@ As described in \autoref{tab:sota} current solutions are mostly implemented as e
 			\hline
 			\hline
 				Teletype for Atom & Extension & Host & Individual Files \\\hline
+				CoVim & Extension & Host & Individual Files \\\hline
 				Visual Studio Live Share & Extension & Host & Project Folder \\\hline
 				Multihack Brackets & Extension &  Distributed\footnote{Not possible to verify this information} & Project Folder \\\hline
 				Codeshare & Web application & Server & Single File \\\hline
 				Collabode & Web application & Server & Project Folder \\\hline
+				CodeR & Web application & Server & Entire Project \\\hline
 				TouchDevelop & Web application & Server & Entire Project \\
 			\hline
 		\end{tabular}
@@ -105,7 +110,7 @@ As described in \autoref{tab:sota} current solutions are mostly implemented as e
 
 \section{CRDT}
 In order to update shared objects stored at different sites a "commutative replicated data type" or CRDT is proposed by \cite{PreguicaMarquesShapiroLetia:2009}. The idea is to design the underlying representation or data structure of edits to a document such that operations are commutative and therefore automatically converge at every copy of the document.
-But there is a problem with this approach. If there are concurrent insertions at the same position of a document, a global order for the conflicting information has to be established. \cite{PreguicaMarquesShapiroLetia:2009}, \cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting} have a solution to this problem: every site gets a unique siteID and a logical clock or counter. Concurrent inserts are then ordered either by the counter (smaller counter first) or if the counters are identical by the siteID.
+But there is a problem with this approach. If there are concurrent insertions at the same position of a document, a global order for the conflicting information has to be established. Thie problem has a solution: every site gets a unique siteID and a logical clock or counter. Concurrent inserts are then ordered either by the counter (smaller counter first) or if the counters are identical by siteID. \cite{PreguicaMarquesShapiroLetia:2009}, \cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting}
 
 \section{Scrum}
 Scrum is an agile, iterative software development process. Work is divided into Sprints. There are daily meetings called "Daily Scrum". In those meetings important questions are evaluated as a group. One of them is "What impediments stand in the way of you meeting your commitments to this Sprint and this project?". \cite{schwaber2004agile}, \cite{10.1007/978-1-4471-0947-1_11}

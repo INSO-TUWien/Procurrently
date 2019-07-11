@@ -6,48 +6,46 @@
 In this chapter Procurrently will be evaluated based on the scenarios and compared to existing tools.
 Furthermore, limitations compared to other tools will be described.
 
-\subsection{Evaluating Scenarios}
+\section{Evaluating Scenarios}
 
 Procurrently was evaluated using the scenarios described in \autoref{sec:scenarios}.
 These were tested on a real git repository containing 600 files. One of the files most commonly used in testing was app.js containing over 7000 characters or about 200 lines. The test was run on two MacBook Pros using an 802.11ac Wi-Fi connection.
 The bootstrap server was run on one of the MacBooks. The IP for the bootstrap server was configured before starting the test using the VS Code settings menu. 
 
-\subsubsection{Scenario 1}
+\subsection{Scenario 1}
 
 The branches used in the test were "bug-hunt" and "buildsystem-test". On branch bug-hunt the files /app.js (see \autoref{fig:1appjs_on_bughunt}) and /routes/account.js (see \autoref{fig:1account_on_bughunt}) were modified by inserting comments. The configured username was "Stefan Gussner". 
 After that on branch "buildsystem-test" the files /app.js and /routes/index.js were modified by inserting comments. The configured username was "Michael".
 
-\begin{figure}[h]
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1appjs_on_bughunt.png}
-        \caption{app.js}
-        \label{fig:1appjs_on_bughunt}
-        \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1accountjs_on_bughunt.png}
-        \caption{routes/account.js}
-        \label{fig:1account_on_bughunt}
-    \end{subfigure}
-    \caption{Scenario 1: Branch bug-hunt initial modifications}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1appjs_on_bughunt.png}
+    \caption{Scenario 1: Branch bug-hunt initial modifications app.js}
+    \label{fig:1appjs_on_bughunt}
+    \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1accountjs_on_bughunt.png}
+    \caption{Scenario 1: Branch bug-hunt initial modifications routes/account.js}
+    \label{fig:1account_on_bughunt}
 \end{figure}
 
-\begin{figure}[h]
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1checkout_branch.png}
-        \caption{VS Code Command Palette Menu}
-        \label{fig:1checkout_branch_palette}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1checkout_bughunt.png}
-        \caption{Select Branch}
-        \label{fig:1checkout_bughunt}
-    \end{subfigure}
-    \caption{Scenario 1: Checkout a different Branch}
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1checkout_branch.png}
+    \caption{VS Code Command Palette Menu}
+    \label{fig:1checkout_branch_palette}
 \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/1checkout_bughunt.png}
+    \caption{Select Branch}
+    \label{fig:1checkout_bughunt}
+\end{figure}
+
 
 \begin{figure}[h]
     \centering
@@ -58,24 +56,21 @@ After that on branch "buildsystem-test" the files /app.js and /routes/index.js w
 
 On the computer with the Username "Michael" configured, the VS Code Command Palette was opened and the option Procurrently: Checkout Branch was selected (see \autoref{fig:1checkout_branch_palette}). From the presented options the branch "bug-hunt" was selected (see \autoref{fig:1checkout_bughunt}). All the files were closed and the files /app.js and /routes/account.js were opened. The modifications on branch "bug-hunt" were visible in the files and the changes in branch "buildsystem-test" were no longer visible. The file /routes/account.js was modified by the computer with the Username "Michael" inserting another comment (see \autoref{fig:1staging}). The changes were immediately visible on the other computer. Using the VS Code Command Palette, the computer with the Username "Michael" configured switched back to branch "buildsystem-test".
 
-\subsubsection{Scenario 2}
+\subsection{Scenario 2}
 
 Both computers started out on the same branch. On the computer with the username "Stefan Gussner" a comment reading "comment from stefan" was created. On the other computer a comment reading "comment from michael" was added (see \autoref{fig:2comments}). The VS Code Command Palette was used to execute the Procurrently: Toggle remote changes option (see \autoref{fig:2togglechanges}). After that, all remote changes were removed from the file and only local changes were left (See \autoref{fig:2onlylocalchanges}). Later the Command Palette was used again to execute the Procurrently: Toggle remote changes command again to display the remote changes again.
 
-\begin{figure}[h]
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=1\textwidth]{figures/screenshots/scenarios/2comments.png}
-        \caption{Comments Added by Both Collaborators}
-        \label{fig:2comments}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/2togglechanges.png}
-        \caption{VS Code Command Palette Menu Toggle Changes}
-        \label{fig:2togglechanges}
-    \end{subfigure}
-    \caption{Scenario 2}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\textwidth]{figures/screenshots/scenarios/2comments.png}
+    \caption{Scenario 2 - Comments Added by Both Collaborators}
+    \label{fig:2comments}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/scenarios/2togglechanges.png}
+    \caption{Scenario 2 - VS Code Command Palette Menu Toggle Changes}
+    \label{fig:2togglechanges}
 \end{figure}
 
 \begin{figure}[hb]

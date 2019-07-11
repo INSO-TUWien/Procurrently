@@ -35,9 +35,9 @@
 \defcounter {refsection}{0}\relax
 \contentsline {lstlisting}{\numberline {5.13}Network Data Packet}{18}{lstlisting.5.13}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {5.14}Network Promise Chain}{20}{lstlisting.5.14}
+\contentsline {lstlisting}{\numberline {5.14}Network Promise Chain}{21}{lstlisting.5.14}
 \defcounter {refsection}{0}\relax
-\contentsline {lstlisting}{\numberline {5.15}Adding Change to Local Document}{20}{lstlisting.5.15}
+\contentsline {lstlisting}{\numberline {5.15}Adding Change to Local Document}{21}{lstlisting.5.15}
 \defcounter {refsection}{0}\relax
 \addvspace {10pt}
 \defcounter {refsection}{0}\relax

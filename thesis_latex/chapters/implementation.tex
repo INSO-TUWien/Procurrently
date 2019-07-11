@@ -18,7 +18,7 @@ Git stores this information in the ".git" directory in the root folder of the pr
 The data is stored in a compressed format. In order to access the information, a small library using low level Git commands was implemented. 
 A custom implementation was necessary because the NodeGit\footnote{https://github.com/nodegit/nodegit} library would crash VS Code as soon as the extension would import it.
 
-The Git library provides a low-level interface for interacting with a Git repository. It provides functions to find the Git directory for a given file (given the file is inside a Git repository) and retrieve information like the path of a file within the repository, information about the current commit, hash, branch, remote URL, username of the repository, versions of a file. This information is crucial for determining the version of a file that has been modified by the user and finding the identical file on the machine of another user.
+The Git library provides a low-level interface for interacting with a Git repository. It provides functions to find the Git directory for a given file (given the file is inside a Git repository) and retrieve information like the path of a file within the repository, information about the current commit, hash, branch, remote URL, username of the repository, as well as different versions of a file. This information is crucial for determining the version of a file that has been modified by the user and finding the identical file on the machine of another user.
 
 Additionally, the Git library provides function to stage files for commit, commit changes and do a Git reset. The stage and commit functions are required in order to stage changes by author and commit them. The Git reset function is used to synchronize file contents to the version known to Git. This enables synchronizing the files without establishing base versions of files over the network first.
 
@@ -81,7 +81,7 @@ vscode.workspace.onDidOpenTextDocument()
 vscode.workspace.applyEdit(edit)
 \end{lstlisting}
 
-\autoref{lst:applyEdit} returns a promise which resolves when the change has been added to the text document.
+The applyEdit function (See\autoref{lst:applyEdit}) returns a promise which resolves when the change has been added to the text document.
 An edit is given by a document, the line and column of start and end of the edit in that document and the new text to be inserted there.
 If text is added or removed within a line, the columns of the text change after the edit has been applied (when the promise resolves). If another edit is applied before the promise resolved, the indices of the text might have not been changed yet and therefore at a different position than expected. VS Codes WorkspaceEdit supports grouping change operations together. But change operations are not treated as happening all at a time so if for example the text "123" was typed the teletype-crdt library would essentially output Line 1 Char 1 to Line 1 Char 1 changed to "1", Line 1 Char 2 to Line 2 Char 2 changed to "2" and so on. This is kind of expected behaviour so far but VS Code's WorkspaceEdit treats this as independent operations and if there was text after the insertion the changes would not be inserted as one block but interlaced with the previous text. 
 
@@ -271,6 +271,14 @@ When the extension is activated, a to a bootstrap server is established.
 The peer sends the bootstrap server his IP address as well as the port of the socket, the peer is listening on for incoming connections.
 Upon receiving this information, the bootstrap server responds with a list of IP addresses and ports of all the other registered peers.
 The peer then tries to connect to every peer in that list.
+This is illustrated in \autoref{fig:network_bootstrap}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/illustrations/network-bootstrap.png}
+	\caption{Establishing Peer to Peer Connections}
+    \label{fig:network_bootstrap}
+\end{figure}
 
 Once a connection is established, the peers exchange all the changes they know about.
 
@@ -339,3 +347,12 @@ if (branches.get(filepath) == getSpecifier(metaData.commit, metaData.branch, met
     getLocalDocument(filepath, metaData.commit, metaData.branch, metaData.repo).document.integrateOperations(operations);
 }
 \end{lstlisting}
+
+\autoref{fig:change_handling} gives an overview how changes are processed.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{figures/illustrations/handle-change.png}
+	\caption{Overview - Handling Edits}
+    \label{fig:change_handling}
+\end{figure}
