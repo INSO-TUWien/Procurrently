@@ -120,7 +120,7 @@ The staging view does not differentiate between different branches so all collab
 
 Due to the possible inconsistencies introduced by the asynchronous VS Code applyEdit API function and the workaround described in \autoref{subsec:concurrentchanges} processing huge change sets is noticeably slow. This is most obvious when processing multi cursor changes with more than 20 cursors at once.
 
-Because the networking layer does not support UDP hole punching\cite{10.1007/978-3-642-20798-3_1} or similar techniques, communication between peers only works when clients are in the same local network.
+Because the networking layer does not support UDP hole punching \cite{10.1007/978-3-642-20798-3_1} or similar techniques, communication between peers only works when clients are in the same local network.
 
 Branch switching and committing changes sometimes have to be done through custom commands in VS Code instead of having the flexibility of doing those tasks using the command line and potentially using other programs or scripts to call those functions.
 
@@ -130,4 +130,4 @@ Procurrentlys function to commit changes by author only works properly if using 
 
 If there is no overlap between people working on a project, information about concurrent edits cannot be exchanged between peers.
 One possible solution might be to host a Procurrently nodes in the Cloud. As described in \cite{6188603}, Cloud hosted nodes could be for Procurrently what GitHub is to Git. 
-Peer to peer technology has been used to improve the Cloud before. \cite{Ranjan2013},\cite{Ranjan2010},\cite{Babaoglu:2012:DIP:2245276.2245357}. Cloud technology can be used to improve peer to peer software. This concept is used in the experimental Beaker Browser\footnote{https://beakerbrowser.com/docs/how-beaker-works/peer-to-peer-websites\#keeping-a-peer-to-peer-website-online}
+Peer to peer technology has been used to improve the Cloud before. \cite{Ranjan2013}, \cite{Ranjan2010}, \cite{Babaoglu:2012:DIP:2245276.2245357}. Cloud technology can be used to improve peer to peer software. This concept is used in the experimental Beaker Browser\footnote{https://beakerbrowser.com/docs/how-beaker-works/peer-to-peer-websites\#keeping-a-peer-to-peer-website-online}

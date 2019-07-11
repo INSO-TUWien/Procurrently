@@ -1132,7 +1132,13 @@ OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/adobe/times/ptmri8t.tfm
+INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/adobe/times/ptmri8t.tfm
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+INPUT /usr/local/texlive/2018/texmf-dist/fonts/vf/adobe/times/ptmri8t.vf
+INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
+INPUT /usr/local/texlive/2018/texmf-dist/fonts/vf/adobe/times/ptmri8t.vf
+INPUT /usr/local/texlive/2018/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
