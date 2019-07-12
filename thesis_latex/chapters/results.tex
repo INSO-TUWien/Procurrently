@@ -83,7 +83,7 @@ Both computers started out on the same branch. On the computer with the username
 \section{Results}
 Procurrently succeeded in using information provided by Git to provide branch based real time document synchronization. Only changes on the same branch are displayed to other users.
 
-Changes to all documents in Git projects are shared with other peers (note that this is not the entire project structure as described in Limitations).
+Changes to all documents in Git projects are shared with other peers (note that this is not the entire project structure as described in \autoref{limitations}).
 
 Changes can be staged by author. This provides accountability and clarity about changes. \autoref{fig:stagebyauthor} shows staging a change by author using the Tree View panel. 
 
@@ -106,6 +106,7 @@ Other solutions do not consider the version control system when providing real t
 Procurrently was tested in a real-world development environment with 2 users for 5 hours. After a short introduction to the new Git checkout procedure the tool did not cause friction for the users. During the test situations similar to \autoref{sec:scenario1} were encountered multiple times. Procurrently was working as expected and aided the problem solution by providing fast context switching without the overhead of synchronizing changes via Git.
 
 \section{Limitations}
+\label{limitations}
 
 Compared to other current solutions, Procurrently is unable to track files that do not exist in the last Git commit because the base version of a file is derived from the latest Git commit. This behaviour is necessary because some VS Code extensions create temporary files that do not get persisted to the filesystem but fire change events. Not ignoring these files would force developers to extend their .gitignore configuration and interfere with Procurrentlys goal of not requiring extra configuration by the developer.
 
