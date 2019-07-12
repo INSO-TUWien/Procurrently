@@ -422,7 +422,7 @@ export default async (siteId?: number, history?) => {
                 if (remoteChangesVisible) {
                     textOperations.textUpdates = invertTextUpdates(textOperations.textUpdates);
                 }
-                applyEditToLocalDoc(filepath, textOperations);
+                await applyEditToLocalDoc(filepath, textOperations);
             }
         }
     }
