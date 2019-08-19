@@ -4,18 +4,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Millions of developers are collaborating\footnote{https://octoverse.github.com} on source code every day.
-Especially in corporate environments tools for collaboration on source code are an integral part of the workflow.
+Especially in corporate environments, tools for collaboration on source code, such as Git, are an integral part of the workflow.
 Those tools are not just for managing versions and enabling merging conflicts but are vital for communication.
 
 %=======================================================================
 \section{Problem Description}
 %=======================================================================
 
-When multiple people are working on solving a Problem it is not clear who is implementing which part. Current version control systems (vcs) conflict resolutions require manual conflict resolution if multiple people have modified the same file concurrently.
-In order for a group to discuss a problem all the code has to be committed and pulled by everyone first. This introduces friction. In order to solve these and other problems real time collaborative editors have been created.
-But current implementations of real time collaboration editors / editor plugins are unaware of the underlying version control system and therefore are based on the idea of just sharing files of a host machine or a single source of truth file on a server instead of basing edit histories on versions of files known to the version control system anyway.
+When multiple people are working on solving a problem it is not clear who is implementing which part. Current version control systems (VCS) conflict resolutions require manual conflict resolution if multiple people have modified the same file concurrently.
+For a group to discuss a problem, all the code has to be committed and pulled by everyone first. This step introduces friction. To solve these and other problems, real-time collaborative editors have been created.
+However, current implementations of real-time collaboration editors or plugins are unaware of the underlying version control system. Current real-time collaborative editors are based on the idea of just sharing files of a host machine or a single source of truth file on a server. None of the current solutions are using edit histories based on versions of files known to the version control system.
 
-In state-of-the-art collaborative code editors it is not possible for a user to easily see who made specific changes. Usually all the changes are bundled in one commit and the accountability is lost. In order to convert this concurrent model to a commit understood by Git it should be possible to stage changes by author. This approach might require more sophisticated logic than just interpreting changes as strings given that a command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic.
+In state-of-the-art collaborative code editors, it is not possible for a user to easily see who made specific changes. Usually, all the changes are bundled in one commit, and the accountability is lost. To convert this concurrent model to a commit understood by Git, it should be possible to stage changes by the author. This approach might require more sophisticated logic than just interpreting changes as strings. A command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic.
 
 \section{Expected Results}
 
