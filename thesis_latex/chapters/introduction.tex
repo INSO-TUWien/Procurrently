@@ -4,7 +4,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Millions of developers are collaborating\footnote{https://octoverse.github.com} on source code every day.
-Especially in corporate environments, tools for collaboration on source code, such as Git, are an integral part of the workflow.
+Especially in corporate environments, tools for collaboration on source code, such as Git\footnote{\href{https://git-scm.com/}{https://git-scm.com/}}, are an integral part of the workflow.
 Those tools are not just for managing versions and enabling merging conflicts but are vital for communication.
 
 %=======================================================================
@@ -19,11 +19,15 @@ In state-of-the-art collaborative code editors, it is not possible for a user to
 
 \section{Expected Results}
 
-Enable real time collaboration on source code based on a Git\footnote{\href{https://git-scm.com/}{https://git-scm.com/}} project by
-continuous tracking of code changes synchronizing over peer to peer connection.
-Lowering overhead of splitting tasks by enabling everyone see what other people are working on. Allowing discussions about source code that has not yet been committed.
-Changes should be committable by author. In order to be able to compile source code, changes of other people can be toggled off.
-Using Git as a base enables opportunistic real time collaboration. In other words, if a connection is possible changes will be propagated  to other people working on the same branch. If not, the changes will be sent when a connection is available. \cite{6188603} Therefore it should be analogue to the benefits of moving to a decentralized vcs as described in \cite{AlwisSillito:2009:centralToDecentralVCS}.
+\begin{itemize}
+    \item Real time collaboration on source code should be based on a Git project by
+    continuous tracking of code changes.
+    \item Aiming to decrease the overhead of splitting tasks by enabling everyone in the team to see what other people are working on. 
+    \item Allowing discussions about source code that has not yet been committed.
+\end{itemize}
+
+Changes should be committable by each author. To be able to compile source code, changes of other people can be toggled off.
+Using Git as a base enables opportunistic real-time collaboration. In other words, if a connection is possible, changes are propagated  to other people working on the same branch. If not, the changes are sent when a connection is available \cite{6188603}. Therefore, it should be analogue to the benefits of moving to a decentralized VCS as described in \cite{AlwisSillito:2009:centralToDecentralVCS}.
 
 %=======================================================================
 \section{Motivation}
