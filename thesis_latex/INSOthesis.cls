@@ -521,7 +521,7 @@
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%   ABBREVIATIONS                     %
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  \@makeabbreviations
+  % \@makeabbreviations
 }
 
 \gdef\AfterTitlePages#1{\gdef\@AfterTitlePages{#1}}
