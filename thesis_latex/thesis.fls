@@ -1151,6 +1151,9 @@ OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 INPUT /Users/stefangussner/git/collabri/thesis_latex/chapters/methodology.tex
 INPUT /Users/stefangussner/git/collabri/thesis_latex/chapters/methodology.tex
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
@@ -1464,6 +1467,12 @@ OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.lol
 INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.aux
 INPUT /Users/stefangussner/git/collabri/thesis_latex/chapters/titlepages/titlepage_inso_en.aux
 INPUT /Users/stefangussner/git/collabri/thesis_latex/chapters/titlepages/titlepage_inso_en.aux
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
+OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 INPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
 OUTPUT /Users/stefangussner/git/collabri/thesis_latex/thesis.mw
