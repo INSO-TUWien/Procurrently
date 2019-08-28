@@ -8,7 +8,7 @@ All the changes are sent over unencrypted and unauthenticated.
 
 ## VS Code Extension
 
-Procurrently is an experimental extension for VS Code for real time collaboration based on Git.
+Procurrently is an experimental extension for VS Code for real-time collaboration based on Git.
 
 ### Setup
 
