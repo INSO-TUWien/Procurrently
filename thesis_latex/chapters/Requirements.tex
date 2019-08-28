@@ -1,6 +1,6 @@
 \chapter{Requirements Analysis}
 
-Based on the limitations of current solutions, identified in \autoref{sec:fundamentals}, requirements for the extension will be defined in this chapter.
+Based on the limitations of current solutions, identified in \autoref{sec:fundamentals}, this chapter defines requirements for the extension.
 
 \section{Requirements}
 
@@ -9,43 +9,39 @@ This section describes the identified requirements for the extension.
 \subsection{Share the entire project structure}
 
 Every user should be able to see all changes to the project.
-Based on this Issue and the discussion "Current implementation only shares current project. It would be more useful if I could share the whole project so two persons can work on different files."\footnote{\href{https://github.com/atom/teletype/issues/211}{https://github.com/atom/teletype/issues/211}} being able to edit the entire project structure is a very important feature.
+Based on an issue and the discussion on the Teletype Github page explaining, that it would be a substantial improvement if the entire project structure was shared\footnote{\href{https://github.com/atom/teletype/issues/211}{https://github.com/atom/teletype/issues/211}}. Being able to edit the entire project structure is a very important feature.
 
 \subsection{Only display changes in the same Git branch}
 
-Given that a lot of developers are using prototype branches and a significant number are using feature branches Git branches are a good indication that a specific problem is being worked on. \cite{PhillipsSillitoWalker:2011:Branching_and_merging} Therefore, only displaying concurrent edits on the same edit removes noise of unrelated edits.
+Given that a lot of developers are using prototype branches and a significant number are using feature branches Git branches are a good indication that a specific problem is being worked on \cite{PhillipsSillitoWalker:2011:Branching_and_merging}. A prototype branch is a branch that is used to extend or improve software in an experimental workflow. Multiple implementations of features can be prototyped and later finalized in seperate branches without disturbing other people working on the project. Therefore, only displaying concurrent edits on the same edit removes noise of unrelated edits if features are developed in seperate branches. 
 
 \subsection{Stage changes by author}
 
 Synchronizing changes to all developers introduces a problem:
 "[\dots] This means that git only becomes a way to have a backup as all the work is done using P2P! [\dots]"\footnote{\href{https://github.com/atom/teletype/issues/211\#issuecomment-478306010}{https://github.com/atom/teletype/issues/211\#issuecomment-478306010}}
-Possibly unrelated modifications would be bundled into huge commits. In order to mitigate this, users should be able to stage changes by author.
+Possibly unrelated modifications would be bundled into huge commits. In order to mitigate this, users should be able to stage changes by the author.
 
 \subsection{Retrieve required information from Git}
 
-As Git already contains information about the project and the author, the user should not have to enter this information into the extension again. Instead the extension should, whenever possible, read information (such as the current username) from Git.
+As Git already contains information about the project and the author, the user should not have to enter this information into the extension again. Instead, the extension should, whenever possible, read this information (such as the current username) from Git.
 
 \subsection{Respect .gitignore}
 
-Files explicitly excluded from the version control system via the .gitignore file\footnote{\href{https://git-scm.com/docs/gitignore}{https://git-scm.com/docs/gitignore}} should not be synchronized with other client as these files might contain automatically generated files that depend on the local system configuration or contain sensitive information. This solution was also proposed in the Teletype for Atom GitHub Issues\footnote{\href{https://github.com/atom/teletype/issues/211\#issuecomment-376999575}{https://github.com/atom/teletype/issues/211\#issuecomment-376999575}}
+Files explicitly excluded from the version control system via the .gitignore file\footnote{\href{https://git-scm.com/docs/gitignore}{https://git-scm.com/docs/gitignore}} should not be synchronized with other clients as these files might contain automatically generated files that depend on the local system configuration or contain sensitive information. This solution was also proposed in the Teletype for Atom GitHub Issues\footnote{\href{https://github.com/atom/teletype/issues/211\#issuecomment-376999575}{https://github.com/atom/teletype/issues/211\#issuecomment-376999575}}
 
 \subsection{Performance}
 
-Although "VS Code aims to deliver a stable and performant editor to end users, and misbehaving extensions should not impact the user experience. The Extension Host in VS Code prevents extensions from:
-\begin{itemize}
-    \item Impacting startup performance
-    \item Slowing down UI operations
-    \item Modifying the UI
-\end{itemize}"\footnote{\href{https://code.visualstudio.com/api/advanced-topics/extension-host}{https://code.visualstudio.com/api/advanced-topics/extension-host}}
+Although VS Code runs extensions in seperate threads to prevent performance impacts of misbehaving extensions.\footnote{\href{https://code.visualstudio.com/api/advanced-topics/extension-host}{https://code.visualstudio.com/api/advanced-topics/extension-host}}
 
 Performance of the extension should be good enough that typing on two computers with one hand each should be possible without introducing errors or noticeable delay if both computers are connected to the same network via ethernet.
 
-Scenario: A person is sitting in front of two computers both with VS Code and the extension open. The left hand is on the keyboard of the first computer, the right hand on the keyboard of the second computer. The person should be able to type a sentence without errors being introduced by delays in change synchronization.
+To better understand the requirement stated in the previous paragraph consider this scenario:
+A person is sitting in front of two computers both with VS Code and the extension open. The left hand is on the keyboard of the first computer, the right hand on the keyboard of the second computer. The person should be able to type a sentence without errors being introduced by delays in change synchronization.
 
 \subsection{Disable foreign changes}
 
-In order to compile source code, it is important that the code is free of syntax errors and does not change during compilation. Therefore, it should be possible to disable receiving changes from other clients. Sometimes it might even be necessary to roll back the changes other people have made to the codebase.
+In order to compile source code, it is mandatory that the code is free of syntax errors and does not change during compilation. Therefore, it should be possible to disable receiving changes from other clients. Sometimes it might even be necessary to roll back the changes other people have made to the codebase.
 
-\subsection{Support bad internet connection}
+\subsection{Support bad internet connections}
 
-The extension should be able to support the client losing the internet connection. Even if the code editor is relaunched while offline the changes of other users should still be as they were when the connection was lost. As soon as connectivity is restored, new changes should start to be displayed. 
+The extension should be able to support the client losing the internet connection. Even if the user relaunches the code editor while offline, the changes of other users should still be as they were when the connection was lost. As soon as connectivity is restored, new changes should start to be displayed. 
