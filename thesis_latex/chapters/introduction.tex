@@ -11,11 +11,11 @@ Those tools are not just for managing versions and enabling merging conflicts bu
 \section{Problem Description}
 %=======================================================================
 
-When multiple people are working on solving a problem it is not clear who is implementing which part. Current version control systems (VCS) conflict resolutions require manual conflict resolution if multiple people have modified the same file concurrently.
+When multiple people are working on solving a problem, it is not clear who is implementing which part. Current version control systems (VCS) conflict resolutions require manual conflict resolution if multiple people have modified the same file concurrently.
 For a group to discuss a problem, all the code has to be committed and pulled by everyone first. This step introduces friction. To solve these and other problems, real-time collaborative editors have been created.
 However, current implementations of real-time collaboration editors or plugins are unaware of the underlying version control system. Current real-time collaborative editors are based on the idea of just sharing files of a host machine or a single source of truth file on a server. None of the current solutions are using edit histories based on versions of files known to the version control system.
 
-In state-of-the-art collaborative code editors, it is not possible for a user to easily see who made specific changes. Usually, all the changes are bundled in one commit, and the accountability is lost. To convert this concurrent model to a commit understood by Git, it should be possible to stage changes by the author. This approach might require more sophisticated logic than just interpreting changes as strings. A command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic.
+In state-of-the-art collaborative code editors, it is not possible for a user to easily see who made specific changes. Usually, all the changes are bundled in one commit, and the accountability is lost. To convert this concurrent model to a commit understood by Git, it should be possible to stage changes by the author. This approach might require more sophisticated logic than just interpreting changes as strings. A command could be modified by two users and applying only half the changes as part of a commit could result in invalid syntax or semantic. Interpreting changes as an abstract syntax tree or in other formats could reduce conflicts introduced by modifying the same command on different mashines and then committing only the changes of one author.
 
 \section{Expected Results}
 
@@ -26,13 +26,14 @@ In state-of-the-art collaborative code editors, it is not possible for a user to
     \item Allowing discussions about source code that has not yet been committed.
 \end{itemize}
 
+By building a prototype it should be possible to evaluate the impact of Git-based real-time collaboration on common workflows in corporate environments.
 Changes should be committable by each author. To be able to compile source code, changes of other people can be toggled off.
-Using Git as a base enables opportunistic real-time collaboration. In other words, if a connection is possible, changes are propagated  to other people working on the same branch. If not, the changes are sent when a connection is available \cite{6188603}. Therefore, it should be analogue to the benefits of moving to a decentralized VCS as described in \cite{AlwisSillito:2009:centralToDecentralVCS}.
+Using Git as a base enables opportunistic real-time collaboration. In other words, if a connection is possible, changes are propagated  to other people working on the same branch. If not, the changes are sent when a connection is available \cite{6188603}. Therefore, it should be analogue to the benefits of moving to a decentralized VCS, as described in \cite{AlwisSillito:2009:centralToDecentralVCS}. This is because, as in Git, disconnecting from the network will not block working on a shared document.
 
 %=======================================================================
 \section{Motivation}
 %=======================================================================
 
-Current implementations of real-time collaboration tools are not designed with version control systems in mind.
+Current implementations of real-time collaboration tools are not designed with version control systems in mind. There is usually no way to transform changes into the version control system without losing information about the author of changes. Furthermore, establishing a session is uaually unnecessarily expensive because the initial state of documents is tranfmitted to all other endpoints despite the endpoints usually already having a (maybe slightly outdated) copy of the document stored.
 
-Transforming real-time collaborative edits into regular Git commits by author reduces much friction in the adoption of real-time collaboration software. Using a peer to peer solution with the ability to deal with disconnect events using information already known to the version control system drastically increases the ease of use. Ideally a user will not even have to think about using the extension.
+Transforming real-time collaborative edits into regular Git commits by author reduces much friction in the adoption of real-time collaboration software. This is because the semantic of a commit is very similar to a regular Git-based workflow. When working with current implementations for real-time collaboration, changes can only be imported into Git by committing entire files or entire changesets without much regard for grouping changes into commits. Using a peer to peer solution with the ability to deal with disconnect events using information already known to the version control system drastically increases the ease of use. Ideally, a user will not even have to think about using the extension.
