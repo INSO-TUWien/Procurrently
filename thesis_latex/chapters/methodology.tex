@@ -5,10 +5,10 @@ Additionally, the current literature related to real-time collaboration was stud
 The papers mentioned in open source projects were used as a starting point for forward and backward literature analysis.
 
 
-The following list of publishers were used as sources of literature: ACM Digital Library\footnote{\href{https://dl.acm.org/}{https://dl.acm.org/}}, IEEE Xplore Digital Library\footnote{\href{https://ieeexplore.ieee.org/}{https://ieeexplore.ieee.org/}}, SpringerLink\footnote{\href{https://link.springer.com/}{https://link.springer.com/}}, and ScienceDirect\footnote{\href{https://www.sciencedirect.com/}{https://www.sciencedirect.com/}}. Google Scholar\footnote{\href{https://scholar.google.com/}{https://scholar.google.com/}} was used as an additional search engine. Papers that are not published by the previously mentioned publishers were only used in exceptional cases and after consultation with the supervising assistant.
+The following list of publishers was used as sources of literature: ACM Digital Library\footnote{\href{https://dl.acm.org/}{https://dl.acm.org/}}, IEEE Xplore Digital Library\footnote{\href{https://ieeexplore.ieee.org/}{https://ieeexplore.ieee.org/}}, SpringerLink\footnote{\href{https://link.springer.com/}{https://link.springer.com/}}, and ScienceDirect\footnote{\href{https://www.sciencedirect.com/}{https://www.sciencedirect.com/}}. Google Scholar\footnote{\href{https://scholar.google.com/}{https://scholar.google.com/}} was used as an additional search engine. Papers that are not published by the previously mentioned publishers were only used in exceptional cases and after consultation with the supervising assistant.
 
 
-The literature survey was continuously documented in the following format:
+To make the literature survey reproducible, it was continuously documented in the following format:
 
 \begin{lstlisting}
 	<date>: <search query>
@@ -29,14 +29,14 @@ Based on problems mentioned in papers and issues of projects from the state-of-t
 These requirements are user-centred.
 Functional as well as non-functional aspects such as performance were defined as requirements.
 
-Use cases for the extension were also defined. These use cases directly related to editing source code have a defined number of users as well as file sizes to be verifiable. 
+Use cases for the extension, based on the requirements, were also defined. These use cases directly related to editing source code have a defined number of users as well as file sizes to be verifiable. 
 Every use case includes at least the following information:
 \begin{itemize}
     \item Actor (the stakeholder)
     \item System (the software the actor is interacting with)
     \item Action (the goal of the actor)
 \end{itemize}
-A VS Code\footnote{\href{https://code.visualstudio.com/}{https://code.visualstudio.com/}} extension better suited to accommodate the identified use cases were implemented.
+A VS Code\footnote{\href{https://code.visualstudio.com/}{https://code.visualstudio.com/}} extension better suited to accommodate the identified use cases was implemented.
 The extension meets the following requirements:
 \begin{itemize}
     \item The extension targets VS Code 1.32 or newer and is written in Node.js
@@ -45,6 +45,6 @@ The extension meets the following requirements:
 \end{itemize}
 The thesis was written in parallel with the development of the extension. Git was used as a version control system for the thesis as well as the extension.
 
-The solution was evaluated by comparing the extension and the state-of-the-art tools in terms of suitability for the specified use cases. 
+The solution was evaluated by comparing the extension and the state-of-the-art tools in terms of suitability for the specified use cases. Additionally the extension was evaluated by using it for JavaScript development in a small team in a corporate environment. 
 The evaluation is based on the amount of time required to fulfill a specific use case.
 Furthermore, any limitations compared to state-of-the-art solutions have been documented.

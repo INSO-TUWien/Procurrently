@@ -1,5 +1,5 @@
 \section{User stories}
-This section describes user centered requirements in the form of user stories.
+This section describes user-centered requirements in the form of user stories.
 \begin{enumerate}
 \item As a programmer, I want to access the entire project structure when using a code editor.
 \item As a programmer, I want a clean separation between branches and do not want to see changes to other branches when using a version control system.
@@ -13,7 +13,7 @@ This section describes user centered requirements in the form of user stories.
 
 \section{Scenarios}
 \label{sec:scenarios}
-In this section, multiple scenarios are derived from the user stories.
+In this section, multiple scenarios are derived from the user stories. These scenarios are used to evaluate the extension (see \autoref{sec:eval}).
 
 \subsection{Scenario 1}
 \label{sec:scenario1}
@@ -21,24 +21,30 @@ Person A and B are working on a Node.js Express project together. Person A is wo
 Person A has edited the file "/app.js" (paths are described as absolute from the project root) as well as the file "/routes/account.js" on "Ba".
 Person B has edited the file "/app.js" as well as the file "/routes/main.js" on "Bb".
 Person A encounters unexpected behaviour of his code. He requests help from person B.
+
 Neither persons A nor B want to commit their changes at this point.
 Person B uses the VS Code Command Palette and chooses the option "Procurrently: Checkout Branch" and chooses branch "Ba".
 Person B now sees only the modifications in "/app.js" and /routes/accounts.js from branch "Ba".
+
 Upon discovering the problem in the source code, person B modifies "/routes/account.js" to solve the problem.
 Person A can see the changes in real-time.
 Person B once again opens the VS Code Command Palette and chooses the option "Procurrently: Checkout Branch" and chooses branch "Bb".
 Person B now sees the modifications in "/app.js" and "/routes/main.js" on Branch "Bb" and can continue working on Person B's task.
 
 \subsection{Scenario 2}
-Person A and B are working on an Node.js Express project together. Both of them are working on branch "master" in the "/app.js" file.
+Person A and B are working on a Node.js Express project together. Both of them are working on branch "master" in the "/app.js" file.
 Person A is modifying and testing a new feature while person B is working on setting new HTTP caching headers for the Express app.
+
 This is interfering with the test of person A. Person A opens the VS Code Command Palette and chooses the option "Procurrently: Toggle remote changes".
 All the modifications of B are reverted in the documents of person A.
+
 During that person B can still see the modifications of person A which helps person B to determine the correct caching headers for the different routes.
 Person A's laptop disconnects from the network. Therefore, person B can no longer receive real-time updates from person A.
 Person A's laptop reboots unexpectedly. Once the laptop is booted up again, person A opens VS Code and can continue to work where person A left off.
 Person A now wants to know about the progress of person B and turns on remote changes. Person A can see all the changes of person B until person A disconnected from the network. Person A disables remote changes again and continues to work on his new feature.
-Later on, person B's laptop reconnects to the network and person B can receive all the modifications person B missed.
+Later on, person B's laptop reconnects to the network, and person B can receive all the modifications person B missed.
+
 Once person A is happy with the implementation of the new feature, person A wants to test the caching behaviour himself to make sure person B has understood his code correctly.
+
 Person A opens the VS Code Command Palette and chooses the option "Procurrently: Toggle remote changes".
-Person A now sees all the modifications of person B again including the modifications B made while person A had disabled the remote changes.
+Person A now sees all the modifications of person B again, including the modifications B made while person A had disabled the remote changes.

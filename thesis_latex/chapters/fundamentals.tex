@@ -11,7 +11,7 @@ The results from the literature survey are used as a basis for the requirements 
 \label{sec:stateoftheart}
 %=======================================================================
 
-This section describes and discusses the current state-of-the-art tools for real-time collaboration.
+This section describes and discusses the current state-of-the-art tools for real-time collaboration. Both scientific as well as commercial solutions are taken into account.
 
 \subsection{Available Software Tools}
 
@@ -19,10 +19,18 @@ In this section, currently available software solutions for real-time collaborat
 
 \subsubsection{Teletype for Atom}
 Teletype for Atom\footnote{https://github.com/atom/teletype/issues/211} is a project enabling editing files peer to peer. It is based on \cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting}, \cite{YuWeihai:2014} and \cite{BriotUrsoShapiro:2016:HighResponsivenessGroupEditing}.
-With Teletype, it is possible to edit files currently opened by the "host". The files are only persisted on the "host" not on all peers\footnote{https://teletype.atom.io/}.
-Therefore, disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless the host opens them. 
+With Teletype, it is possible to edit files currently opened by the "host". The files are only persisted on the "host", not on all peers\footnote{https://teletype.atom.io/}.
+Therefore, disconnecting from the network cuts off the editing workflow. It is not possible to access all the files in a project unless the host opens them (see \autoref{fig:teletype}). 
+\begin{figure}[hb]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/teletype.png}
+	\caption{Teletype for Atom}
+	\href{https://teletype.atom.io/}{https://teletype.atom.io/}
+    \label{fig:teletype}
+\end{figure}
+
 \subsubsection{Visual Studio Live Share}
-Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that, it enables sharing debugging sessions and the ports opened by the debugging sessions are forwarded to clients. As with Teletype for Atom, files are only persisted on the "host" (See \autoref{fig:liveshare}).
+Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services/live-share/}  is a plugin for Visual Studio Code and Visual Studio that enables sharing all files of a project loaded in the editor with someone else. In addition to that, it enables sharing debugging sessions and the ports opened by the debugging sessions are forwarded to clients. As with Teletype for Atom, files are only persisted on the "host" (see \autoref{fig:liveshare}).
 \begin{figure}[hb]
     \centering
     \includegraphics[width=1\linewidth]{figures/screenshots/vscodeliveshare.png}
@@ -31,9 +39,17 @@ Visual Studio Live Share\footnote{https://visualstudio.microsoft.com/de/services
     \label{fig:liveshare}
 \end{figure}
 \subsubsection{Multihack-Brackets}
-Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets\footnote{http://brackets.io/} editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019, it is not possible to verify performance or functionality since joining a session crashes the brackets editor. The development seems to have stopped because the last commit in the repository was over a year ago (in February of 2018).
+Multihack-Brackets\footnote{https://github.com/multihack/multihack-brackets} is a plugin for the Brackets\footnote{http://brackets.io/} editor. It enables sharing an entire folder structure. It requires a server. As of 13.3.2019, it is not possible to verify performance or functionality since joining a session crashes the brackets editor. The development seems to have stopped because the last commit in the repository was over a year ago (in February of 2018)(see \autoref{fig:multihack}).
+\begin{figure}[hb]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/screenshots/multihack.png}
+	\caption{Multihack-Brackets}
+	\href{https://multihack.github.io/multihack-web/}{https://multihack.github.io/multihack-web/}
+    \label{fig:multihack}
+\end{figure}
+
 \subsubsection{Codeshare}
-Codeshare\footnote{https://codeshare.io} is a web-based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file (See\autoref{fig:codeshare}).
+Codeshare\footnote{https://codeshare.io} is a web-based collaborative editor. It is designed for interviews. The editor window offers syntax highlighting for a broad range of programming languages. One shared room always only contains a single file (see \autoref{fig:codeshare}).
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{figures/screenshots/codeshare.png}
@@ -48,10 +64,10 @@ Codeshare\footnote{https://codeshare.io} is a web-based collaborative editor. It
 This section discusses scientific solutions for real-time collaboration.
 
 \subsubsection{CoVim}
-CoVim \cite{ChoNgSun:2017:CoVim:Incorporatingreal-timecollaborationcapabilitiesintocomprehensivetexteditors} uses operational transforms. Operational transforms, unlike CRDTs (See \autoref{sec:CRDT}), rely on shifting the positions of operations within the document to ensure consistency. Instead of observing user interactions, it observes changes to files and generates operational transforms from diffing states.
+CoVim \cite{ChoNgSun:2017:CoVim:Incorporatingreal-timecollaborationcapabilitiesintocomprehensivetexteditors} uses operational transforms. Operational transforms, unlike CRDTs (see Subsection \ref{sec:CRDT}), rely on shifting the positions of operations within the document to ensure consistency. Instead of observing user interactions, it observes changes to files and generates operational transforms from diffing states.
 
 \subsubsection{TouchDevelop}
-TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web-based editor. It enables real-time collaboration by merging ASTs. The paper claims, that this approach can be generalized to a general-purpose language \cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges}. The AST translation needs to be implemented for every supported programming language. Additionally, the transformation from AST to text does not guarantee the same code which could lead to confusion for developers (See \autoref{fig:touchdevelop}).
+TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web-based editor. It enables real-time collaboration by merging ASTs. The paper claims that this approach can be generalized to a general-purpose language \cite{ProtzenkoBurckhardtMoskalMcClurg:2015:Implementingreal-timecollaborationinTouchDevelopusingASTmerges}. The AST translation needs to be implemented for every supported programming language. Additionally, the transformation from AST to text does not guarantee the same code, which could lead to confusion for developers (see \autoref{fig:touchdevelop}).
 \begin{figure}[hb]
     \centering
     \includegraphics[width=0.7\linewidth]{figures/screenshots/touchdevelop.png}
@@ -60,7 +76,7 @@ TouchDevelop\footnote{https://www.touchdevelop.com} is an experimental web-based
     \label{fig:touchdevelop}
 \end{figure}
 \subsubsection{CodeR}
-CodeR \cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming} is a web integrated development environment (IDE) with built in chat for the programming languages C, C++ and Java (See \autoref{fig:coder}).
+CodeR \cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationforCollaborativeProgramming} is a web integrated development environment (IDE) with built-in chat for the programming languages C, C++ and Java (see \autoref{fig:coder}).
 \begin{figure}[hb]
     \centering
     \includegraphics[width=1\linewidth]{figures/screenshots/CodeR.png}
@@ -70,7 +86,7 @@ CodeR \cite{KurniawanSoesantoWijaya:2015:CodeR:Real-timeCodeEditorApplicationfor
 \end{figure}
 
 \subsubsection{Collabode}
-Collabode is "a web-based Java integrated development environment" \cite{Goldman:2011:RCC:2047196.2047215}. It shares changes between developers as soon as they have no compilation errors. It is designed for the Java language (See \autoref{fig:collabode}).
+Collabode is "a web-based Java integrated development environment" \cite{Goldman:2011:RCC:2047196.2047215}. It shares changes between developers as soon as they have no compilation errors. It is designed for the Java language (see \autoref{fig:collabode}).
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{figures/screenshots/collabode.jpg}
@@ -108,13 +124,13 @@ As described in \autoref{tab:sota}, current solutions are either implemented as 
 
 \subsection{CRDT}
 \label{sec:CRDT}
-To update shared objects stored at different sites a "commutative replicated data type" or CRDT is proposed by \cite{PreguicaMarquesShapiroLetia:2009}. The idea is to design the underlying representation or data structure of edits to a document such that operations are commutative and therefore automatically converge at every copy of the document.
+For updating shared objects stored at different sites, a "commutative replicated data type" or CRDT is proposed by \cite{PreguicaMarquesShapiroLetia:2009}. The idea is to design the underlying representation or data structure of edits to a document such that operations are commutative and therefore automatically converge at every copy of the document.
 However, there is a problem with this approach. If there are concurrent insertions at the same position of a document, a global order for the conflicting information has to be established. This problem has a solution: every site gets a unique identifier and a logical clock or counter. Concurrent inserts are then ordered either by the counter (smaller counter first) or if the counters are identical by identifier \cite{PreguicaMarquesShapiroLetia:2009}, \cite{Oster:2006:DataconsistencyforP2Pcollaborativeediting}.
 
 \subsection{Scrum}
 Scrum is an agile, iterative software development process. Work is divided into Sprints. There are daily meetings called "Daily Scrum". In those meetings, important questions are discussed in a group. One of them is "What impediments stand in the way of you meeting your commitments to this Sprint and this project?" \cite{schwaber2004agile}, \cite{10.1007/978-1-4471-0947-1_11}.
 In theory, this introduces a maximum delay of one day from potentially blocking code being written to the person depending on it knowing about it.
-So if, for example a module is finished at 10am on one day the person depending on that module will learn about that at the next Daily Scrum meeting, about 20 hours later. This time can further be decreased by establishing tighter communication between team members.
+So if, for example, a module is finished at 10am on one day, the person depending on that module will learn about that at the next Daily Scrum meeting, about 20 hours later. This time can further be decreased by establishing tighter communication between team members.
 Especially in distributed development, it is important to "arrange an access to multiple communication tools" \cite{5196933} for unofficial distributed meetings \cite{4638656}.
 Since the version control system is a communication tool, improving version control systems improves communication tools and aids Scrum-based software development processes.
 

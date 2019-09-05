@@ -4,9 +4,9 @@ Procurrently demonstrates an approach to real-time collaboration compatible with
 
 Developers do not have to think about the extension. It is possible to disable or pause remote changes. 
 
-Developers can easily jump between branches without the need to commit work before doing so. This improves upon VCS use-cases such as helping a colleague with a problem without having to commit, push and pull changes first. 
+Developers can easily jump between branches without the need to commit work before doing so. This improves upon VCS use cases such as helping a colleague with a problem without having to commit, push and pull changes first. 
 
-In contrast to other real-time collaboration solutions, accountability for changes is not lost when committing to a Git repository by staging changes by author.
+In contrast to other real-time collaboration solutions, accountability for changes is not lost when committing to a Git repository by staging changes by the author.
 
 \section{Future Research}
 
@@ -19,22 +19,22 @@ Possible next research steps for more efficient network usage could be:
     \item Encrypt traffic and authenticate collaborators
 \end{itemize}
 
-Establishing an initial shared state might be possible with local changes present instead of doing a Git reset. This might require user interaction to resolve conflicts using 1-way merges or manually changing the file contents. \cite{7070484}
+Establishing an initial shared state might be possible with local changes present instead of doing a Git reset. This might require user interaction to resolve conflicts using 1-way merges, which resolves conflicts by adopting either one version or the other, or manually changing the file contents \cite{7070484}.
 
-Furthermore it is possible that a system like Procurrently could reduce friction in establishing group awareness by enabling group coding sessions over long distances instead of just relying on mailing lists and chats as described in \cite{Gutwin:2004:GAD:1031607.1031621} and would make it easier to know, "whom to contact" \cite{795103}, \cite{Gutwin:2004:GAD:1031607.1031621}.
+Furthermore, it is possible that a system like Procurrently could reduce friction in establishing group awareness by enabling group coding sessions over long distances instead of just relying on mailing lists and chats as described in \cite{Gutwin:2004:GAD:1031607.1031621} and would make it easier to know, "whom to contact" \cite{795103}, \cite{Gutwin:2004:GAD:1031607.1031621}.
 
-As speed in Continuous Integration systems is crucial: "The dominant technical factors which explain Travis abandonment are \textbf{Build duration} and Language" \cite{8595199}, Procurrently could also find use-cases in Continuous Integration augmenting common workflows based on Git. 
-Current workflows react to commits as described:
+As speed in Continuous Integration systems is crucial: "The dominant technical factors which explain Travis abandonment are \textbf{Build duration} and Language" \cite{8595199}, Procurrently could also find use cases in Continuous Integration augmenting common workflows based on Git. 
+Current workflows react to commits as described in \cite{8695332}:
 
-\blockquote[{\cite{8695332}}]{
+\blockquote{
     \begin{itemize}
-        \item Developers builds and pushes code to Github
+        \item A developer builds and pushes code to Github
         \item Github will use a webhook to notify Jenkins of the recent change
-        \item Jenkins will pull the Github repository, including the Dock-erfile describing the image along with the application
+        \item Jenkins will pull the Github repository, including the Dockerfile describing the image along with the application
         \item Jenkins will then build the Docker image of that application on the Jenkins slave node
         \item Jenkins will run the Docker container on the slave node and will execute the appropriate tests
         \item If the tests are successful, the docker image is then pushed to the Docker Hub with the appropriate version number
     \end{itemize}
 }
 
-Additionally, to listing to pushes on GitHub, builds could be triggered when any developer changes a file in Procurrently, and the results of the test results could be displayed within the editor as soon as the tests have run. This could reduce feedback delay of Continuous Integration systems.
+Additionally, to listing to pushes on GitHub, builds could be triggered when any developer changes a file in Procurrently, and the results of the test results could be displayed within the editor as soon as the tests have run. This could reduce the feedback delay of Continuous Integration systems.
